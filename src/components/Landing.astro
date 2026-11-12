@@ -1,0 +1,187 @@
+---
+import Shell from '../layouts/Shell.astro';
+import SiteHeader from './SiteHeader.astro';
+import SiteFooter from './SiteFooter.astro';
+import Icon from './Icon.astro';
+import Signup from './Signup.astro';
+import MarketMap from './MarketMap';
+import SampleRedaction from './SampleRedaction';
+import HeroRecord from './HeroRecord';
+import { paths, variants, type Variant } from '../lib/launch';
+import data from '../data/leak-map.json';
+
+interface Props { variant: Variant }
+const { variant } = Astro.props;
+const copy = variants[variant];
+const status = Astro.url.searchParams.get('signup');
+const target = Astro.url.searchParams.get('form');
+const compact = new Intl.NumberFormat('en-GB', { notation: 'compact', maximumFractionDigits: 1 });
+const whole = new Intl.NumberFormat('en-GB');
+const asOf = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(data.breaches.asOf));
+const faqs = [
+  ['What will Koverr check first?', 'Data breaches: which ones include your email address, and what was exposed in each. Checks for data brokers, forgotten accounts and search results follow. Every finding will show its source and the date it was seen.'],
+  ['Will Koverr fix things for me?', 'Where it can. Koverr will prepare removal and deletion requests, send them once you approve, and keep track of replies and deadlines. The organisation holding your data makes the change. Koverr can’t promise it will, but it will chase, and tell you plainly where each request stands.'],
+  ['Can you delete me from the internet?', 'No, and nobody can. Some records are public by law, and removed data can come back. Koverr will fix what can be fixed, tell you what can’t, and check again later.'],
+  ['Does it work where I live?', 'Breach checks work anywhere. Removal and deletion requests depend on local privacy law, so they will open country by country. Tell us where you live when you join and you’ll help decide the order.'],
+  ['What do I need to join?', 'An email address. After you join, there are two optional questions: where you live and what worries you most.'],
+  ['What if my details appear in more than one place?', 'Each copy needs its own fix. Removing the original can leave copies with brokers or in search results, so Koverr will start at the source and then work through the copies.'],
+];
+const record = [
+  ['3 Nov', 'Found on the directory page', false],
+  ['3 Nov', 'Removal request approved and sent', false],
+  ['11 Nov', 'Directory replied: listing removed', false],
+  ['18 Nov', 'Page checked: address not found', true],
+  ['18 Dec', 'Checked again: still gone', true],
+] as const;
+---
+<Shell title={copy.title + ' | Koverr'} description={copy.intro} noindex={copy.campaign || Boolean(status)}>
+  <SiteHeader links={[['#market', 'Market map'], ['#paths', 'Six ways out'], ['#picks', 'Who gains'], ['#sample', 'Sample record']]} />
+  <main id="main">
+    <div class="market-opening">
+      <section class="wrap market-hero" aria-labelledby="hero-title">
+        <h1 id="hero-title">
+          {copy.lines.slice(0, -1).map(line => <span class="headline-line"><span>{line}{' '}</span></span>)}
+          <span class="headline-line hero-last"><span>{copy.lines.at(-1)}</span></span>
+        </h1>
+        <div class="hero-action">
+          <div class="hero-copy">
+            <p class="hero-intro">{copy.intro}</p>
+            <Signup id="hero-signup" variant={variant} signupStatus={target === 'hero-signup' ? status : null} />
+          </div>
+          <HeroRecord client:load />
+        </div>
+      </section>
+      <section id="market" class="wrap market-stage" aria-labelledby="market-title">
+        <div class="market-intro">
+          <h2 id="market-title" class="market-heading">Where your details end up.</h2>
+          <p>A leak isn’t the loss. It’s what the loss is made from. Scams work best when the caller already knows your name, your bank and your address. Not every loss starts with a leak, but the details that make fraud believable come from somewhere.</p>
+        </div>
+        <MarketMap client:load sectors={data.breaches.sectors} asOf={asOf} />
+        <dl class="market-ticker">
+          <div><dt>Breached account records listed. One person turns up in many.</dt><dd>{compact.format(data.breaches.total)}</dd></div>
+          <div><dt>Breaches in Have I Been Pwned’s list</dt><dd>{whole.format(data.breaches.count)}</dd></div>
+          <div><dt>Reported US fraud losses, 2025, up from $12.5bn in 2024. The FTC says the real total is higher.</dt><dd>$15.9bn</dd></div>
+        </dl>
+        <p class="market-source">Breach counts: <a href="https://haveibeenpwned.com/">Have I Been Pwned</a>, CC BY 4.0. Fraud losses: <a href="https://www.ftc.gov/news-events/news/press-releases">US Federal Trade Commission</a>, which says reports understate real losses. Select a tile to read it.</p>
+      </section>
+    </div>
+
+    <section id="paths" class="ledger-section" aria-labelledby="paths-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="paths-title">Six ways out, and who gains.</h2>
+          <p>Each exit pays someone different and costs you something different. Most tools watch one. Koverr is being built to work all six.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="exits">
+            <caption class="visually-hidden">The six ways personal data gets out, who gains from each, what it can cost you, and the fix</caption>
+            <thead><tr><th scope="col">How it gets out</th><th scope="col" class="col-gain">Who gains</th><th scope="col" class="col-loss">What it can cost you</th><th scope="col" class="col-fix">The fix</th></tr></thead>
+            <tbody>
+              {paths.map(path => (
+                <tr>
+                  <th scope="row"><span class="exit-name">{path.name}</span><span class="exit-what">{path.what}</span></th>
+                  <td class="col-gain" data-label="Who gains">{path.gain}</td>
+                  <td class="col-loss" data-label="What it can cost you">{path.cost}</td>
+                  <td class="col-fix" data-label="The fix">{path.fix}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <a class="text-link" href="/leak-map/">See breaches and trackers on the full leak map <Icon name="arrow" size={17} /></a>
+      </div>
+    </section>
+
+    <section id="picks" class="picks-section" aria-labelledby="picks-title">
+      <div class="wrap">
+        <div class="section-head picks-head">
+          <div>
+            <h2 id="picks-title">Who picks it up.</h2>
+            <p>The other side of the market: companies whose code runs on the web’s most-visited sites. Every visit you make can pass through them.</p>
+          </div>
+          <figure class="photo">
+            <img src="/photos/trading-pit.webp" width="1024" height="696" alt="Traders in a crowded exchange pit, one pointing a raised finger as others write on cards" loading="lazy" decoding="async" />
+            <figcaption>A trading pit. Photograph by Bernard Gotfryd, Library of Congress, <a href="https://www.rawpixel.com/image/6307824/ny-stock-exchange-bernard-gotfryd-1924-2016">CC0</a>.</figcaption>
+          </figure>
+        </div>
+        <a class="text-link picks-link" href="/leak-map/">See the companies behind it on the leak map <Icon name="arrow" size={17} /></a>
+        <figure class="photo photo-band">
+          <img src="/photos/trading-floor.webp" width="1024" height="695" alt="Crowded stock exchange floor seen from above, traders around a post under banks of screens" loading="lazy" decoding="async" />
+          <figcaption>A trading floor. Your details change hands too, just with less shouting. Photograph by Bernard Gotfryd, Library of Congress, <a href="https://www.rawpixel.com/image/6302012/gold-market-stock-exchange-bernard-gotfryd-1924-2016">CC0</a>.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="sample" class="sample-section" aria-labelledby="sample-title">
+      <div class="wrap sample-layout">
+        <div class="sample-copy">
+          <h2 id="sample-title">Not an alert. A closed leak.</h2>
+          <p>Most tools stop at telling you. Koverr will follow each leak from found to fixed and keep the record: what was asked, who answered, and when it was checked.</p>
+        </div>
+        <article class="finding" data-ui aria-labelledby="finding-title">
+          <div class="finding-bar"><span><Icon name="filing" size={18} /> Leak record</span><span>Sample</span></div>
+          <div class="finding-body">
+            <h3 id="finding-title">Home address in an old listing</h3>
+            <dl>
+              <div><dt>Leak path</dt><dd>Sold: a public directory profile</dd></div>
+              <div><dt>What was visible</dt><dd><SampleRedaction client:load /></dd></div>
+            </dl>
+            <ol class="finding-log" aria-label="What happened">
+              {record.map(([date, event, checked], index) => (
+                <li data-done={index >= 2} style={`--row:${Math.max(0, index - 2)}`}><span class="log-date">{date}</span><span class="log-event">{event}{checked && <Icon name="check" size={15} />}</span></li>
+              ))}
+            </ol>
+          </div>
+          <div class="finding-foot"><span class="status-dot" aria-hidden="true"></span> Closed, checked twice <span>Fictional data</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="faq-section" aria-labelledby="faq-title">
+      <div class="wrap faq-layout">
+        <div><h2 id="faq-title">Good to know.</h2><p>What Koverr will do, and what it won’t.</p></div>
+        <div class="faq-list">
+          {faqs.map(([question, answer]) => (
+            <details>
+              <summary>{question}<Icon name="plus" size={22} /></summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="launch" class="launch" aria-labelledby="launch-title">
+      <div class="wrap launch-inner">
+        <div><h2 id="launch-title">Stay off the market.</h2><p>Get an invite when Koverr’s free leak check opens.</p></div>
+        <Signup id="launch-signup" variant={variant} signupStatus={target === 'launch-signup' ? status : null} />
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Shell>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const calm = matchMedia('(prefers-reduced-motion: no-preference)');
+  // The headline arrives once. Nothing else on the page is staged by scrolling.
+  if (calm.matches) {
+    gsap.fromTo('.headline-line > span', { yPercent: 52, opacity: .48 }, {
+      yPercent: 0, opacity: 1, duration: .9, ease: 'expo.out', stagger: .075, clearProps: 'transform,opacity',
+    });
+  }
+
+  // The sample record starts grey and gains colour, row by row, the first time it is read. Without script or with reduced
+  // motion it stays in its finished state.
+  const record = document.querySelector<HTMLElement>('.finding');
+  if (record && calm.matches) {
+    record.dataset.armed = '';
+    const watch = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      record.dataset.fixed = '';
+      watch.disconnect();
+    }, { threshold: .6 });
+    watch.observe(record);
+  }
+</script>

@@ -1,0 +1,103 @@
+/* Base and shared structure. Colour tokens, type steps and section spacing live in market.css, which loads after this file. */
+:root {
+  --measure: 1280px;
+  --gutter: clamp(20px, 5.3vw, 80px);
+  --face: 'Archivo', Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font: 400 1rem/1.6 var(--face); }
+a { color: inherit; text-underline-offset: .22em; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+img, svg { display: block; }
+h1, h2, h3, p, dl, dd, figure { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+h1, h2 { letter-spacing: -.04em; line-height: .99; font-weight: 800; }
+.wrap { width: min(calc(100% - var(--gutter) * 2), var(--measure)); margin-inline: auto; }
+section[id], .signup[id] { scroll-margin-top: 1.5rem; }
+.skip { position: absolute; inset: 12px auto auto 12px; z-index: 10; padding: 10px 16px; transform: translateY(-180%); }
+.skip:focus { transform: translateY(0); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Header */
+.header-inner, .footer-inner { min-height: 79px; display: flex; justify-content: space-between; align-items: center; gap: 1.25rem; }
+.brand { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-weight: 800; font-size: 1.85rem; line-height: 1; letter-spacing: -.04em; }
+.header-inner nav { display: flex; align-items: center; gap: clamp(18px, 3.15vw, 49px); }
+.nav-detail, .header-cta { font-size: .875rem; font-weight: 600; text-decoration: none; }
+.nav-detail:hover, .site-footer a:not(.brand):hover { text-decoration: underline; }
+.header-cta { display: inline-flex; align-items: center; gap: .65rem; white-space: nowrap; transition: background .18s; }
+
+/* Signup: structure only; each surface sets its own colours */
+.signup { margin-top: 1.9rem; max-width: 500px; }
+.signup label { font-weight: 600; font-size: .83rem; display: inline-block; margin-bottom: 6px; }
+.signup-row { display: flex; gap: 7px; }
+.signup input[type="email"] { width: 100%; flex: 1 1 120px; min-width: 0; min-height: 53px; padding: 10px 13px; border: 0; border-radius: 2px; }
+.signup input::placeholder { opacity: 1; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; padding: 12px 15px; border: 0; border-radius: 2px; font-size: .9rem; font-weight: 700; white-space: nowrap; }
+.button:disabled { cursor: wait; opacity: .72; }
+.signup-note, .signup-status { margin-top: 9px; }
+.signup-status { font-weight: 600; }
+.signup-status:empty { margin: 0; }
+.signup-status:focus { outline: none; }
+.signup-more { margin-top: .95rem; padding: 1rem; }
+.signup-more-intro { margin-bottom: .85rem; }
+.signup-more fieldset { min-width: 0; margin: 0 0 .95rem; padding: 0; border: 0; }
+.signup-more legend { padding: 0; margin-bottom: .45rem; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.signup .chip { position: relative; margin: 0; font-weight: 400; }
+.chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.chip span { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border-radius: 2px; transition: background .15s, color .15s; }
+.chip input:focus-visible + span { outline: 3px solid var(--fix); outline-offset: 3px; }
+.signup-more-actions { display: flex; align-items: center; gap: 14px; }
+.signup-skip { min-height: 44px; padding: 0 6px; border: 0; background: none; font-weight: 600; text-decoration: underline; text-underline-offset: .22em; }
+
+/* Leak record card (the sample record) */
+.finding { overflow: hidden; }
+.finding-bar, .finding-foot { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .75rem 1rem; }
+.finding-bar { font-weight: 700; }
+.finding-bar span:first-child { display: flex; align-items: center; gap: .5rem; }
+.finding-body { padding: 1.25rem 1rem 1.05rem; }
+.finding dl > div { display: grid; grid-template-columns: 7rem 1fr; align-items: baseline; gap: .5rem; padding-block: .55rem; border-top: 1px solid; }
+.finding dt { font-weight: 700; }
+.finding-foot { justify-content: flex-start; border-top: 1px solid; }
+.finding-foot span:last-child { margin-left: auto; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.finding-log { list-style: none; margin: 0; padding: 0; }
+.finding-log li { display: grid; grid-template-columns: 7rem 1fr; align-items: baseline; gap: .5rem; padding-block: .55rem; border-top: 1px solid; }
+.log-date { font-weight: 700; font-variant-numeric: tabular-nums; }
+.log-event { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+.log-event svg { flex: 0 0 auto; stroke-width: 2; }
+
+/* Disclosure */
+summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem 0; font-weight: 700; cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary svg { flex: 0 0 auto; transition: transform .18s; }
+details[open] summary svg { transform: rotate(45deg); }
+details p { max-width: 65ch; }
+
+/* Footer and the privacy notice */
+.footer-inner p, .footer-inner > a:last-child { font-size: .85rem; }
+.privacy { max-width: 760px; padding-block: 5rem; }
+.privacy h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); margin-bottom: 1.25rem; }
+.privacy h2 { margin-top: 2.7rem; margin-bottom: .65rem; font-size: 1.7rem; }
+.privacy p { max-width: 65ch; color: var(--text-muted); }
+.privacy a { color: var(--text); }
+
+@media (max-width: 760px) {
+  .header-inner { min-height: 68px; }
+  .header-inner .brand { font-size: 1.65rem; }
+  .header-inner .brand svg { width: 26px; }
+  .nav-detail { display: none; }
+  .footer-inner { flex-wrap: wrap; gap: .75rem; padding-block: 1rem; }
+}
+@media (max-width: 390px) {
+  .signup-row { flex-wrap: wrap; }
+  .signup .button { min-height: 47px; }
+  .signup input[type="email"] { flex-basis: 100%; }
+  .finding dl > div { grid-template-columns: 1fr; gap: .12rem; }
+  .finding-log li { grid-template-columns: 4.2rem 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

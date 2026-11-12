@@ -1,0 +1,15 @@
+---
+import Brand from './Brand.astro';
+import Icon from './Icon.astro';
+interface Props { links?: readonly (readonly [href: string, label: string])[]; cta?: readonly [href: string, label: string] }
+const { links = [], cta = ['#launch', 'Get early access'] } = Astro.props;
+---
+<header class="site-header market-header">
+  <div class="wrap header-inner">
+    <Brand />
+    <nav aria-label="Main navigation">
+      {links.map(([href, label]) => <a class="nav-detail" href={href}>{label}</a>)}
+      <a class="header-cta" href={cta[0]}>{cta[1]} <Icon name="diagonal" size={16} /></a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T12:22:14+00:00",
+  "title": "Design System: Koverr",
+  "extensions": {
+    "colorMeta": {
+      "fix": {
+        "role": "primary",
+        "displayName": "Fix Green",
+        "canonical": "#4be38a",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "fix-hover": {
+        "role": "primary",
+        "displayName": "Fix Hover",
+        "canonical": "#7ff0ae",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "fix-ink": {
+        "role": "primary",
+        "displayName": "Fix Ink",
+        "canonical": "#05210f",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "fix-deep": {
+        "role": "primary",
+        "displayName": "Fix Deep",
+        "canonical": "#0f6b36",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "fix-wash": {
+        "role": "primary",
+        "displayName": "Fix Wash",
+        "canonical": "#bdf1d2",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Market Ground",
+        "canonical": "#0f0f0e",
+        "tonalRamp": [
+          "#0f0f0e",
+          "#181917",
+          "#242623",
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card",
+        "canonical": "#181917",
+        "tonalRamp": [
+          "#0f0f0e",
+          "#181917",
+          "#242623",
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "Raised",
+        "canonical": "#242623",
+        "tonalRamp": [
+          "#0f0f0e",
+          "#181917",
+          "#242623",
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Warm White",
+        "canonical": "#f3f3ed",
+        "tonalRamp": [
+          "#242623",
+          "#484a45",
+          "#6a6c65",
+          "#8f918a",
+          "#a2a49b",
+          "#c6c8be",
+          "#e6e6de",
+          "#f3f3ed"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Muted Stone",
+        "canonical": "#c6c8be",
+        "tonalRamp": [
+          "#242623",
+          "#484a45",
+          "#6a6c65",
+          "#8f918a",
+          "#a2a49b",
+          "#c6c8be",
+          "#e6e6de",
+          "#f3f3ed"
+        ]
+      },
+      "ink-dim": {
+        "role": "neutral",
+        "displayName": "Dim Ash",
+        "canonical": "#8f918a",
+        "tonalRamp": [
+          "#242623",
+          "#484a45",
+          "#6a6c65",
+          "#8f918a",
+          "#a2a49b",
+          "#c6c8be",
+          "#e6e6de",
+          "#f3f3ed"
+        ]
+      },
+      "exposure-0": {
+        "role": "neutral",
+        "displayName": "Exposure 0, varied",
+        "canonical": "#2e302d",
+        "tonalRamp": [
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "exposure-1": {
+        "role": "neutral",
+        "displayName": "Exposure 1, contact",
+        "canonical": "#484a45",
+        "tonalRamp": [
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "exposure-2": {
+        "role": "neutral",
+        "displayName": "Exposure 2, personal",
+        "canonical": "#6a6c65",
+        "tonalRamp": [
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "exposure-3": {
+        "role": "neutral",
+        "displayName": "Exposure 3, logins",
+        "canonical": "#a2a49b",
+        "tonalRamp": [
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "exposure-4": {
+        "role": "neutral",
+        "displayName": "Exposure 4, identity or financial",
+        "canonical": "#e6e6de",
+        "tonalRamp": [
+          "#2e302d",
+          "#484a45",
+          "#6a6c65",
+          "#a2a49b",
+          "#e6e6de"
+        ]
+      },
+      "bone": {
+        "role": "neutral",
+        "displayName": "Bone",
+        "canonical": "#ecece6",
+        "tonalRamp": [
+          "#46483f",
+          "#6a6c65",
+          "#8f918a",
+          "#b9bab1",
+          "#d3d4cb",
+          "#dcddd5",
+          "#e6e6de",
+          "#ecece6"
+        ]
+      },
+      "bone-ink": {
+        "role": "neutral",
+        "displayName": "Bone Ink",
+        "canonical": "#191a18",
+        "tonalRamp": [
+          "#191a18",
+          "#242623",
+          "#2e302d",
+          "#46483f",
+          "#6a6c65",
+          "#8f918a",
+          "#b9bab1",
+          "#dcddd5"
+        ]
+      },
+      "bone-muted": {
+        "role": "neutral",
+        "displayName": "Bone Muted",
+        "canonical": "#46483f",
+        "tonalRamp": [
+          "#191a18",
+          "#242623",
+          "#2e302d",
+          "#46483f",
+          "#6a6c65",
+          "#8f918a",
+          "#b9bab1",
+          "#dcddd5"
+        ]
+      },
+      "bone-panel": {
+        "role": "neutral",
+        "displayName": "Bone Panel",
+        "canonical": "#dcddd5",
+        "tonalRamp": [
+          "#46483f",
+          "#6a6c65",
+          "#8f918a",
+          "#b9bab1",
+          "#d3d4cb",
+          "#dcddd5",
+          "#e6e6de",
+          "#ecece6"
+        ]
+      },
+      "bone-line": {
+        "role": "neutral",
+        "displayName": "Bone Line",
+        "canonical": "#d3d4cb",
+        "tonalRamp": [
+          "#46483f",
+          "#6a6c65",
+          "#8f918a",
+          "#b9bab1",
+          "#d3d4cb",
+          "#dcddd5",
+          "#e6e6de",
+          "#ecece6"
+        ]
+      },
+      "launch-wash": {
+        "role": "primary",
+        "displayName": "Launch Wash",
+        "canonical": "#c4f7da",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "launch-deep": {
+        "role": "primary",
+        "displayName": "Launch Deep",
+        "canonical": "#3fcc79",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      },
+      "launch-ink": {
+        "role": "primary",
+        "displayName": "Launch Ink",
+        "canonical": "#0b3a1c",
+        "tonalRamp": [
+          "#05210f",
+          "#0b3a1c",
+          "#0f6b36",
+          "#2a9e58",
+          "#3fcc79",
+          "#4be38a",
+          "#7ff0ae",
+          "#bdf1d2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The home headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, ledger headings, table row names, the leak record title."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose, 65 to 75 characters a line."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, table headers, definition terms."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.23, 1, .32, 1)",
+        "purpose": "Every transition: arrivals decelerate."
+      },
+      {
+        "name": "colour-return",
+        "value": "700ms clip-path wipe, then 500ms text colour",
+        "purpose": "A fixed row gains its tint, then its colour. 220ms to reset."
+      },
+      {
+        "name": "value-swap",
+        "value": "520ms opacity and blur 6px to 0",
+        "purpose": "The exposed address is replaced by its fixed state."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "640px"
+      },
+      {
+        "name": "stack",
+        "value": "760px"
+      },
+      {
+        "name": "header-links",
+        "value": "900px"
+      },
+      {
+        "name": "columns",
+        "value": "1050px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The action that fixes: join the launch list.",
+      "html": "<button class=\"ds-btn\">Join the launch list <svg width=\"19\" height=\"19\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10h13m-5-5 5 5-5 5\"/></svg></button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:.65rem;min-height:56px;padding:12px 15px;border:0;border-radius:2px;background:#4be38a;color:#05210f;font:700 .9rem Archivo,Arial,sans-serif;cursor:pointer;transition:background .18s,transform .14s}.ds-btn:hover{background:#7ff0ae}.ds-btn:active{transform:scale(.98)}.ds-btn:focus-visible{outline:3px solid #4be38a;outline-offset:3px}"
+    },
+    {
+      "name": "Email Field",
+      "kind": "input",
+      "refersTo": "input-email",
+      "description": "Persistent label above, example in the placeholder.",
+      "html": "<label class=\"ds-label\" for=\"ds-e\">Email address</label><input id=\"ds-e\" class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\">",
+      "css": ".ds-label{display:block;margin-bottom:6px;font:600 .9375rem Archivo,Arial,sans-serif;color:#f3f3ed}.ds-input{width:100%;min-height:56px;padding:10px 13px;border:0;border-radius:2px;background:#181917;color:#f3f3ed;caret-color:#4be38a;font:400 1rem Archivo,Arial,sans-serif}.ds-input::placeholder{color:#b3b5ab;opacity:1}.ds-input:focus-visible{outline:3px solid #4be38a;outline-offset:3px}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "One-tap answer to an optional question. Selected takes the fix colour.",
+      "html": "<span class=\"ds-chip\">UK</span> <span class=\"ds-chip ds-on\">EU or EEA</span>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;min-height:44px;padding:6px 12px;border-radius:2px;background:#242623;color:#f3f3ed;font:400 1rem Archivo,Arial,sans-serif}.ds-on{background:#4be38a;color:#05210f}"
+    },
+    {
+      "name": "Market Tiles",
+      "kind": "custom",
+      "refersTo": "market-tile",
+      "description": "Exposure ramp, brighter means more sensitive. Selected gets a white outline.",
+      "html": "<div class=\"ds-tiles\"><span style=\"--t:#2e302d\">Varied</span><span style=\"--t:#484a45\">Contact</span><span style=\"--t:#6a6c65\">Personal</span><span style=\"--t:#a2a49b;color:#121311\">Logins</span><span class=\"ds-sel\" style=\"--t:#e6e6de;color:#121311\">Identity</span></div>",
+      "css": ".ds-tiles{display:flex;gap:3px;font:700 .9375rem Archivo,Arial,sans-serif}.ds-tiles span{flex:1;min-height:72px;padding:8px 9px;background:var(--t);color:#f3f3ed}.ds-sel{outline:3px solid #f3f3ed;outline-offset:-3px}"
+    },
+    {
+      "name": "Hero Leak Record",
+      "kind": "card",
+      "refersTo": "hero-record",
+      "description": "Grey while exposed; fixed rows take a tint and the fix green.",
+      "html": "<article class=\"ds-rec\"><div class=\"ds-bar\"><span>Leak record</span><span>Sample, fictional data</span></div><h3>Home address in an old listing</h3><ol><li class=\"ds-r\">3 Nov &nbsp; Removal request approved and sent</li><li class=\"ds-r ds-f\">11 Nov &nbsp; Directory replied: listing removed</li><li class=\"ds-r ds-f\">18 Dec &nbsp; Checked again: still gone</li></ol><p class=\"ds-s\">Closed, checked twice</p></article>",
+      "css": ".ds-rec{background:#181917;color:#f3f3ed;border-radius:2px;font:400 .9375rem Archivo,Arial,sans-serif}.ds-bar{display:flex;justify-content:space-between;padding:.75rem 1.25rem;background:#242623;font-weight:700}.ds-rec h3{margin:1rem 1.25rem .5rem;font:700 1.5rem/1.12 Archivo,Arial,sans-serif;letter-spacing:-.025em}.ds-rec ol{list-style:none;margin:0;padding:0 1.25rem}.ds-r{padding:.55rem 0;border-top:1px solid #242623}.ds-f{color:#4be38a;background:rgba(75,227,138,.14)}.ds-s{margin:0;padding:.75rem 1.25rem;border-top:1px solid #242623;color:#4be38a;font-weight:700}"
+    },
+    {
+      "name": "Sample Leak Record",
+      "kind": "card",
+      "refersTo": "leak-record",
+      "description": "The same record on bone, with Fix Deep.",
+      "html": "<article class=\"ds-bone\"><div class=\"ds-bb\">Leak record <span>Sample</span></div><p>Home address in an old listing</p><p class=\"ds-g\">11 Nov Directory replied: listing removed</p><p class=\"ds-foot\">Closed, checked twice</p></article>",
+      "css": ".ds-bone{background:#ecece6;color:#191a18;border-radius:2px;font:400 .9375rem Archivo,Arial,sans-serif}.ds-bb{display:flex;justify-content:space-between;padding:.75rem 1rem;background:#d3d4cb;font-weight:700}.ds-bone p{margin:0;padding:.55rem 1rem;border-top:1px solid #d3d4cb}.ds-g{color:#0f6b36;font-weight:600;background:rgba(15,107,54,.12)}.ds-foot{color:#0f6b36;font-weight:700}"
+    },
+    {
+      "name": "Fix Column",
+      "kind": "custom",
+      "refersTo": "leak-record",
+      "description": "In the six-ways table only the fix column is coloured.",
+      "html": "<div class=\"ds-row\"><b>Sold</b><span>Data brokers charge for profiles.</span><span class=\"ds-fix\">Opt-out and deletion requests, repeated when a listing comes back.</span></div>",
+      "css": ".ds-row{display:grid;grid-template-columns:.6fr 1fr 1fr;gap:3px;font:400 1rem Archivo,Arial,sans-serif;color:#191a18}.ds-row>*{padding:1rem;background:#d3d4cb}.ds-row b{background:#dcddd5;font-weight:800;font-size:1.5rem;letter-spacing:-.03em}.ds-fix{background:#bdf1d2!important}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Colour Returns",
+    "overview": "Personal data is traded, and the person it describes carries the cost. Koverr shows that in black and white: every leak, every breach, every source of exposure is a grey. Colour is what a person gets back. A leak that has been found, requested, answered and checked turns green, and nothing else on the page is allowed to.\n\nThe page is a near-black market floor with one bone-coloured table and one full green field at the close. Data is the interface: a treemap of real breach records, greyscale photographs of an exchange floor, a dated leak record that changes colour as it is closed. There is no illustration. The look is calm and exact, closer to a ledger than a security dashboard, because the reader arrives worried and needs to feel that someone is keeping the record.",
+    "keyCharacteristics": [
+      "Greyscale for exposure, a single green for fixed and for the main action.",
+      "Heavy, compact display type over quiet, generous body type.",
+      "Flat fills separated by tone and space. No shadows, no gradients, no borders doing the work of spacing.",
+      "Real, sourced figures or clearly labelled fictional ones.",
+      "One authored motion: colour returning to a record as it is fixed."
+    ],
+    "rules": [
+      {
+        "name": "The Colour Returns Rule",
+        "body": "A leak is grey until it is fixed. No hue marks risk, loss or alarm. Colour is only ever the answer.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Green Rule",
+        "body": "There is one chromatic colour. It appears on a fixed item or on the action that fixes it, and on the closing field. If something green is not a fix or an action, remove it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shade Not Hue Rule",
+        "body": "Differences in exposure are shown by lightness, never by colour. Whoever relies on colour alone loses the meaning, so every shade also has a label.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Counts, dates and amounts use tabular numerals so columns and tickers line up.",
+        "section": "typography"
+      },
+      {
+        "name": "The Weight Does The Work Rule",
+        "body": "Hierarchy comes from weight and size. Do not add a second typeface, uppercase eyebrows or tracking tricks.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "**Do** show exposure in grey and fixes in green (#4be38a), and let the only colour on a record be the part that has been dealt with.",
+      "**Do** separate surfaces with tone and 3px gaps.",
+      "**Do** pair every shade with a label or a figure.",
+      "**Do** keep copy honest: sourced figures or labelled fictional data, never guaranteed removals.",
+      "**Do** keep motion to colour returning, and give it a reduced-motion state that shows the finished result."
+    ],
+    "donts": [
+      "**Don't** use red, coral or amber for risk or loss. Risk is grey.",
+      "**Don't** use green for anything that is not a fix or the action to fix.",
+      "**Don't** add illustration, cartoon characters or decorative graphics.",
+      "**Don't** add shadows, gradients, glass or border-left accent stripes.",
+      "**Don't** stage sections with scroll fades, or animate tiles in.",
+      "**Don't** set type under 14px or introduce a second typeface without a role Archivo cannot perform."
+    ]
+  }
+}

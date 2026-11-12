@@ -1,0 +1,108 @@
+/* Leak map page. Exposure is black and white; colour appears only where the preview shows something hidden or removed. */
+.map-hero { display: grid; gap: 1.25rem; padding-block: clamp(16px, 3vw, 40px) clamp(20px, 2.4vw, 34px); }
+.map-hero h1 { font-size: var(--step-4); }
+.map-hero p { max-width: 58ch; font-size: var(--step-1); }
+.map-section { padding-bottom: 0; }
+
+.map-notes { padding-block: var(--section); }
+.map-notes-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: clamp(28px, 5vw, 90px); align-items: start; }
+.map-notes-copy h2 { color: var(--bone-ink); max-width: 10ch; }
+.map-notes-copy p { margin-top: 1rem; max-width: 36ch; }
+.map-notes-copy .map-sources { margin-top: 1.4rem; font-size: var(--small); color: var(--bone-muted); }
+.map-notes-copy a { color: var(--bone-ink); }
+.notes-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.notes-list li { background: #dcddd5; padding: 1.15rem 1.25rem 1.25rem; }
+.notes-list h3 { font-size: var(--step-1); margin-bottom: .4rem; }
+.notes-list p { max-width: 58ch; color: var(--bone-muted); }
+
+.radial-map { color: var(--text); }
+.radial-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-block: 12px 24px; }
+.radial-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.radial-tabs button, .radial-reset { border: 0; background: transparent; color: var(--text-muted); padding: 12px 15px; min-height: 44px; font-size: var(--small); }
+.radial-tabs button { border-bottom: 2px solid transparent; }
+.radial-tabs button[aria-pressed="true"] { color: var(--text); border-color: var(--text); font-weight: 700; }
+.radial-tabs button:hover, .radial-reset:hover { color: var(--text); background: var(--raised); }
+.radial-provenance { color: var(--text-muted); font-size: var(--small); }
+.radial-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; padding-block: 18px; border-block: 1px solid var(--raised); }
+.radial-filters label { display: grid; gap: 7px; color: var(--text-muted); font-size: var(--small); }
+.radial-filters select { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; border: 0; border-radius: 2px; padding: 8px 32px 8px 12px; background: var(--card); color: var(--text); font-size: var(--small); }
+.radial-filters .radial-toggle { display: flex; align-items: center; gap: 10px; margin-left: auto; max-width: 280px; color: var(--text); cursor: pointer; min-height: 44px; }
+.radial-toggle input { width: 20px; height: 20px; flex-shrink: 0; }
+.radial-reset { padding-inline: 4px; text-decoration: underline; text-underline-offset: 4px; }
+.radial-workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr); gap: clamp(20px, 4vw, 64px); padding-block: 26px; }
+.radial-figure { min-width: 0; margin: 0; align-self: start; }
+.radial-chart { display: block; width: 100%; max-height: 720px; overflow: visible; }
+
+/* Tree: grey by default. Selected is white. Hidden or removed in the preview is green, hollow and dashed. */
+.radial-node { cursor: pointer; outline: none; }
+.radial-branch { fill: none; stroke: var(--x3); stroke-opacity: .55; stroke-width: 1.5; }
+.radial-branch[data-active="true"] { stroke: var(--text); stroke-opacity: 1; stroke-width: 3; }
+.radial-branch[data-removed="true"] { stroke: var(--fix); stroke-opacity: .7; stroke-dasharray: 4 5; }
+.radial-node-dot { fill: var(--x3); stroke: var(--x3); stroke-width: 1.5; }
+.radial-node-dot[data-active="true"] { stroke: var(--text); stroke-width: 3; }
+.radial-node-dot[data-removed="true"] { fill: var(--ground); stroke: var(--fix); stroke-dasharray: 3 3; }
+.radial-node:focus-visible .radial-node-dot, .radial-node:hover .radial-node-dot { stroke: var(--text); stroke-width: 3; }
+.radial-hub { fill: var(--ground); stroke: var(--x2); }
+.tree-source-label, .tree-group-label { fill: var(--text); font-size: 12px; pointer-events: none; paint-order: stroke; stroke: var(--ground); stroke-width: 4px; stroke-linejoin: round; }
+.tree-group-label { font-weight: 700; font-size: 11px; }
+.tree-node-count { font-size: 12px; font-weight: 700; pointer-events: none; fill: var(--ground); }
+.tree-node-count[data-removed="true"] { fill: var(--fix); }
+.radial-center-label { fill: var(--text-muted); font-size: 11px; }
+.radial-center-value { fill: var(--text); font-size: 31px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.radial-figure figcaption { color: var(--text-muted); font-size: var(--small); line-height: 1.6; max-width: 58ch; margin: 0 auto; }
+.radial-figure figcaption strong { color: var(--text); font-weight: 600; }
+
+.radial-inspector { padding-top: 24px; min-width: 0; }
+.radial-inspector h2 { font-size: clamp(1.7rem, 2.8vw, 2.5rem); line-height: 1.1; letter-spacing: -.03em; margin-bottom: 18px; }
+.radial-inspector p { color: var(--text-muted); font-size: var(--step-0); line-height: 1.65; }
+.radial-summary { margin: 24px 0; }
+.radial-summary > div { display: flex; justify-content: space-between; align-items: baseline; gap: 15px; border-bottom: 1px solid var(--raised); padding-block: 12px; }
+.radial-summary dt { color: var(--text-muted); font-size: var(--small); }
+.radial-summary dd { margin: 0; font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.radial-inspector .radial-small { font-size: var(--small); }
+.radial-group-list { margin-top: 28px; display: grid; gap: 12px; }
+.radial-group-list > div { display: flex; gap: 10px; align-items: center; font-size: var(--small); }
+.radial-group-list strong { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+.radial-source-detail h3 { font-size: var(--step-0); margin-block: 24px 10px; }
+.radial-source-detail .radial-readout { margin-block: 16px; }
+.radial-readout strong { font-size: 2rem; color: var(--text); }
+.radial-source-detail .radial-small { margin-top: 16px; }
+.radial-data-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.radial-data-tags span { background: var(--raised); padding: 5px 8px; font-size: var(--small); }
+.radial-table { border-top: 1px solid var(--raised); margin-top: 20px; }
+.radial-table summary { padding-block: 18px; font-size: var(--step-0); }
+.radial-table > div { overflow-x: auto; }
+.radial-table table { width: 100%; border-collapse: collapse; text-align: left; font-size: var(--small); }
+.radial-table th, .radial-table td { padding: 12px; border-bottom: 1px solid var(--raised); vertical-align: top; }
+.radial-table td { color: var(--text-muted); }
+.radial-table button { padding: 4px 0; min-height: 44px; color: var(--text); background: none; border: 0; text-decoration: underline; text-underline-offset: 4px; text-align: left; font-weight: 600; }
+.radial-table button[aria-pressed="true"] { color: var(--fix); }
+.radial-empty { text-align: center; }
+.radial-empty button { color: var(--text); background: none; border: 0; text-decoration: underline; padding: 12px; }
+.radial-map :is(button, select, input, summary):focus-visible { outline: 2px solid var(--fix); outline-offset: 4px; }
+
+@media (max-width: 1050px) { .map-notes-layout { grid-template-columns: 1fr; } }
+@media (max-width: 900px) {
+  .radial-workspace { grid-template-columns: minmax(0, 1.35fr) minmax(240px, 1fr); gap: 24px; }
+  .radial-filters .radial-toggle { margin-left: 0; }
+}
+@media (min-width: 681px) and (max-width: 960px) {
+  .radial-workspace { grid-template-columns: 1fr; }
+  .radial-chart { max-width: 660px; margin-inline: auto; }
+}
+@media (max-width: 680px) {
+  .radial-workspace { grid-template-columns: 1fr; gap: 14px; }
+  .radial-inspector { padding-top: 20px; }
+  .radial-chart { width: calc(100% + 24px); margin-left: -12px; }
+  .radial-filters { gap: 14px; }
+  .radial-filters label:not(.radial-toggle) { flex: 1 1 140px; min-width: 0; }
+  .radial-tabs button { padding-inline: 10px; }
+  .tree-source-label { font-size: 16px; }
+  .tree-group-label { display: none; }
+  .tree-node-count { font-size: 17px; }
+  .radial-center-label { font-size: 14px; }
+  .radial-center-value { font-size: 34px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .radial-branch, .radial-node-dot { transition: stroke 300ms var(--ease-out), fill 300ms var(--ease-out), stroke-opacity 300ms var(--ease-out); }
+}

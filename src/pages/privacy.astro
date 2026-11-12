@@ -1,0 +1,23 @@
+---
+import Shell from '../layouts/Shell.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+const configuredContact = process.env.WAITLIST_CONTACT ?? import.meta.env.WAITLIST_CONTACT;
+const contact = configuredContact && /^[^\s@?]+@[^\s@?]+\.[^\s@?]+$/.test(configuredContact) ? configuredContact : '';
+---
+<Shell title="Launch-list privacy | Koverr" description="How Koverr uses your email when you join the launch list.">
+  <SiteHeader cta={['/', 'Back to Koverr']} />
+  <main id="main" class="wrap privacy">
+    <h1>Launch-list privacy</h1>
+    <p>Koverr uses your email address to invite you to try the personal leak check when it opens.</p>
+    <h2>What we save</h2>
+    <p>When you join, we save your email address, when you signed up and which version of the signup page you used. We don’t ask for a home address or phone number. The exposure map and the sample record use fictional data and don’t look up anyone.</p>
+    <h2>The two optional questions</h2>
+    <p>After you join, you can tell us roughly where you live (for example “UK” or “US”) and which concern matters most to you. If you answer, we save those two choices with your signup and use them to decide what to build first. Skip them and nothing extra is saved.</p>
+    <h2>How this site works</h2>
+    <p>These pages don’t use advertising cookies or third-party analytics. Your email is saved on the server and is available to the people operating the launch list.</p>
+    <h2>Leave the list</h2>
+    {contact ? <p>To ask about your data or leave the list before launch, email <a href={'mailto:' + contact}>{contact}</a> from the address you joined with.</p> : <p>When we send a launch invite, it will explain how to leave the list.</p>}
+  </main>
+  <SiteFooter />
+</Shell>

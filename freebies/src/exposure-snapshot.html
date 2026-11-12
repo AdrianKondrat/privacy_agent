@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Your Data Exposure Snapshot · Koverr</title>
+<link rel="stylesheet" href="koverr-print.css">
+<script src="site.js"></script>
+<style>
+  .path-block { margin-top: 6mm; break-inside: avoid; }
+  .path-title { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 2mm; }
+  .path-title h3 { margin: 0; font-size: 14pt; font-weight: 800; letter-spacing: -0.025em; }
+  .path-title span { font-size: 8pt; color: var(--bone-muted); }
+  .subtotal { display: flex; justify-content: flex-end; align-items: center; gap: 3mm; padding-top: 2.4mm; border-top: 1.4px solid var(--bone-ink); font-size: 8.5pt; font-weight: 700; }
+  .subtotal i { display: inline-block; width: 14mm; height: 7mm; border: 1.4px solid var(--bone-ink); border-radius: 2px; }
+  .map-row { display: grid; grid-template-columns: 28mm repeat(8, 1fr) 30mm; gap: 1.2mm; align-items: center; padding: 2mm 0; border-top: 1px solid var(--bone-line); }
+  .map-row b { font-size: 10pt; font-weight: 800; letter-spacing: -0.01em; }
+  .map-row .cell { height: 9mm; border: 1.2px solid var(--e3); border-radius: 1px; display: grid; place-items: center; font-size: 6.6pt; font-weight: 700; color: var(--e3); }
+  .map-row .lab { font-size: 7.6pt; color: var(--bone-muted); padding-left: 2mm; }
+  .bands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 5mm; }
+  .bands div { padding: 3.5mm 4mm; border-radius: 2px; font-size: 8.4pt; line-height: 1.4; }
+  .bands b { display: block; font-size: 10pt; font-weight: 800; margin-bottom: .6mm; }
+  .fixbank h3 { font-size: 11.5pt; margin: 0 0 1mm; font-weight: 800; }
+  .fixbank .pathfix { break-inside: avoid; padding: 3mm 0 2mm; border-top: 1.4px solid var(--bone-ink); }
+  .fixbank .check { padding: 2mm 0; border-top: 1px solid var(--bone-line); }
+  .fixbank .check:last-child { border-bottom: 0; }
+  .stamp { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 6mm; }
+  .stamp div { border: 1.4px dashed var(--bone-muted); border-radius: 2px; padding: 3.5mm 4mm; font-size: 8.4pt; color: var(--bone-muted); }
+  .stamp b { display: block; color: var(--bone-ink); font-size: 9.5pt; margin-bottom: 5mm; }
+  .settings td:first-child { font-weight: 700; width: 24%; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Cover -->
+<section class="page cover">
+  <div class="brand"><i></i>koverr</div>
+  <p class="type">Free self-check · 9 pages · 10 minutes</p>
+  <h1>How exposed is your personal data? <span class="fixed">Score it. Fix the top three.</span></h1>
+  <p class="sub">Twenty-four yes-or-no questions across the six ways personal data gets out. Shade your map, and it hands you the three fixes that remove the most exposure for the least effort.</p>
+  <div class="strip" style="grid-template-columns: repeat(6, 1fr);">
+    <div style="background:var(--e4)"></div><div style="background:var(--e3)"></div><div style="background:var(--e2)"></div><div style="background:var(--e3)"></div><div style="background:var(--e1)"></div><div style="background:var(--e2)"></div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:1.2mm; margin-top:2mm; font-size:8pt; color:var(--text-muted); font-weight:600;">
+    <span>Stolen</span><span>Sold</span><span>Shared</span><span>Published</span><span>Posted</span><span>Indexed</span>
+  </div>
+  <div class="meta">
+    <div><b>You need</b>A pen, your phone, 10 minutes</div>
+    <div><b>Checked</b><span data-k="checked"></span></div>
+    <div><b>Includes</b>AI prompts that need no private data</div>
+  </div>
+</section>
+
+<!-- 2 · How it works -->
+<section class="page">
+  <p class="kicker">Before you start</p>
+  <h2>Six ways your data gets out.</h2>
+  <p class="lede">Most privacy advice treats these as separate problems. They aren’t: a public record feeds a broker, a broker feeds a search result, a breach feeds a scam call. Scoring all six shows where your exposure actually comes from.</p>
+
+  <table>
+    <thead><tr><th style="width:16%">Path</th><th style="width:42%">Who exposes it</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Stolen</strong></td><td>Criminals, through a company’s breach or malware on your device</td><td>Your email and password in a breach</td></tr>
+      <tr><td><strong>Sold</strong></td><td>Data brokers and people-search sites</td><td>Name, address and phone on a listing</td></tr>
+      <tr><td><strong>Shared</strong></td><td>Apps and services you signed up to</td><td>A shop sending what you bought to ad platforms</td></tr>
+      <tr><td><strong>Published</strong></td><td>Public bodies, because the law says so</td><td>Company register, open electoral register</td></tr>
+      <tr><td><strong>Posted</strong></td><td>You, or people who know you</td><td>A public profile with your birthday and employer</td></tr>
+      <tr style="border-bottom:1px solid var(--bone-line)"><td><strong>Indexed</strong></td><td>Search engines and AI assistants</td><td>All of the above, found by typing your name</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid3 mt8">
+    <div class="panel"><h3>1 · Answer</h3><p class="small">Circle one answer per question on pages 3–4. <strong>Yes = 2, Not sure = 1, No = 0.</strong> “Not sure” counts, because not knowing is exposure too.</p></div>
+    <div class="panel"><h3>2 · Shade</h3><p class="small">Add up each path (0–8) and shade that many boxes on your map on page 5. Darker means more exposed.</p></div>
+    <div class="panel"><h3>3 · Fix</h3><p class="small">Take your two darkest paths and pick fixes from page 6. Three fixes, about 30 minutes. Then date your snapshot.</p></div>
+  </div>
+
+  <p class="note mt6"><b>This is a snapshot, not a verdict.</b> It checks what you can see from where you sit. A low score means less exposure in what you checked, not that you are safe; a high score means a clear place to start.</p>
+
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>2</span></div>
+</section>
+
+<!-- 3 · Questions 1–3 -->
+<section class="page">
+  <p class="kicker">Step 1 · Answer · paths 1–3</p>
+  <div id="q1"></div>
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>3</span></div>
+</section>
+
+<!-- 4 · Questions 4–6 -->
+<section class="page">
+  <p class="kicker">Step 1 · Answer · paths 4–6</p>
+  <div id="q2"></div>
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>4</span></div>
+</section>
+
+<!-- 5 · Map -->
+<section class="page">
+  <p class="kicker">Step 2 · Shade your map</p>
+  <h2>Your exposure map.</h2>
+  <p class="lede">Shade one box per point for each path. Your two darkest rows are where to start.</p>
+  <div id="map"></div>
+  <div class="bands">
+    <div style="background:var(--bone-panel)"><b>0–2 · Light</b>Less exposure found in what you checked. Recheck in three months.</div>
+    <div style="background:var(--e2); color:var(--text)"><b>3–5 · Medium</b>Real gaps. One or two fixes from page 6 will move it.</div>
+    <div style="background:var(--bone-ink); color:var(--bone)"><b>6–8 · Dark</b>Start here. Do this path’s fixes this week.</div>
+  </div>
+
+  <h3 class="mt8">My first three fixes</h3>
+  <div class="check"><div class="box"></div><div><p class="t">1 · ______________________________________________</p><p class="d">From path: ____________ · Time: ______</p></div><span class="m">done on ____</span></div>
+  <div class="check"><div class="box"></div><div><p class="t">2 · ______________________________________________</p><p class="d">From path: ____________ · Time: ______</p></div><span class="m">done on ____</span></div>
+  <div class="check"><div class="box"></div><div><p class="t">3 · ______________________________________________</p><p class="d">From path: ____________ · Time: ______</p></div><span class="m">done on ____</span></div>
+
+  <div class="stamp">
+    <div><b>Snapshot taken on</b>Date: ____ / ____ / ________ · Total: ____ / 48</div>
+    <div><b>Retake on (in 3 months)</b>Date: ____ / ____ / ________ · Listings and breaches change.</div>
+  </div>
+
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>5</span></div>
+</section>
+
+<!-- 6 · Fix bank -->
+<section class="page fixbank">
+  <p class="kicker">Step 3 · Pick your fixes</p>
+  <h2 style="font-size:22pt">The fix bank, by path.</h2>
+  <p class="lede" style="margin-bottom:4mm">Ordered by how much exposure each removes for your time. Take the first one or two from your darkest paths.</p>
+  <div class="cols2" id="fixes"></div>
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>6</span></div>
+</section>
+
+<!-- 7 · AI prompts + settings -->
+<section class="page">
+  <p class="kicker">Bonus · Ask the machines</p>
+  <h2 style="font-size:22pt">Five AI prompts that need no private data.</h2>
+  <p class="lede" style="margin-bottom:2mm">AI assistants are useful for privacy work, as long as you don’t feed them what you’re trying to protect. Never paste passwords, ID numbers, bank details, or other people’s information. Use the <span style="font-weight:600">[brackets]</span> as placeholders and fill them in yourself afterwards.</p>
+
+  <div class="prompt-head"><h3>1 · What does AI say about me?</h3><span class="n">Indexed · 2 min</span></div>
+  <div class="prompt">What can you tell me about <span class="slot">[full name]</span> who lives in <span class="slot">[town]</span>? List any contact details, address, employer or family members you find, and the source of each.</div>
+  <div class="prompt-head"><h3>2 · Decode a privacy policy</h3><span class="n">Shared · 3 min</span></div>
+  <div class="prompt">Here is the privacy policy of <span class="slot">[company]</span>: <span class="slot">[paste the policy, or its link]</span>. In plain English: what does it collect, does it sell or share data for advertising, with which kinds of companies, and where exactly is the opt-out or delete-account option?</div>
+  <div class="prompt-head"><h3>3 · Is this message a scam?</h3><span class="n">Stolen · 1 min</span></div>
+  <div class="prompt">Is this message likely to be a scam? List the warning signs and what the real company would do instead: <span class="slot">[paste the message with your name, numbers and links deleted]</span></div>
+  <div class="prompt-head"><h3>4 · Draft a deletion request</h3><span class="n">Sold · Shared · 2 min</span></div>
+  <div class="prompt">Write a short, polite email asking <span class="slot">[company]</span> to delete my account and personal data and stop using it for marketing, under <span class="slot">[UK GDPR / EU GDPR / my US state’s privacy law]</span>. Use placeholders for my name and account details. Don’t invent legal deadlines.</div>
+  <div class="prompt-head"><h3>5 · Lock down a device</h3><span class="n">Shared · Posted · 5 min</span></div>
+  <div class="prompt">Give me the exact menu steps, for <span class="slot">[phone model and software version / app name]</span>, to turn off ad tracking, location history and public profile visibility. If a setting has moved in recent versions, say so.</div>
+
+  <p class="note mt4"><b>AI can be wrong or out of date.</b> Check any menu path or legal point against the official source before relying on it.</p>
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>7</span></div>
+</section>
+
+<!-- 8 · Settings -->
+<section class="page">
+  <p class="kicker">Bonus · Ten-minute settings</p>
+  <h2 style="font-size:22pt">Stop the apps learning more.</h2>
+  <p class="lede">Settings that cut what is shared from today. They don’t erase what was collected before. Menu names move between versions; search the settings for the key word if a path doesn’t match.</p>
+  <table class="settings">
+    <thead><tr><th>Where</th><th class="fixcol">What to switch</th></tr></thead>
+    <tbody>
+      <tr><td>iPhone</td><td class="fixcol">Settings → Privacy &amp; Security → Tracking → turn off “Allow Apps to Request to Track”.</td></tr>
+      <tr><td>Android</td><td class="fixcol">Settings → Security &amp; privacy → Privacy → Ads → Delete advertising ID. (Samsung: Security and privacy → More privacy settings → Ads.)</td></tr>
+      <tr><td>Browser</td><td class="fixcol">Turn on Global Privacy Control, an opt-out signal some US state laws require companies to honour. Built into Brave and DuckDuckGo, and in Firefox’s settings. Chrome, Safari and Edge need an extension. See globalprivacycontrol.org.</td></tr>
+      <tr><td>Facebook and Instagram</td><td class="fixcol">Accounts Centre → look for “Activity from other businesses” (older accounts: “Your activity off Meta technologies”). It shows which businesses send Meta data about you, and limits how it is used for ads.</td></tr>
+      <tr><td>ChatGPT</td><td class="fixcol">Settings → Data controls → turn off “Improve the model for everyone”. To ask OpenAI about personal data it holds, use privacy.openai.com.</td></tr>
+      <tr><td>Gemini</td><td class="fixcol">Gemini Apps Activity → turn off “Keep activity” (myactivity.google.com/product/gemini).</td></tr>
+      <tr style="border-bottom:1px solid var(--bone-line)"><td>Claude</td><td class="fixcol">Settings → Privacy → turn off the “Help improve Claude” setting.</td></tr>
+    </tbody>
+  </table>
+  <p class="note mt4"><b>These apply to future activity.</b> Opting out of AI training applies to new chats; it does not remove past chats from models already trained.</p>
+  <div class="folio"><span><b>koverr</b> · Data Exposure Snapshot</span><span>8</span></div>
+</section>
+
+<!-- 9 · Close -->
+<section class="page close">
+  <p class="kicker" style="color:var(--launch-ink)">What comes next</p>
+  <h2>A snapshot goes out of date. A record doesn’t.</h2>
+  <p class="lede">Your map will change next month: a new breach, a listing that comes back, an app you forgot. Koverr is being built to keep the map for you, across all six paths, with the fixes ranked, the requests drafted for your approval, and every result dated.</p>
+  <span class="cta">Join the launch list · <span data-k="url"></span></span>
+  <ul>
+    <li><b>Your map, kept current</b>Rechecked on a schedule, not when you remember.</li>
+    <li><b>Three fixes at a time</b>Ranked by exposure removed per minute of your time.</li>
+    <li><b>You approve every request</b>Nothing is sent in your name without your yes.</li>
+    <li><b>A dated record</b>What was found, what was asked, what was checked.</li>
+  </ul>
+  <p class="fine">Checked on <span data-k="checked"></span>; recheck from <span data-k="recheck"></span>. This self-check is general information, not a security assessment or legal advice. A score is not a measure of risk or a guarantee of safety. Koverr is pre-launch and is not affiliated with any service named here.</p>
+</section>
+
+<script>
+const Q = [
+  ['Stolen', 'Breaches and malware', [
+    'My email appears in at least one breach at haveibeenpwned.com.',
+    'I use the same password, or a close variation, on more than one important account.',
+    'My main email account does not have two-step sign-in or a passkey.',
+    'In the past year I’ve had a login alert or reset email I didn’t trigger.']],
+  ['Sold', 'Brokers and people-search', [
+    'I get sales calls, texts or junk mail from companies I’ve never dealt with.',
+    'Searching my name and town shows a people-search or directory page about me.',
+    'UK: I haven’t opted out of the open register. US: I’ve never opted out of a people-search site.',
+    'I enter competitions, surveys or comparison sites with my real details.']],
+  ['Shared', 'Apps and accounts', [
+    'I have accounts I haven’t used in a year that still hold my address or card.',
+    'My phone lets apps ask to track me across other apps.',
+    'I’ve never checked which businesses send my activity to Facebook or Instagram.',
+    'My browser doesn’t send an opt-out signal such as Global Privacy Control.']],
+  ['Published', 'Public records', [
+    'I am, or have been, a company director, or ran a business from home.',
+    'UK: I’m on the open electoral register. US: my voter or property record is public online.',
+    'Planning applications, licences or court notices list me at my home address.',
+    'A website or domain I own shows my name or address in its public registration.']],
+  ['Posted', 'Profiles and posts', [
+    'A stranger can see my birthday, employer or town on one of my profiles.',
+    'Old accounts with my real name still exist: forums, dating, CV or hobby sites.',
+    'I post photos that show my home, street, car registration or my children’s school.',
+    'People can find my profile by typing my phone number or email.']],
+  ['Indexed', 'Search and AI', [
+    'Searching my name shows a page with my phone, email or address.',
+    'Searching my phone number in quotes finds me.',
+    'An AI assistant gives correct personal details about me (prompt 1, page 7).',
+    'A reverse image search of my profile photo finds other sites using it.']],
+];
+const block = ([name, sub, qs], i) => `
+  <div class="path-block">
+    <div class="path-title"><h3>${i + 1} · ${name}</h3><span>${sub}</span></div>
+    <div class="score-head"><span></span><span>No</span><span>Not sure</span><span>Yes</span></div>
+    ${qs.map(q => `<div class="score-row"><span>${q}</span><span class="opt">0</span><span class="opt">1</span><span class="opt">2</span></div>`).join('')}
+    <div class="subtotal">${name} total (0–8) <i></i></div>
+  </div>`;
+document.getElementById('q1').innerHTML = Q.slice(0, 3).map(block).join('');
+document.getElementById('q2').innerHTML = Q.slice(3).map((p, i) => block(p, i + 3)).join('');
+document.getElementById('map').innerHTML = Q.map(([name]) => `
+  <div class="map-row"><b>${name}</b>${Array.from({length: 8}, (_, k) => `<span class="cell">${k + 1}</span>`).join('')}<span class="lab">Light · Medium · Dark</span></div>`).join('')
+  + '<div style="border-top:1px solid var(--bone-line)"></div>';
+
+const F = [
+  ['Stolen', [
+    ['Secure your email account first', 'Unique password, two-step sign-in by app or passkey, check forwarding rules.', '8 min'],
+    ['Change every reused password', 'Start with banking and shopping. A password manager makes this a one-time job.', '20 min'],
+    ['Turn on breach alerts', 'haveibeenpwned.com → Notify me.', '2 min']]],
+  ['Sold', [
+    ['UK: opt out of the open register', 'gov.uk/electoral-register/opt-out-of-the-open-register.', '5 min'],
+    ['US, California: one DROP request', 'privacy.ca.gov/drop reaches every registered broker. Free.', '15 min'],
+    ['Remove your top people-search listing', 'Use the site’s removal form; screenshot the confirmation.', '10 min']]],
+  ['Shared', [
+    ['Delete three accounts you no longer use', 'Look for “delete account” in settings. Data that doesn’t exist can’t leak.', '15 min'],
+    ['Turn off app tracking and ad ID', 'Settings on page 8.', '2 min'],
+    ['Turn on Global Privacy Control', 'Built into some browsers; an extension for others.', '2 min']]],
+  ['Published', [
+    ['UK director? File SR01 for old filings', 'Removes your home address from past documents; £34 per document.', '15 min'],
+    ['Switch domain registration to private', 'Most registrars offer a privacy setting, often free.', '5 min'],
+    ['Note what can’t change', 'Some records are required by law. Clean the copies instead (Sold, Indexed).', '—']]],
+  ['Posted', [
+    ['Look at each profile as a stranger', 'Most apps have a “view as public” option. Hide birthday, phone, email, employer.', '10 min'],
+    ['Turn off “find me by phone or email”', 'In each social app’s privacy settings.', '5 min'],
+    ['Close or clean one old account', 'Forums, dating and CV sites with your real name.', '10 min']]],
+  ['Indexed', [
+    ['Fix the source page first', 'Removing only the search result leaves the page up.', '—'],
+    ['Request removal of contact-detail results', 'Google “Results about you” where available, or Google’s removal request; Bing has its own form.', '10 min'],
+    ['Clear outdated snippets', 'Once a page has changed, use Google’s “Remove outdated content” tool.', '5 min']]],
+];
+document.getElementById('fixes').innerHTML = F.map(([name, fs]) => `
+  <div class="pathfix"><h3>${name}</h3>${fs.map(([t, d, m]) => `<div class="check"><div class="box"></div><div><p class="t">${t}</p><p class="d">${d}</p></div><span class="m">${m}</span></div>`).join('')}</div>`).join('');
+</script>
+</body>
+</html>

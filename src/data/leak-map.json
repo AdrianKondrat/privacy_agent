@@ -1,0 +1,1477 @@
+{
+ "generated": "2026-11-11",
+ "breaches": {
+  "asOf": "2026-11-11",
+  "total": 17858196501,
+  "count": 1051,
+  "sectors": [
+   {
+    "id": "compiled",
+    "name": "Criminal compilations",
+    "note": "Combo lists and stealer logs: logins gathered from many breaches and infected devices, then traded.",
+    "items": [
+     {
+      "id": "SynthientCredentialStuffingThreatData",
+      "name": "Synthient credential list",
+      "value": 1957476021,
+      "year": 2025,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "Collection1",
+      "name": "Collection #1",
+      "value": 772904991,
+      "year": 2019,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "ExploitIn",
+      "name": "Exploit.In",
+      "value": 593427119,
+      "year": 2016,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "AntiPublic",
+      "name": "Anti Public",
+      "value": 457962538,
+      "year": 2016,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "TelegramCombolists",
+      "name": "Telegram combo lists",
+      "value": 361468099,
+      "year": 2024,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "AlienStealerLogs",
+      "name": "ALIEN TXTBASE logs",
+      "value": 284132969,
+      "year": 2025,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "NotSOCRadar",
+      "name": "Not SOCRadar",
+      "value": 282478425,
+      "year": 2024,
+      "level": 1,
+      "detail": [
+       "Email addresses"
+      ]
+     },
+     {
+      "id": "Cit0day",
+      "name": "Cit0day",
+      "value": 226883414,
+      "year": 2020,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "SynthientStealerLogThreatData",
+      "name": "Synthient stealer logs",
+      "value": 182962095,
+      "year": 2025,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "Pemiblanc",
+      "name": "Pemiblanc",
+      "value": 110964206,
+      "year": 2018,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "DataTrollStealerLogs",
+      "name": "Data Troll logs",
+      "value": 109532219,
+      "year": 2025,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "2844Breaches",
+      "name": "2,844 breaches",
+      "value": 80115532,
+      "year": 2018,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "StealerLogsJan2025",
+      "name": "Stealer logs, Jan 2025",
+      "value": 71039833,
+      "year": 2025,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "NazApi",
+      "name": "Naz.API",
+      "value": 70840771,
+      "year": 2023,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "June2026StealerLogs",
+      "name": "Stealer logs, Jun 2026",
+      "value": 56278397,
+      "year": 2026,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "brokers",
+    "name": "Data brokers and marketing lists",
+    "note": "Companies that collect and sell profiles, and the lists spammers build from them.",
+    "items": [
+     {
+      "id": "VerificationsIO",
+      "name": "Verifications.io",
+      "value": 763117241,
+      "year": 2019,
+      "level": 2,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Employers",
+       "Genders",
+       "Geographic locations",
+       "IP addresses",
+       "Job titles",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "OnlinerSpambot",
+      "name": "Onliner Spambot",
+      "value": 711477622,
+      "year": 2017,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "PDL",
+      "name": "People Data Labs",
+      "value": 622161052,
+      "year": 2019,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "Employers",
+       "Geographic locations",
+       "Job titles",
+       "Names",
+       "Phone numbers",
+       "Social media profiles"
+      ]
+     },
+     {
+      "id": "RiverCityMedia",
+      "name": "River City Media",
+      "value": 393430309,
+      "year": 2017,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "IP addresses",
+       "Names",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "NationalPublicData",
+      "name": "National Public Data",
+      "value": 133957569,
+      "year": 2024,
+      "level": 4,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Government issued IDs",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "Exactis",
+      "name": "Exactis",
+      "value": 131577763,
+      "year": 2018,
+      "level": 2,
+      "detail": [
+       "Credit status information",
+       "Dates of birth",
+       "Education levels",
+       "Email addresses",
+       "Ethnicities",
+       "Family structure",
+       "Financial investments",
+       "Genders",
+       "Home ownership statuses",
+       "IP addresses",
+       "Income levels",
+       "Marital statuses",
+       "Names",
+       "Net worths",
+       "Occupations",
+       "Personal interests",
+       "Phone numbers",
+       "Physical addresses",
+       "Religions",
+       "Spoken languages"
+      ]
+     },
+     {
+      "id": "Apollo",
+      "name": "Apollo",
+      "value": 125929660,
+      "year": 2018,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "Employers",
+       "Geographic locations",
+       "Job titles",
+       "Names",
+       "Phone numbers",
+       "Salutations",
+       "Social media profiles"
+      ]
+     },
+     {
+      "id": "DemandScience",
+      "name": "DemandScience",
+      "value": 121796165,
+      "year": 2024,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "Employers",
+       "Job titles",
+       "Names",
+       "Phone numbers",
+       "Physical addresses",
+       "Social media profiles"
+      ]
+     },
+     {
+      "id": "B2BUSABusinesses",
+      "name": "B2B USA Businesses",
+      "value": 105059554,
+      "year": 2017,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "Employers",
+       "Job titles",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "LeadHunter",
+      "name": "Lead Hunter",
+      "value": 68693853,
+      "year": 2020,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "Genders",
+       "IP addresses",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "YouveBeenScraped",
+      "name": "You’ve Been Scraped",
+      "value": 66147869,
+      "year": 2018,
+      "level": 1,
+      "detail": [
+       "Email addresses",
+       "Employers",
+       "Geographic locations",
+       "Job titles",
+       "Names",
+       "Social media profiles"
+      ]
+     },
+     {
+      "id": "ModernBusinessSolutions",
+      "name": "Modern Business Solutions",
+      "value": 58843488,
+      "year": 2016,
+      "level": 2,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "IP addresses",
+       "Job titles",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "NotAcxiom",
+      "name": "Not Acxiom",
+      "value": 51730831,
+      "year": 2020,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "IP addresses",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "social",
+    "name": "Social and dating",
+    "note": "Networks, communities and dating services.",
+    "items": [
+     {
+      "id": "Facebook",
+      "name": "Facebook",
+      "value": 509458528,
+      "year": 2019,
+      "level": 2,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Employers",
+       "Genders",
+       "Geographic locations",
+       "Names",
+       "Phone numbers",
+       "Relationship statuses"
+      ]
+     },
+     {
+      "id": "MySpace",
+      "name": "MySpace",
+      "value": 359420698,
+      "year": 2008,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Wattpad",
+      "name": "Wattpad",
+      "value": 268765495,
+      "year": 2020,
+      "level": 3,
+      "detail": [
+       "Bios",
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Geographic locations",
+       "IP addresses",
+       "Names",
+       "Passwords",
+       "Social media profiles",
+       "User website URLs",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Twitter200M",
+      "name": "Twitter",
+      "value": 211524284,
+      "year": 2021,
+      "level": 1,
+      "detail": [
+       "Email addresses",
+       "Names",
+       "Social media profiles",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "AdultFriendFinder2016",
+      "name": "Adult FriendFinder",
+      "value": 169746810,
+      "year": 2016,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Spoken languages",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "LinkedIn",
+      "name": "LinkedIn",
+      "value": 164611595,
+      "year": 2012,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "Dubsmash",
+      "name": "Dubsmash",
+      "value": 161749950,
+      "year": 2018,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Geographic locations",
+       "Names",
+       "Passwords",
+       "Phone numbers",
+       "Spoken languages",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "LinkedInScrape",
+      "name": "LinkedIn scrape",
+      "value": 125698496,
+      "year": 2021,
+      "level": 1,
+      "detail": [
+       "Education levels",
+       "Email addresses",
+       "Genders",
+       "Geographic locations",
+       "Job titles",
+       "Names",
+       "Social media profiles"
+      ]
+     },
+     {
+      "id": "Gravatar",
+      "name": "Gravatar",
+      "value": 113990759,
+      "year": 2020,
+      "level": 1,
+      "detail": [
+       "Email addresses",
+       "Names",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Badoo",
+      "name": "Badoo",
+      "value": 112005531,
+      "year": 2013,
+      "level": 3,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Names",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "VK",
+      "name": "VK",
+      "value": 93338602,
+      "year": 2012,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Names",
+       "Passwords",
+       "Phone numbers"
+      ]
+     },
+     {
+      "id": "Tumblr",
+      "name": "Tumblr",
+      "value": 65469298,
+      "year": 2013,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "media",
+    "name": "Media and games",
+    "note": "Streaming, publishing, games and betting.",
+    "items": [
+     {
+      "id": "Deezer",
+      "name": "Deezer",
+      "value": 229037936,
+      "year": 2019,
+      "level": 2,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Geographic locations",
+       "IP addresses",
+       "Names",
+       "Spoken languages",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Zynga",
+      "name": "Zynga",
+      "value": 172869660,
+      "year": 2019,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Phone numbers",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "1win",
+      "name": "1win",
+      "value": 96166543,
+      "year": 2024,
+      "level": 3,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Geographic locations",
+       "IP addresses",
+       "Passwords",
+       "Phone numbers"
+      ]
+     },
+     {
+      "id": "Youku",
+      "name": "Youku",
+      "value": 91890110,
+      "year": 2016,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "Dailymotion",
+      "name": "Dailymotion",
+      "value": 85176234,
+      "year": 2016,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "ThePostMillennial",
+      "name": "The Post Millennial",
+      "value": 56973345,
+      "year": 2024,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Genders",
+       "IP addresses",
+       "Names",
+       "Passwords",
+       "Phone numbers",
+       "Physical addresses",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Suno",
+      "name": "Suno",
+      "value": 55282226,
+      "year": 2025,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Names",
+       "Partial credit card data",
+       "Phone numbers",
+       "Physical addresses",
+       "Purchases"
+      ]
+     },
+     {
+      "id": "iMesh",
+      "name": "iMesh",
+      "value": 49467477,
+      "year": 2013,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "IP addresses",
+       "Passwords",
+       "Usernames"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "shops",
+    "name": "Shops and services",
+    "note": "Retail, web portals, fitness, family history and telecoms.",
+    "items": [
+     {
+      "id": "NetEase",
+      "name": "NetEase",
+      "value": 234842089,
+      "year": 2015,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "MyFitnessPal",
+      "name": "MyFitnessPal",
+      "value": 143606147,
+      "year": 2018,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "IP addresses",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Evite",
+      "name": "Evite",
+      "value": 100985047,
+      "year": 2013,
+      "level": 3,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Names",
+       "Passwords",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "MyHeritage",
+      "name": "MyHeritage",
+      "value": 91991358,
+      "year": 2017,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "Rambler",
+      "name": "Rambler",
+      "value": 91436280,
+      "year": 2014,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "AdvanceAutoParts",
+      "name": "Advance Auto Parts",
+      "value": 79243727,
+      "year": 2024,
+      "level": 2,
+      "detail": [
+       "Email addresses",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "JD",
+      "name": "JD.com",
+      "value": 77449341,
+      "year": 2013,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords",
+       "Phone numbers",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Luxottica",
+      "name": "Luxottica",
+      "value": 77093812,
+      "year": 2021,
+      "level": 2,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     },
+     {
+      "id": "UnderArmour",
+      "name": "Under Armour",
+      "value": 72742892,
+      "year": 2025,
+      "level": 2,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Geographic locations",
+       "Names",
+       "Purchases"
+      ]
+     },
+     {
+      "id": "Tokopedia",
+      "name": "Tokopedia",
+      "value": 71443698,
+      "year": 2020,
+      "level": 3,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Names",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "HotTopic",
+      "name": "Hot Topic",
+      "value": 56904909,
+      "year": 2024,
+      "level": 3,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Genders",
+       "Names",
+       "Partial credit card data",
+       "Phone numbers",
+       "Physical addresses",
+       "Purchases",
+       "Salutations"
+      ]
+     },
+     {
+      "id": "AllegedATT",
+      "name": "AT&T (alleged)",
+      "value": 49102176,
+      "year": 2021,
+      "level": 4,
+      "detail": [
+       "Dates of birth",
+       "Email addresses",
+       "Government issued IDs",
+       "Names",
+       "Phone numbers",
+       "Physical addresses"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "software",
+    "name": "Software and tools",
+    "note": "Design, documents, storage and other online tools.",
+    "items": [
+     {
+      "id": "Adobe",
+      "name": "Adobe",
+      "value": 152445165,
+      "year": 2013,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Password hints",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Canva",
+      "name": "Canva",
+      "value": 137272116,
+      "year": 2019,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Geographic locations",
+       "Names",
+       "Passwords",
+       "Usernames"
+      ]
+     },
+     {
+      "id": "Nitro",
+      "name": "Nitro",
+      "value": 77159696,
+      "year": 2020,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Names",
+       "Passwords"
+      ]
+     },
+     {
+      "id": "Dropbox",
+      "name": "Dropbox",
+      "value": 68648009,
+      "year": 2012,
+      "level": 3,
+      "detail": [
+       "Email addresses",
+       "Passwords"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "rest",
+    "name": "Everything else",
+    "note": "The long tail of smaller breaches.",
+    "items": [
+     {
+      "id": "rest",
+      "name": "987 smaller breaches",
+      "value": 4110796857,
+      "level": 0,
+      "detail": []
+     }
+    ]
+   }
+  ]
+ },
+ "trackers": {
+  "month": "2026-10",
+  "companies": 500,
+  "sectors": [
+   {
+    "id": "platforms",
+    "name": "Platforms",
+    "note": "Companies that run advertising, analytics and social tools under one roof.",
+    "items": [
+     {
+      "id": "google",
+      "name": "Google",
+      "value": 9827,
+      "share": 0.254,
+      "reach": 0.681,
+      "level": 3
+     },
+     {
+      "id": "amazon_associates",
+      "name": "Amazon",
+      "value": 4962,
+      "share": 0.044,
+      "reach": 0.195,
+      "level": 1
+     },
+     {
+      "id": "microsoft",
+      "name": "Microsoft",
+      "value": 4272,
+      "share": 0.399,
+      "reach": 0.069,
+      "level": 3
+     },
+     {
+      "id": "facebook",
+      "name": "Meta",
+      "value": 3894,
+      "share": 0.247,
+      "reach": 0.069,
+      "level": 3
+     },
+     {
+      "id": "twitter",
+      "name": "X (Twitter)",
+      "value": 1900,
+      "share": 0.435,
+      "reach": 0.026,
+      "level": 4
+     },
+     {
+      "id": "bytedance_inc",
+      "name": "TikTok (ByteDance)",
+      "value": 1270,
+      "share": 0.262,
+      "reach": 0.01,
+      "level": 3
+     },
+     {
+      "id": "yahoo",
+      "name": "Yahoo",
+      "value": 889,
+      "share": 0.27,
+      "reach": 0.009,
+      "level": 3
+     },
+     {
+      "id": "pinterest",
+      "name": "Pinterest",
+      "value": 795,
+      "share": 0.275,
+      "reach": 0.008,
+      "level": 3
+     },
+     {
+      "id": "reddit",
+      "name": "Reddit",
+      "value": 712,
+      "share": 0.05,
+      "reach": 0.019,
+      "level": 1
+     },
+     {
+      "id": "yandex",
+      "name": "Yandex",
+      "value": 619,
+      "share": 0.181,
+      "reach": 0.016,
+      "level": 2
+     }
+    ]
+   },
+   {
+    "id": "adtech",
+    "name": "Ad exchanges and bidders",
+    "note": "They auction the chance to show you an advert, and need to recognise you to do it.",
+    "items": [
+     {
+      "id": "criteo",
+      "name": "Criteo",
+      "value": 2181,
+      "share": 0.245,
+      "reach": 0.015,
+      "level": 3
+     },
+     {
+      "id": "pubmatic",
+      "name": "PubMatic",
+      "value": 1633,
+      "share": 0.304,
+      "reach": 0.009,
+      "level": 3
+     },
+     {
+      "id": "the_trade_desk",
+      "name": "The Trade Desk",
+      "value": 1632,
+      "share": 0.379,
+      "reach": 0.008,
+      "level": 3
+     },
+     {
+      "id": "magnite",
+      "name": "Magnite",
+      "value": 1605,
+      "share": 0.236,
+      "reach": 0.015,
+      "level": 3
+     },
+     {
+      "id": "index_exchange",
+      "name": "Index Exchange",
+      "value": 1423,
+      "share": 0.459,
+      "reach": 0.006,
+      "level": 4
+     },
+     {
+      "id": "outbrain",
+      "name": "Outbrain",
+      "value": 1342,
+      "share": 0.214,
+      "reach": 0.01,
+      "level": 3
+     },
+     {
+      "id": "equativ",
+      "name": "Equativ",
+      "value": 1328,
+      "share": 0.35,
+      "reach": 0.005,
+      "level": 3
+     },
+     {
+      "id": "rtb_house",
+      "name": "RTB House",
+      "value": 1295,
+      "share": 0.397,
+      "reach": 0.005,
+      "level": 3
+     },
+     {
+      "id": "triplelift",
+      "name": "TripleLift",
+      "value": 1168,
+      "share": 0.33,
+      "reach": 0.006,
+      "level": 3
+     },
+     {
+      "id": "openx",
+      "name": "OpenX",
+      "value": 1160,
+      "share": 0.32,
+      "reach": 0.006,
+      "level": 3
+     },
+     {
+      "id": "nexxen",
+      "name": "Nexxen",
+      "value": 1012,
+      "share": 0.415,
+      "reach": 0.004,
+      "level": 4
+     },
+     {
+      "id": "taboola",
+      "name": "Taboola",
+      "value": 924,
+      "share": 0.151,
+      "reach": 0.013,
+      "level": 2
+     },
+     {
+      "id": "adform",
+      "name": "Adform",
+      "value": 889,
+      "share": 0.382,
+      "reach": 0.004,
+      "level": 3
+     },
+     {
+      "id": "media.net",
+      "name": "Media.net",
+      "value": 888,
+      "share": 0.368,
+      "reach": 0.004,
+      "level": 3
+     },
+     {
+      "id": "improve_digital",
+      "name": "Improve Digital",
+      "value": 796,
+      "share": 0.682,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "sovrn",
+      "name": "Sovrn",
+      "value": 707,
+      "share": 0.427,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "onetag",
+      "name": "OneTag",
+      "value": 697,
+      "share": 0.405,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "blockthrough",
+      "name": "Blockthrough",
+      "value": 557,
+      "share": 0.039,
+      "reach": 0.009,
+      "level": 1
+     },
+     {
+      "id": "rich_audience",
+      "name": "Rich Audience",
+      "value": 549,
+      "share": 0.41,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "conversant",
+      "name": "Epsilon (Conversant)",
+      "value": 542,
+      "share": 0.67,
+      "reach": 0.001,
+      "level": 4
+     },
+     {
+      "id": "seedtag",
+      "name": "Seedtag",
+      "value": 537,
+      "share": 0.415,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "comcast",
+      "name": "FreeWheel (Comcast)",
+      "value": 529,
+      "share": 0.287,
+      "reach": 0.003,
+      "level": 3
+     }
+    ]
+   },
+   {
+    "id": "identity",
+    "name": "Identity, data and measurement",
+    "note": "They link what you do across sites and devices into a profile, or measure audiences.",
+    "items": [
+     {
+      "id": "id5_technology_ltd",
+      "name": "ID5",
+      "value": 1431,
+      "share": 0.367,
+      "reach": 0.006,
+      "level": 3
+     },
+     {
+      "id": "acxiom",
+      "name": "Acxiom / LiveRamp",
+      "value": 1161,
+      "share": 0.105,
+      "reach": 0.013,
+      "level": 2
+     },
+     {
+      "id": "comscore",
+      "name": "Comscore",
+      "value": 699,
+      "share": 0.147,
+      "reach": 0.023,
+      "level": 2
+     },
+     {
+      "id": "lotame",
+      "name": "Lotame",
+      "value": 668,
+      "share": 0.293,
+      "reach": 0.003,
+      "level": 3
+     },
+     {
+      "id": "quantcast",
+      "name": "Quantcast",
+      "value": 582,
+      "share": 0.143,
+      "reach": 0.007,
+      "level": 2
+     },
+     {
+      "id": "neustar",
+      "name": "Neustar (TransUnion)",
+      "value": 557,
+      "share": 0.451,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "integral_ad_science",
+      "name": "Integral Ad Science",
+      "value": 543,
+      "share": 0.057,
+      "reach": 0.005,
+      "level": 2
+     },
+     {
+      "id": "liveintent",
+      "name": "LiveIntent",
+      "value": 528,
+      "share": 0.342,
+      "reach": 0.003,
+      "level": 3
+     }
+    ]
+   },
+   {
+    "id": "analytics",
+    "name": "Analytics and monitoring",
+    "note": "Site owners use them to study visitors or catch errors.",
+    "items": [
+     {
+      "id": "adobe",
+      "name": "Adobe",
+      "value": 2278,
+      "share": 0.134,
+      "reach": 0.041,
+      "level": 2
+     },
+     {
+      "id": "sentry",
+      "name": "Sentry",
+      "value": 1655,
+      "share": 0,
+      "reach": 0.036,
+      "level": 1
+     },
+     {
+      "id": "new_relic",
+      "name": "New Relic",
+      "value": 838,
+      "share": 0.037,
+      "reach": 0.017,
+      "level": 1
+     },
+     {
+      "id": "automattic",
+      "name": "Automattic",
+      "value": 775,
+      "share": 0.029,
+      "reach": 0.013,
+      "level": 1
+     },
+     {
+      "id": "datadog",
+      "name": "Datadog",
+      "value": 752,
+      "share": 0.075,
+      "reach": 0.016,
+      "level": 2
+     },
+     {
+      "id": "bugsnag",
+      "name": "Bugsnag",
+      "value": 733,
+      "share": 0,
+      "reach": 0.006,
+      "level": 1
+     },
+     {
+      "id": "hotjar",
+      "name": "Hotjar",
+      "value": 622,
+      "share": 0.005,
+      "reach": 0.007,
+      "level": 1
+     }
+    ]
+   },
+   {
+    "id": "infra",
+    "name": "Infrastructure",
+    "note": "Networks that deliver files. They see your address and the page you asked for, and mostly stop there.",
+    "items": [
+     {
+      "id": "cloudflare",
+      "name": "Cloudflare",
+      "value": 5686,
+      "share": 0.02,
+      "reach": 0.132,
+      "level": 1
+     },
+     {
+      "id": "jsdelivr",
+      "name": "jsDelivr",
+      "value": 3779,
+      "share": 0.012,
+      "reach": 0.047,
+      "level": 1
+     },
+     {
+      "id": "js_foundation",
+      "name": "jQuery CDN",
+      "value": 1197,
+      "share": 0,
+      "reach": 0.01,
+      "level": 1
+     },
+     {
+      "id": "unpkg",
+      "name": "unpkg",
+      "value": 1036,
+      "share": 0,
+      "reach": 0.01,
+      "level": 1
+     },
+     {
+      "id": "akamai",
+      "name": "Akamai",
+      "value": 989,
+      "share": 0.02,
+      "reach": 0.024,
+      "level": 1
+     },
+     {
+      "id": "fontawesome_com",
+      "name": "Font Awesome",
+      "value": 777,
+      "share": 0,
+      "reach": 0.012,
+      "level": 1
+     },
+     {
+      "id": "bootstrap_cdn",
+      "name": "Bootstrap CDN",
+      "value": 761,
+      "share": 0,
+      "reach": 0.007,
+      "level": 1
+     }
+    ]
+   },
+   {
+    "id": "service",
+    "name": "Payments and consent",
+    "note": "Checkout and cookie-banner providers. Payment firms identify devices to stop fraud.",
+    "items": [
+     {
+      "id": "onetrust",
+      "name": "OneTrust",
+      "value": 1409,
+      "share": 0.027,
+      "reach": 0.045,
+      "level": 1
+     },
+     {
+      "id": "paypal",
+      "name": "PayPal",
+      "value": 1187,
+      "share": 0.28,
+      "reach": 0.011,
+      "level": 3
+     },
+     {
+      "id": "stripe",
+      "name": "Stripe",
+      "value": 548,
+      "share": 0.864,
+      "reach": 0.011,
+      "level": 4
+     }
+    ]
+   },
+   {
+    "id": "other",
+    "name": "Other third parties",
+    "note": "In the same ranking, not yet labelled by us.",
+    "items": [
+     {
+      "id": "monet_engine",
+      "name": "Monet Engine",
+      "value": 641,
+      "share": 0.525,
+      "reach": 0.002,
+      "level": 4
+     },
+     {
+      "id": "singtel",
+      "name": "Singtel",
+      "value": 511,
+      "share": 0.811,
+      "reach": 0.001,
+      "level": 4
+     },
+     {
+      "id": "ad_man_media",
+      "name": "Ad Man Media",
+      "value": 505,
+      "share": 0.817,
+      "reach": 0.001,
+      "level": 4
+     }
+    ]
+   }
+  ]
+ }
+}

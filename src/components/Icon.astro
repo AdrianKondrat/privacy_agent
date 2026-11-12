@@ -1,0 +1,16 @@
+---
+type Name = 'arrow' | 'diagonal' | 'check' | 'plus' | 'filing' | 'search' | 'copy' | 'lock';
+interface Props { name: Name; size?: number; class?: string }
+const { name, size = 20, class: className } = Astro.props;
+const icons: Record<Name, string> = {
+  arrow: 'M3 10h13m-5-5 5 5-5 5',
+  diagonal: 'M5 15 15 5M6 5h9v9',
+  check: 'm4 10 4 4 8-8',
+  plus: 'M4 10h12M10 4v12',
+  filing: 'M5 2.5h7l3 3v12H5zM12 2.5v3h3M8 9h4m-4 4h4',
+  search: 'M12.9 12.9 17 17m-2.5-8a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0Z',
+  copy: 'M7 7h9v10H7zM4 13V3h9',
+  lock: 'M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9M5 9h10v8H5z',
+};
+---
+<svg class={className} aria-hidden="true" width={size} height={size} viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"><path d={icons[name]} /></svg>

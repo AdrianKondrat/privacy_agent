@@ -1,0 +1,125 @@
+/* Koverr print system for lead-magnet PDFs.
+   Brand rule: exposure is greyscale; the one green marks a fix or the action. */
+@font-face { font-family: 'Archivo'; font-weight: 400; src: url('../../node_modules/@fontsource/archivo/files/archivo-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 400; font-style: italic; src: url('../../node_modules/@fontsource/archivo/files/archivo-latin-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 600; src: url('../../node_modules/@fontsource/archivo/files/archivo-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 700; src: url('../../node_modules/@fontsource/archivo/files/archivo-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 800; src: url('../../node_modules/@fontsource/archivo/files/archivo-latin-800-normal.woff2') format('woff2'); }
+
+:root {
+  --ground: #0f0f0e; --card: #181917; --raised: #242623;
+  --text: #f3f3ed; --text-muted: #c6c8be; --ink-dim: #8f918a;
+  --e0: #2e302d; --e1: #484a45; --e2: #6a6c65; --e3: #a2a49b; --e4: #e6e6de;
+  --fix: #4be38a; --fix-ink: #05210f; --fix-deep: #0f6b36; --fix-wash: #bdf1d2;
+  --bone: #ecece6; --bone-ink: #191a18; --bone-muted: #46483f; --bone-panel: #dcddd5; --bone-line: #d3d4cb;
+  --launch-wash: #c4f7da; --launch-ink: #0b3a1c;
+}
+
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: 'Archivo', Arial, sans-serif; font-size: 10pt; line-height: 1.5; color: var(--bone-ink); background: var(--bone); }
+
+.page { width: 210mm; height: 297mm; position: relative; overflow: hidden; page-break-after: always; break-after: page; padding: 20mm 18mm 22mm; background: var(--bone); }
+.page:last-child { page-break-after: auto; break-after: auto; }
+
+/* Running furniture on interior pages */
+.folio { position: absolute; left: 18mm; right: 18mm; bottom: 10mm; display: flex; justify-content: space-between; font-size: 7.5pt; color: var(--bone-muted); letter-spacing: .02em; }
+.folio b { font-weight: 700; color: var(--bone-ink); }
+.kicker { font-size: 8pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--bone-muted); margin-bottom: 4mm; }
+
+/* Type */
+h1, h2, h3 { font-weight: 800; letter-spacing: -0.035em; line-height: 1; }
+h2 { font-size: 26pt; margin-bottom: 4mm; }
+h3 { font-size: 12.5pt; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5mm; font-weight: 700; }
+p + p { margin-top: 2.5mm; }
+.lede { font-size: 11.5pt; line-height: 1.45; color: var(--bone-muted); max-width: 150mm; margin-bottom: 7mm; }
+.small { font-size: 8pt; color: var(--bone-muted); line-height: 1.45; }
+a { color: inherit; text-decoration: none; }
+.url { font-weight: 600; color: var(--fix-deep); word-break: break-all; }
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* Cover: the exposed state, black and white */
+.cover { background: var(--ground); color: var(--text); padding: 18mm; display: flex; flex-direction: column; }
+.cover .brand { display: flex; align-items: center; gap: 2.5mm; font-weight: 800; font-size: 13pt; letter-spacing: -0.02em; }
+.cover .brand i { width: 4mm; height: 4mm; border-radius: 50%; background: var(--fix); display: inline-block; }
+.cover .type { margin-top: auto; font-size: 8.5pt; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6mm; }
+.cover h1 { font-size: 52pt; line-height: .93; letter-spacing: -0.045em; max-width: 170mm; }
+.cover h1 .fixed { color: var(--fix); }
+.cover .sub { margin-top: 8mm; font-size: 13pt; line-height: 1.4; color: var(--text-muted); max-width: 140mm; }
+.cover .meta { margin-top: 14mm; padding-top: 5mm; border-top: 1px solid var(--e1); display: flex; gap: 12mm; font-size: 8.5pt; color: var(--ink-dim); }
+.cover .meta b { display: block; color: var(--text); font-size: 10pt; font-weight: 700; margin-bottom: .5mm; }
+
+/* Greyscale exposure strip used as a cover motif */
+.strip { display: grid; gap: 1.2mm; margin-top: 16mm; }
+.strip div { height: 7mm; border-radius: 1px; }
+
+/* Panels */
+.panel { background: var(--bone-panel); border-radius: 2px; padding: 5mm 6mm; }
+.panel.dark { background: var(--ground); color: var(--text); }
+.panel.dark .small { color: var(--text-muted); }
+.panel.fix { background: var(--fix-wash); color: var(--fix-ink); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+.stack > * + * { margin-top: 4mm; }
+
+/* Checklist rows */
+.check { display: grid; grid-template-columns: 6mm 1fr auto; gap: 3mm; align-items: start; padding: 3mm 0; border-top: 1px solid var(--bone-line); break-inside: avoid; }
+.check:last-child { border-bottom: 1px solid var(--bone-line); }
+.box { width: 4.6mm; height: 4.6mm; border: 1.4px solid var(--bone-ink); border-radius: 1px; margin-top: .6mm; }
+.check .t { font-weight: 700; font-size: 10pt; line-height: 1.3; }
+.check .d { font-size: 8.8pt; color: var(--bone-muted); line-height: 1.45; margin-top: .6mm; }
+.check .m { font-size: 7.5pt; font-weight: 700; color: var(--bone-muted); white-space: nowrap; padding: .6mm 2mm; background: var(--bone-panel); border-radius: 2px; margin-top: .3mm; }
+.check .m.us, .check .m.uk, .check .m.eu, .check .m.all { }
+.region { display: inline-block; font-size: 6.8pt; font-weight: 700; letter-spacing: .06em; padding: .2mm 1.4mm; border: 1px solid var(--bone-muted); border-radius: 2px; margin-left: 1.5mm; vertical-align: 1px; color: var(--bone-muted); }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; font-size: 8.6pt; line-height: 1.4; }
+th { text-align: left; font-size: 7.3pt; letter-spacing: .1em; text-transform: uppercase; color: var(--bone-muted); font-weight: 700; padding: 0 3mm 2mm 0; }
+td { padding: 2.6mm 3mm 2.6mm 0; border-top: 1px solid var(--bone-line); vertical-align: top; }
+td.fixcol { background: var(--fix-wash); color: var(--fix-ink); padding-left: 3mm; }
+th.fixcol { padding-left: 3mm; color: var(--fix-deep); }
+tr { break-inside: avoid; }
+
+/* Exposure level chip: shade, never hue, and always a label */
+.lvl { display: inline-block; font-size: 7pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: .6mm 1.8mm; border-radius: 2px; white-space: nowrap; }
+.lvl.l5 { background: var(--bone-ink); color: var(--bone); }
+.lvl.l4 { background: var(--e1); color: var(--text); }
+.lvl.l3 { background: var(--e2); color: var(--text); }
+.lvl.l2 { background: var(--e3); color: var(--bone-ink); }
+.lvl.l1 { background: var(--bone-panel); color: var(--bone-ink); border: 1px solid var(--e3); }
+
+/* Template letters and prompts */
+.letter { background: #fff; border: 1px solid var(--bone-line); border-radius: 2px; padding: 6mm 7mm; font-size: 9pt; line-height: 1.55; }
+.letter .slot, .prompt .slot { background: var(--bone-panel); padding: 0 1.2mm; border-radius: 1px; font-weight: 600; }
+.prompt { background: var(--ground); color: var(--text); border-radius: 2px; padding: 4.5mm 5.5mm; font-size: 8.8pt; line-height: 1.55; break-inside: avoid; }
+.prompt .slot { background: var(--raised); color: var(--fix); }
+.prompt-head { display: flex; justify-content: space-between; align-items: baseline; margin: 6mm 0 2mm; break-after: avoid; }
+.prompt-head h3 { margin: 0; }
+.prompt-head .n { font-size: 8pt; font-weight: 700; color: var(--bone-muted); }
+.note { font-size: 8.4pt; color: var(--bone-muted); margin-top: 2mm; line-height: 1.45; }
+.note b { color: var(--bone-ink); }
+
+/* Scoring worksheet */
+.score-row { display: grid; grid-template-columns: 1fr repeat(3, 12mm); gap: 1.5mm; align-items: center; padding: 2.2mm 0; border-top: 1px solid var(--bone-line); font-size: 8.8pt; break-inside: avoid; }
+.score-row .opt { height: 7mm; border: 1.2px solid var(--bone-muted); border-radius: 50%; width: 7mm; justify-self: center; display: grid; place-items: center; font-size: 7pt; font-weight: 700; color: var(--bone-muted); }
+.score-head { display: grid; grid-template-columns: 1fr repeat(3, 12mm); gap: 1.5mm; font-size: 6.6pt; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--bone-muted); text-align: center; padding-bottom: 1.5mm; }
+.score-head span:first-child { text-align: left; }
+.tally { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 4mm; }
+.tally div { padding: 4mm; font-size: 8.4pt; line-height: 1.4; }
+.tally b { display: block; font-size: 14pt; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1mm; }
+
+/* Closing page: the colour returns */
+.close { background: var(--fix); color: var(--fix-ink); display: flex; flex-direction: column; padding: 20mm 18mm; }
+.close h2 { font-size: 44pt; line-height: .95; letter-spacing: -0.045em; max-width: 165mm; }
+.close .lede { color: var(--launch-ink); font-size: 13pt; margin-top: 6mm; }
+.close .cta { margin-top: 10mm; display: inline-flex; align-self: flex-start; background: var(--fix-ink); color: var(--fix); font-weight: 800; font-size: 14pt; letter-spacing: -0.01em; padding: 5mm 7mm; border-radius: 2px; }
+.close ul { list-style: none; margin-top: 12mm; display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 8mm; max-width: 170mm; }
+.close li { font-size: 10pt; line-height: 1.45; padding-top: 3mm; border-top: 1.5px solid var(--launch-ink); }
+.close li b { display: block; font-weight: 800; font-size: 11pt; margin-bottom: 1mm; }
+.close .fine { margin-top: auto; font-size: 7.8pt; color: var(--launch-ink); line-height: 1.5; max-width: 170mm; }
+
+.mt2 { margin-top: 2mm; } .mt4 { margin-top: 4mm; } .mt6 { margin-top: 6mm; } .mt8 { margin-top: 8mm; }
+.cols2 { columns: 2; column-gap: 7mm; }
+.cols2 > * { break-inside: avoid; }

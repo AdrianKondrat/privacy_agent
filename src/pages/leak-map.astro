@@ -1,0 +1,66 @@
+---
+import Shell from '../layouts/Shell.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Signup from '../components/Signup.astro';
+import LeakMap from '../components/LeakMap';
+import '../styles/leak-map.css';
+import data from '../data/leak-map.json';
+import { variants } from '../lib/launch';
+
+const copy = variants.map;
+const status = Astro.url.searchParams.get('signup');
+const whole = new Intl.NumberFormat('en-GB');
+const compact = new Intl.NumberFormat('en-GB', { notation: 'compact', maximumSignificantDigits: 3 });
+const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const month = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const tiles = (sectors: { items: unknown[] }[]) => sectors.reduce((sum, sector) => sum + sector.items.length, 0);
+const notes = [
+  ['A sample footprint', 'A fictional person with nine sources. One personal detail at one source counts as one appearance. The average is appearances divided by sources in the current view, not an average across people. Filters select sources or data types. The preview uses hollow nodes and dashed branches for appearances assumed hidden or removed, keeping the original layout. No real action is taken.'],
+  ['Where it leaks from', `Every breach listed by Have I Been Pwned on ${day.format(new Date(data.breaches.asOf))}: ${whole.format(data.breaches.count)} breaches and ${compact.format(data.breaches.total).replace('bn', ' billion')} account records. The ${tiles(data.breaches.sectors) - 1} largest get a node each and the rest share one. Branches group sources; end nodes show individual breaches.`],
+  ['Who picks it up', `WhoTracks.me measures which outside companies load during real page visits. Size is how many of the 10,000 most-visited sites carry a company’s code on more than 1% of visits. Select a source to see how often its code sent an identifier able to single out a browser. ${month.format(new Date(data.trackers.month + '-01'))}, top ${tiles(data.trackers.sectors)} of ${whole.format(data.trackers.companies)} companies.`],
+  ['What the maps can’t show', 'Being present is not proof of misuse. A network that delivers files and an exchange that auctions adverts are different things, and the groups distinguish their roles. Account records are not people: one person turns up in many breaches. And nobody outside can measure what data brokers sell privately, so that trade is missing here.'],
+  ['Whose labels these are', 'The numbers come from the two sources. The groups and short names are ours. The sample footprint is fictional; hide and removal outcomes are illustrative, not verified or guaranteed.'],
+];
+---
+<Shell title={copy.title + ' | Koverr'} description={copy.intro} noindex={Boolean(status)}>
+  <SiteHeader links={[['/', 'Home'], ['#notes', 'How to read it']]} />
+  <main id="main">
+    <div class="market-opening">
+      <section class="wrap map-hero" aria-labelledby="map-title">
+        <h1 id="map-title">
+          <span class="headline-line"><span>{copy.lines[0]}{' '}</span></span>
+          <span class="headline-line hero-last"><span>{copy.lines[1]}</span></span>
+        </h1>
+        <p>See where personal details surface. Follow the branches, inspect a source, and explore what could be hidden or removed. Start with a fictional footprint, or explore two real datasets.</p>
+      </section>
+      <section class="wrap map-section" aria-label="Interactive leak map">
+        <LeakMap client:load />
+      </section>
+    </div>
+
+    <section id="notes" class="ledger-section map-notes" aria-labelledby="notes-title">
+      <div class="wrap map-notes-layout">
+        <div class="map-notes-copy">
+          <h2 id="notes-title">How to read it.</h2>
+          <p>A sample footprint and two real datasets, with their limits stated.</p>
+          <p class="map-sources">
+            Breach data: <a href="https://haveibeenpwned.com/">Have I Been Pwned</a>, CC BY 4.0.<br />
+            Third-party data: <a href="https://www.ghostery.com/whotracksme">WhoTracks.me</a> by Ghostery, CC BY 4.0.
+          </p>
+        </div>
+        <ol class="notes-list">
+          {notes.map(([title, text]) => <li><h3>{title}</h3><p>{text}</p></li>)}
+        </ol>
+      </div>
+    </section>
+
+    <section id="launch" class="launch" aria-labelledby="launch-title">
+      <div class="wrap launch-inner">
+        <div><h2 id="launch-title">Find out where your data appears.</h2><p>Get an invite when Koverr’s free leak check opens.</p></div>
+        <Signup id="launch-signup" variant="map" signupStatus={status} />
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Shell>

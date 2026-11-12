@@ -1,0 +1,129 @@
+---
+import Icon from './Icon.astro';
+import { regions, worries, type Variant } from '../lib/launch';
+interface Props { id: string; variant: Variant; signupStatus?: string | null }
+const { id, variant, signupStatus } = Astro.props;
+const confirmation = 'You’re on the launch list. We’ll email you when early access opens.';
+const messages: Record<string, string> = {
+  ok: confirmation,
+  invalid: 'Enter a valid email address and try again.',
+  unavailable: 'We couldn’t save your email. Please try again in a moment.',
+};
+const message = signupStatus && Object.hasOwn(messages, signupStatus) ? messages[signupStatus] : '';
+const questions = [
+  { name: 'region', legend: 'Where do you live?', options: regions },
+  { name: 'worry', legend: 'What worries you most?', options: worries },
+];
+---
+<div class="signup" id={id} data-signup-block data-confirmation={confirmation}>
+  <form data-signup action="/api/launch-list/" method="post">
+    <input type="hidden" name="variant" value={variant} />
+    <input type="hidden" name="placement" value={id} />
+    <div hidden aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off" /></label></div>
+    <label for={id + '-email'}>Email address</label>
+    <div class="signup-row">
+      <input id={id + '-email'} name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com" aria-describedby={id + '-note ' + id + '-status'} />
+      <button class="button primary" type="submit">
+        <span>Join the launch list</span><Icon name="arrow" size={19} />
+      </button>
+    </div>
+    <p class="signup-note" id={id + '-note'}>Launch invites only. <a href="/privacy/">How we use your email</a>.</p>
+  </form>
+  <p class="signup-status" id={id + '-status'} tabindex="-1" role="status" aria-live="polite" data-state={message ? (signupStatus === 'ok' ? 'success' : 'error') : undefined}>{message}</p>
+  <form class="signup-more" data-signup-more action="/api/launch-list/" method="post" hidden>
+    <input type="hidden" name="step" value="answers" />
+    <input type="hidden" name="token" />
+    <p class="signup-more-intro">Two optional questions. Your answers decide what we build first.</p>
+    {questions.map(question => (
+      <fieldset>
+        <legend>{question.legend}</legend>
+        <div class="chips">
+          {question.options.map(([key, label]) => (
+            <label class="chip"><input type="radio" name={question.name} value={key} /><span>{label}</span></label>
+          ))}
+        </div>
+      </fieldset>
+    ))}
+    <div class="signup-more-actions">
+      <button class="button primary" type="submit"><span>Send answers</span><Icon name="arrow" size={19} /></button>
+      <button class="signup-skip" type="button" data-signup-skip>Skip</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-signup-block]').forEach((block) => {
+    const form = block.querySelector<HTMLFormElement>('[data-signup]')!;
+    const more = block.querySelector<HTMLFormElement>('[data-signup-more]')!;
+    const status = block.querySelector<HTMLElement>('[role="status"]')!;
+    const say = (state: 'success' | 'error', text: string) => {
+      status.dataset.state = state;
+      status.textContent = text;
+    };
+    const send = (target: HTMLFormElement) => {
+      const payload = new URLSearchParams();
+      new FormData(target).forEach((value, key) => { if (typeof value === 'string') payload.append(key, value); });
+      return fetch(target.action, { method: 'POST', body: payload, headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(12000) });
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const input = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+      const button = form.querySelector<HTMLButtonElement>('button')!;
+      const label = button.querySelector('span')!;
+      input.removeAttribute('aria-invalid');
+      button.disabled = true;
+      label.textContent = 'Joining…';
+      status.textContent = '';
+      try {
+        const response = await send(form);
+        const result = response.ok ? await response.json() : null;
+        if (result?.status === 'ok') {
+          form.reset();
+          say('success', block.dataset.confirmation!);
+          if (typeof result.token === 'string') {
+            more.querySelector<HTMLInputElement>('input[name="token"]')!.value = result.token;
+            form.hidden = true;
+            more.hidden = false;
+            status.focus({ preventScroll: true });
+          }
+          return;
+        }
+        if (response.status === 400) {
+          input.setAttribute('aria-invalid', 'true');
+          input.focus();
+          say('error', 'Enter a valid email address and try again.');
+          return;
+        }
+        throw new Error('Signup unavailable');
+      } catch {
+        say('error', 'We couldn’t save your email. Please try again in a moment.');
+      } finally {
+        button.disabled = false;
+        label.textContent = 'Join the launch list';
+      }
+    });
+
+    more.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = more.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      button.disabled = true;
+      try {
+        const response = await send(more);
+        if (!response.ok) throw new Error('Answers unavailable');
+        more.hidden = true;
+        say('success', 'Thanks. You’re on the launch list, and your answers are in.');
+      } catch {
+        say('error', 'We couldn’t save your answers, but you’re on the launch list.');
+      } finally {
+        button.disabled = false;
+        status.focus({ preventScroll: true });
+      }
+    });
+
+    more.querySelector('[data-signup-skip]')!.addEventListener('click', () => {
+      more.hidden = true;
+      status.focus({ preventScroll: true });
+    });
+  });
+</script>

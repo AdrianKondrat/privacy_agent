@@ -1,0 +1,71 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "freebies/src/breach-email-decoder.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.106Z",
+        "reason": "agent decision: #ecece6 is the Bone reading surface token defined in DESIGN.md for light reading panels; print pages use it deliberately"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "freebies/src/home-address-takedown.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.135Z",
+        "reason": "agent decision: #ecece6 is the Bone reading surface token defined in DESIGN.md for light reading panels; print pages use it deliberately"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "freebies/src/scam-call-tracer.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.161Z",
+        "reason": "agent decision: #ecece6 is the Bone reading surface token defined in DESIGN.md for light reading panels; print pages use it deliberately"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "freebies/src/exposure-snapshot.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.186Z",
+        "reason": "agent decision: #ecece6 is the Bone reading surface token defined in DESIGN.md for light reading panels; print pages use it deliberately"
+      },
+      {
+        "rule": "oversized-h1",
+        "value": "*",
+        "files": [
+          "freebies/src/home-address-takedown.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.212Z",
+        "reason": "agent decision: A4 PDF cover page; the headline is the whole cover by design, there is no fold or other content to crowd"
+      },
+      {
+        "rule": "oversized-h1",
+        "value": "*",
+        "files": [
+          "freebies/src/scam-call-tracer.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.237Z",
+        "reason": "agent decision: A4 PDF cover page; the headline is the whole cover by design, there is no fold or other content to crowd"
+      },
+      {
+        "rule": "oversized-h1",
+        "value": "*",
+        "files": [
+          "freebies/src/exposure-snapshot.html"
+        ],
+        "createdAt": "2026-11-12T12:37:56.263Z",
+        "reason": "agent decision: A4 PDF cover page; the headline is the whole cover by design, there is no fold or other content to crowd"
+      }
+    ]
+  }
+}

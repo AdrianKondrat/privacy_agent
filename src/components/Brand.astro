@@ -1,0 +1,10 @@
+---
+const { href = '/' } = Astro.props;
+---
+<a class="brand" href={href} aria-label="Koverr home">
+  <svg aria-hidden="true" width="31" height="31" viewBox="0 0 32 32" fill="none">
+    <path d="M3 13V3h10m6 0h10v10m0 6v10H19m-6 0H3V19" stroke="currentColor" stroke-width="2.2"/>
+    <path d="M11 10v12m10-12-8 6 8 6" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+  </svg>
+  <span>koverr<span class="brand-period">.</span></span>
+</a>
