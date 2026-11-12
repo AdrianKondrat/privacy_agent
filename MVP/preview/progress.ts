@@ -1,7 +1,9 @@
+import { accountUseMessages, readAccountUseChange, sampleAccountUse, type AccountUseByBreach } from '../lib/account-use.ts';
 import { planChoices, readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
 import { updateProgress, type Progress } from '../lib/findings.ts';
 import { sampleFindings, sampleProgress } from '../lib/sample.ts';
 
+const accountUseKey = 'koverr-preview-account-use';
 const planKey = 'koverr-preview-plan';
 const storageKey = 'koverr-preview-progress';
 
@@ -13,9 +15,11 @@ export function mountPreviewProgress() {
 
   const planForm = root.querySelector<HTMLFormElement>('[data-preview-plan]');
   const planResult = root.querySelector('[data-plan-result]');
+  let accountUse: AccountUseByBreach = {};
   let choice: PlanChoice | undefined;
   let progress: Progress = {};
   try {
+    accountUse = sampleAccountUse(sampleFindings, sessionStorage.getItem(accountUseKey) ?? undefined);
     choice = readPlanChoice(sessionStorage.getItem(planKey));
     progress = sampleProgress(sessionStorage.getItem(storageKey) ?? undefined);
   } catch {
@@ -68,6 +72,31 @@ export function mountPreviewProgress() {
     });
     for (const button of form.querySelectorAll('button')) button.disabled = false;
   }
+  const useForms = Array.from(root.querySelectorAll<HTMLFormElement>('[data-preview-use]'));
+  const renderAccountUse = (form: HTMLFormElement) => {
+    const choice = accountUse[form.dataset.previewUse ?? ''];
+    const message = form.parentElement?.querySelector('[data-preview-use-result]');
+    const tip = form.parentElement?.querySelector<HTMLElement>('[data-preview-close-tip]');
+    if (message) message.textContent = choice ? accountUseMessages[choice] : '';
+    if (tip) tip.hidden = choice !== 'close';
+    for (const button of form.querySelectorAll('button')) button.setAttribute('aria-pressed', String(choice === button.value));
+  };
+  for (const form of useForms) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const change = readAccountUseChange(sampleFindings, new FormData(form, event.submitter));
+      if (!change) return;
+      accountUse = { ...accountUse, [change.id]: change.choice };
+      try { sessionStorage.setItem(accountUseKey, JSON.stringify(accountUse)); } catch { /* Keep the answer on this page. */ }
+      renderAccountUse(form);
+    });
+    for (const button of form.querySelectorAll('button')) button.disabled = false;
+    renderAccountUse(form);
+    if (accountUse[form.dataset.previewUse ?? '']) {
+      const finding = form.closest<HTMLDetailsElement>('.check-finding > details');
+      if (finding) finding.open = true;
+    }
+  }
   const renderPlan = () => {
     if (!planForm || !planResult) return;
     planForm.hidden = !!choice;
@@ -85,15 +114,18 @@ export function mountPreviewProgress() {
   for (const button of planForm?.querySelectorAll('button') ?? []) button.disabled = false;
   function reset() {
     choice = undefined;
+    accountUse = {};
     progress = {};
     try {
       sessionStorage.removeItem(storageKey);
       sessionStorage.removeItem(planKey);
+      sessionStorage.removeItem(accountUseKey);
     } catch {
       // No stored progress to remove.
     }
     render();
     renderPlan();
+    useForms.forEach(renderAccountUse);
   }
   root.querySelector('[data-preview-reset]')?.addEventListener('click', reset);
   render();

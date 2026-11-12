@@ -1,4 +1,5 @@
 import { createHmac, randomUUID } from 'node:crypto';
+import type { AccountUse } from './account-use.ts';
 import type { PlanChoice, ProductEvent } from './experiment.ts';
 import { checkBreaches } from './breaches.ts';
 import { rankBreaches, resolveProgressChange, type Finding, type Outcome, type Progress } from './findings.ts';
@@ -118,6 +119,21 @@ export function liveCheck(config: Config, request = fetch) {
     return { check: checks[0], progress };
   }
 
+  async function readAccountUse(token: string, identity: Identity) {
+    const owner = encodeURIComponent(identity.id);
+    const rows = await call<{ breach_id: string; choice: AccountUse; updated_at: string }[]>(
+      `/rest/v1/koverr_account_use?user_id=eq.${owner}&select=breach_id,choice,updated_at`, { token },
+    );
+    return rows;
+  }
+
+  async function saveAccountUse(identity: Identity, breachId: string, choice: AccountUse) {
+    await call('/rest/v1/koverr_account_use', {
+      method: 'POST', admin: true, prefer: 'resolution=merge-duplicates',
+      body: { user_id: identity.id, breach_id: breachId, choice, updated_at: new Date().toISOString() },
+    });
+  }
+
   async function readEvents(token: string, identity: Identity) {
     const owner = encodeURIComponent(identity.id);
     return call<ProductEvent[]>(`/rest/v1/koverr_events?user_id=eq.${owner}&select=event_name,happened_at,choice`, { token });
@@ -182,5 +198,5 @@ export function liveCheck(config: Config, request = fetch) {
     }
   }
 
-  return { identify, sendCode, verifyCode, read, readEvents, recordEvent, choosePlan, scan, saveProgress, deleteAccount };
+  return { identify, sendCode, verifyCode, read, readAccountUse, saveAccountUse, readEvents, recordEvent, choosePlan, scan, saveProgress, deleteAccount };
 }

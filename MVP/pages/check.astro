@@ -2,6 +2,7 @@
 import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
 import PlanPicker from '../components/PlanPicker.astro';
+import { readAccountUseChange, sampleAccountUse, type AccountUseByBreach } from '../lib/account-use.ts';
 import { readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
 import Findings from '../components/Findings.astro';
 import { demoDate } from '../lib/demo.ts';
@@ -14,6 +15,7 @@ const app = '/app/';
 const sampleUrl = '/app/?sample=1';
 const sample = Astro.url.searchParams.get('sample') === '1';
 const demoCookie = 'koverr_sample_progress';
+const sampleUseCookie = 'koverr_sample_account_use';
 const samplePlanCookie = 'koverr_sample_plan';
 const tokenCookie = 'koverr_check_session';
 const deletedCookie = 'koverr_account_deleted';
@@ -22,6 +24,7 @@ const config = sample ? null : liveConfig();
 const live = config && Astro.url.origin === config.origin ? liveCheck(config) : null;
 const cookieOptions = { path: app, httpOnly: true, sameSite: 'strict', secure: Astro.url.protocol === 'https:' } as const;
 let progress = sample ? sampleProgress(Astro.cookies.get(demoCookie)?.value) : {};
+let accountUse: AccountUseByBreach = sample ? sampleAccountUse(sampleFindings, Astro.cookies.get(sampleUseCookie)?.value) : {};
 let planChoice: PlanChoice | undefined = sample ? readPlanChoice(Astro.cookies.get(samplePlanCookie)?.value) : undefined;
 let token = Astro.cookies.get(tokenCookie)?.value;
 const pendingEmail = normalizeEmail(Astro.cookies.get(pendingCookie)?.value ?? null);
@@ -72,6 +75,13 @@ try {
         return Astro.redirect(sampleUrl, 303);
       }
       showError('Choose a valid step. To skip a step, add a short reason.', 400);
+    } else if (sample && intent === 'account-use') {
+      const change = readAccountUseChange(sampleFindings, fields);
+      if (!change) showError('Choose an answer for one of the listed accounts.', 400);
+      else {
+        Astro.cookies.set(sampleUseCookie, JSON.stringify({ ...accountUse, [change.id]: change.choice }), { ...cookieOptions, maxAge: 3600 });
+        return Astro.redirect(sampleUrl + '#account-use-' + change.index, 303);
+      }
     } else if (sample && intent === 'plan-choice') {
       const choice = readPlanChoice(fields.get('choice'));
       if (!choice) showError('Choose one of the listed options.', 400);
@@ -81,6 +91,7 @@ try {
       }
     } else if (sample && intent === 'exit') {
       Astro.cookies.delete(samplePlanCookie, cookieOptions);
+      Astro.cookies.delete(sampleUseCookie, cookieOptions);
       Astro.cookies.delete(demoCookie, cookieOptions);
       return Astro.redirect(app, 303);
     } else if (live && !identity && (intent === 'send' || intent === 'resend')) {
@@ -125,13 +136,14 @@ try {
           return Astro.redirect(app, 303);
         }
         showError('Type DELETE to confirm account deletion.', 400);
-      } else if (intent === 'progress' || intent === 'export') {
+      } else if (intent === 'progress' || intent === 'account-use' || intent === 'export') {
         ({ check, progress } = await live.read(token, identity));
         if (intent === 'export') {
           return new Response(JSON.stringify({
             account: { id: identity.id, email: identity.email, emailVerifiedAt: identity.verifiedAt },
             check: check ?? null,
             fixProgress: progress,
+            breachedAccountUse: await live.readAccountUse(token, identity),
             experimentEvents: await live.readEvents(token, identity),
           }, null, 2), {
             headers: {
@@ -142,10 +154,19 @@ try {
             },
           });
         }
-        if (check?.state === 'complete' && await live.saveProgress(identity, check.findings, fields)) {
-          return Astro.redirect(app, 303);
+        if (intent === 'account-use') {
+          const change = check?.state === 'complete' && readAccountUseChange(check.findings, fields);
+          if (change) {
+            await live.saveAccountUse(identity, change.id, change.choice);
+            return Astro.redirect(app + '#account-use-' + change.index, 303);
+          }
+          showError('Choose an answer for one of the listed accounts.', 400);
+        } else {
+          if (check?.state === 'complete' && await live.saveProgress(identity, check.findings, fields)) {
+            return Astro.redirect(app, 303);
+          }
+          showError('Choose a valid step. To skip a step, add a short reason.', 400);
         }
-        showError('Choose a valid step. To skip a step, add a short reason.', 400);
       } else {
         showError('That action is unavailable.', 400);
       }
@@ -155,6 +176,9 @@ try {
   }
 
   if (live && identity && token && !check) ({ check, progress } = await live.read(token, identity));
+  if (live && identity && token && check?.state === 'complete') {
+    accountUse = Object.fromEntries((await live.readAccountUse(token, identity)).map(({ breach_id, choice }) => [breach_id, choice]));
+  }
   if (live && identity && token && !isPost) {
     const events = await live.readEvents(token, identity);
     if (!events.some((event) => event.event_name === 'email_verified')) await live.recordEvent(identity, 'email_verified');
@@ -189,14 +213,14 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
       {sample ? (
         <>
           <p class="check-notice">Sample data only. These findings are fictional.</p>
-          <Findings findings={sampleFindings} progress={progress} checkedAt={demoDate} sample action={sampleUrl} />
+          <Findings findings={sampleFindings} progress={progress} accountUse={accountUse} checkedAt={demoDate} sample action={sampleUrl} />
           <PlanPicker action={sampleUrl} choice={planChoice} />
         </>
       ) : identity ? (
         <>
           {check?.state === 'complete' && check.checked_at ? (
             <>
-              <Findings findings={check.findings} progress={progress} checkedAt={check.checked_at} sample={false} action={app} />
+              <Findings findings={check.findings} progress={progress} accountUse={accountUse} checkedAt={check.checked_at} sample={false} action={app} />
               <PlanPicker choice={planChoice} />
             </>
           ) : (

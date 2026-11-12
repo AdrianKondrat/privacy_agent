@@ -10,6 +10,7 @@ Updated 12 November 2026. Continue on the existing `MVP` branch and push each ma
 - The Have I Been Pwned adapter distinguishes a clean response from provider failures. It stores breach metadata and ranks the next three fixes from a versioned Stolen playbook.
 - Postgres stores the scan snapshot and fix outcomes. Row-level security scopes reads to the account owner. Only the server writes these tables. The database limits verification requests to five per address per rolling hour and prevents overlapping scans.
 - The password checker uses Web Crypto in the browser. It requests a padded range with only the first five hash characters, matches the suffix on-device and keeps no history.
+- Each of the top three breach plans asks whether the account is still used. Choosing no shows steps for closing it with the provider. Answers are editable, exported and deleted with the account.
 - The E3 pricing survey records a first choice after viewing results. The internal [free-check funnel query](supabase/reports/free-check-funnel.sql) reports completed checks, seven-day activation and paid intent. Sample choices stay local and are excluded.
 - Account controls provide a JSON export and hard deletion of the active account. Foreign keys cascade deletion to saved results and progress. The app has its own privacy notice.
 
@@ -44,6 +45,6 @@ The built route passed a headless Chromium walkthrough using mocked providers, i
 
 ## Next
 
-1. Complete the P1 follow-up for accounts the user no longer uses and record actual time spent if useful in the beta.
+1. Build the browser-local inventory import and review flow. Record actual fix time if it becomes useful in the beta.
 2. Set up and verify the private preview. Before public signup, settle provider backup and log retention, scheduled expiry of rate-limit data, abuse protection and operational monitoring. Complete the launch-list import and public-launch items in the build plan.
 3. Continue with signed authority, browser-local account import, the company directory, request drafts and the concierge admin queue.

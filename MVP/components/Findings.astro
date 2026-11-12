@@ -1,4 +1,6 @@
 ---
+import AccountUse from './AccountUse.astro';
+import type { AccountUseByBreach } from '../lib/account-use.ts';
 import { stepKey, type Finding, type Progress } from '../lib/findings.ts';
 
 interface Props {
@@ -8,9 +10,10 @@ interface Props {
   sample: boolean;
   action: string;
   browserProgress?: boolean;
+  accountUse?: AccountUseByBreach;
 }
 
-const { findings, progress, checkedAt, sample, action, browserProgress = false } = Astro.props;
+const { findings, progress, checkedAt, sample, action, browserProgress = false, accountUse = {} } = Astro.props;
 const top = findings.slice(0, 3);
 const remaining = findings.slice(3);
 const completed = top.flatMap((finding) => finding.steps.map((step) => progress[stepKey(finding, step)]))
@@ -39,7 +42,7 @@ const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: '
         const total = finding.steps.reduce((minutes, step) => minutes + step.minutes, 0);
         return (
           <li class="check-finding">
-            <details open={index === 0}>
+            <details open={index === 0 || !!accountUse[finding.id]}>
               <summary class="check-finding-summary">
                 <div>
                   <h3>{finding.title}</h3>
@@ -84,6 +87,8 @@ const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: '
                     );
                   })}
                 </ol>
+                <AccountUse id={finding.id} title={finding.title} index={index} action={action}
+                  choice={accountUse[finding.id]} preview={browserProgress} />
               </div>
             </details>
           </li>

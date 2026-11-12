@@ -123,3 +123,10 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 .check-plan-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .6rem; }
 .check-plan-option { display: grid; align-content: center; justify-content: start; text-align: start; padding: .75rem; }
 .check-plan-option span { font-weight: 400; font-size: var(--small); color: var(--text-muted); }
+
+.check-account-use { display: grid; gap: .5rem; padding-block: .8rem 1rem; border-top: 1px solid var(--check-border); }
+.check-account-use fieldset { border: 0; margin: 0; min-inline-size: 0; padding: 0; }
+.check-account-use legend { font-weight: 700; margin-bottom: .55rem; }
+.check-choice-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.check-choice-row button[aria-pressed="true"] { color: var(--bone-ink); background: var(--bone); }
+.check-account-use p:empty { margin-block: -.25rem; }

@@ -1,0 +1,31 @@
+---
+import { accountUseChoices, accountUseMessages, type AccountUse } from '../lib/account-use.ts';
+
+interface Props {
+  id: string;
+  title: string;
+  index: number;
+  action: string;
+  choice?: AccountUse;
+  preview?: boolean;
+}
+const { id, title, index, action, choice, preview } = Astro.props;
+---
+<div id={`account-use-${index}`} class="check-account-use">
+  <form method="post" action={action} data-preview-use={preview ? id : undefined}>
+    <input type="hidden" name="intent" value="account-use" />
+    <input type="hidden" name="breach" value={id} />
+    <fieldset>
+      <legend>Do you still use {title}?</legend>
+      <div class="check-choice-row">
+        {Object.entries(accountUseChoices).map(([value, label]) => (
+          <button type="submit" class="check-button check-button-small" name="use" value={value}
+            aria-pressed={choice === value ? 'true' : 'false'} disabled={preview}>{label}</button>
+        ))}
+      </div>
+    </fieldset>
+  </form>
+  <p data-preview-use-result={preview || undefined} role="status">{choice && accountUseMessages[choice]}</p>
+  {choice === 'close' && <p class="check-meta">If you can’t sign in, ask the service’s official support team for its closure process.</p>}
+  {preview && <p data-preview-close-tip class="check-meta" hidden>If you can’t sign in, ask the service’s official support team for its closure process.</p>}
+</div>
