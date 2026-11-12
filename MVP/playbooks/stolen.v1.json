@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "branches": [
+    {
+      "sensitivity": 5, "chance": 0.9, "reason": "Someone could use the exposed payment details to make unauthorised transactions.",
+      "classes": ["Bank account numbers", "Credit cards", "Credit card numbers", "Payment histories"],
+      "steps": [
+        { "id": "contact-bank", "title": "Contact your bank", "instructions": "Use the number on your card or in your banking app. Ask about replacing the card, check recent transactions and turn on transaction alerts.", "minutes": 10 }
+      ]
+    },
+    {
+      "sensitivity": 5, "chance": 0.8, "reason": "These details could help someone impersonate you or open credit in your name.",
+      "classes": ["Dates of birth", "Government issued IDs", "Passport numbers", "Social security numbers", "Tax identification numbers", "National ID numbers"],
+      "steps": [
+        { "id": "review-credit", "title": "Check for unfamiliar credit activity", "instructions": "Review your credit report where available. If you see an account or application you do not recognise, contact the organisation directly using its official details.", "minutes": 15 }
+      ]
+    },
+    {
+      "sensitivity": 4, "chance": 0.95, "reason": "Someone could try the exposed password on this service or anywhere you reused it.",
+      "classes": ["Passwords", "Historical passwords", "Password hints"],
+      "steps": [
+        { "id": "change-password", "title": "Change the password for this service", "instructions": "Open the service directly and use its security settings to set a new, unique password. If you cannot sign in, use the service’s official password reset.", "minutes": 3 },
+        { "id": "replace-reused", "title": "Replace reused passwords", "instructions": "If you used this password on other accounts, change each one to a different password. Start with your email and financial accounts.", "minutes": 5 },
+        { "id": "enable-two-factor", "title": "Add a second sign-in step", "instructions": "Turn on a passkey or two-factor authentication where available, then sign out any sessions you do not recognise.", "minutes": 4 }
+      ]
+    },
+    {
+      "sensitivity": 4, "chance": 0.9, "reason": "Exposed answers can help someone get through account recovery.",
+      "classes": ["Security questions and answers"],
+      "steps": [
+        { "id": "change-recovery", "title": "Replace exposed recovery answers", "instructions": "Change your security answers on the breached service and any other account where you reused them.", "minutes": 5 }
+      ]
+    },
+    {
+      "sensitivity": 4, "chance": 0.7, "reason": "Someone could use an exposed address to make a call or message sound legitimate.",
+      "classes": ["Physical addresses", "Geographic locations"],
+      "steps": [
+        { "id": "check-address-message", "title": "Check unexpected messages about your address", "instructions": "If a message mentions a delivery or your home address, check it through the sender’s official website or app before replying or paying.", "minutes": 2 }
+      ]
+    },
+    {
+      "sensitivity": 3, "chance": 0.85, "reason": "Your number could be used in targeted calls or attempts to take control of your SIM.",
+      "classes": ["Phone numbers"],
+      "steps": [
+        { "id": "protect-number", "title": "Protect your phone number", "instructions": "Ask your carrier if it offers a SIM-swap or port-out PIN. Where available, use a passkey or authenticator app for important accounts.", "minutes": 10 }
+      ]
+    },
+    {
+      "sensitivity": 3, "chance": 0.8, "reason": "Someone could use these details to make an email about this service look genuine.",
+      "classes": ["Email addresses"],
+      "steps": [
+        { "id": "check-email-sender", "title": "Check unexpected messages about this service", "instructions": "Open the service directly instead of following a link in an unexpected message. Look up any warning in your account.", "minutes": 1 }
+      ]
+    }
+  ],
+  "stealer": {
+    "sensitivity": 5, "chance": 0.9, "reason": "Malware can steal saved sign-ins and keep collecting new ones from the same device.",
+    "steps": [
+      { "id": "clean-device", "title": "Check the affected device for malware", "instructions": "Run a full scan with trusted security software. Use a different device you trust for sensitive sign-ins while you investigate.", "minutes": 30 },
+      { "id": "rotate-on-clean-device", "title": "Secure your accounts from a trusted device", "instructions": "Change the passwords for email, banking and your password manager first. Sign out other sessions and check recovery addresses and forwarding rules.", "minutes": 20 }
+    ]
+  },
+  "fallback": {
+    "sensitivity": 2, "chance": 0.7, "reason": "Exposed account details can make impersonation messages sound more convincing.",
+    "steps": [
+      { "id": "review-security", "title": "Review the account’s security settings", "instructions": "Open the service directly, review recent sign-ins and check whether two-factor authentication is available.", "minutes": 3 }
+    ]
+  }
+}

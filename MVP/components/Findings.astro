@@ -1,0 +1,96 @@
+---
+import { stepKey, type Finding, type Progress } from '../lib/findings.ts';
+
+interface Props {
+  findings: Finding[];
+  progress: Progress;
+  checkedAt: string;
+  sample: boolean;
+  action: string;
+}
+
+const { findings, progress, checkedAt, sample, action } = Astro.props;
+const top = findings.slice(0, 3);
+const remaining = findings.slice(3);
+const completed = top.flatMap((finding) => finding.steps.map((step) => progress[stepKey(finding, step)]))
+  .filter((outcome) => outcome?.status === 'done').length;
+const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' });
+---
+<section class="check-intro" aria-labelledby="check-title">
+  <p class="check-label">{sample ? 'Sample results' : 'Free leak check'}</p>
+  <h1 id="check-title">{findings.length ? `${findings.length} ${findings.length === 1 ? 'breach' : 'breaches'} found.` : 'No breaches found.'}</h1>
+  <p>{findings.length
+    ? 'Start with the fixes below. Each one shows what was exposed, why it matters and how long the fix takes.'
+    : 'This address did not appear in the breaches available to this check. Keep using unique passwords and turn on two-factor authentication for important accounts.'}</p>
+  {!sample && <p class="check-meta">Checked <time datetime={checkedAt}>{date.format(new Date(checkedAt))}</time> · Source <a href="https://haveibeenpwned.com/">Have I Been Pwned</a></p>}
+</section>
+
+{top.length > 0 && (
+  <section class="check-results" aria-labelledby="fix-heading">
+    <header class="check-section-head">
+      <h2 id="fix-heading">Your next fixes</h2>
+      <p class:list={['check-meta', { 'check-done': completed > 0 }]}>{completed} {completed === 1 ? 'step' : 'steps'} done</p>
+    </header>
+    <ol class="check-findings">
+      {top.map((finding, index) => {
+        const total = finding.steps.reduce((minutes, step) => minutes + step.minutes, 0);
+        return (
+          <li class="check-finding">
+            <details open={index === 0}>
+              <summary class="check-finding-summary">
+                <div>
+                  <h3>{finding.title}</h3>
+                  <p class="check-meta">Breach date <time datetime={finding.date}>{date.format(new Date(finding.date))}</time></p>
+                </div>
+                <span class="check-effort">About {total} min</span>
+              </summary>
+              <div class="check-finding-body">
+                <p class="check-meta">Exposed data · {finding.dataClasses.join(', ') || 'Details unavailable'}</p>
+                <p>{finding.reason}</p>
+                <ol class="check-steps">
+                  {finding.steps.map((step) => {
+                    const key = stepKey(finding, step);
+                    const outcome = progress[key];
+                    const anchor = `step-${index}-${step.id}`;
+                    return (
+                      <li id={anchor} class="check-step">
+                        <div>
+                          <h4>{step.title}</h4>
+                          <p class="check-meta">About {step.minutes} min</p>
+                          <p>{step.instructions}</p>
+                          {outcome && <p class:list={['check-outcome', { 'check-done': outcome.status === 'done' }]}>
+                            {outcome.status === 'done' ? 'Marked done by you' : `Skipped · ${outcome.reason}`}
+                            {' · '}<time datetime={outcome.at}>{date.format(new Date(outcome.at))}</time>
+                          </p>}
+                        </div>
+                        <form class="check-step-form" method="post" action={action}>
+                          <input type="hidden" name="intent" value="progress" />
+                          <input type="hidden" name="step" value={key} />
+                          <button class="check-button check-button-small" name="outcome" value={outcome ? 'undo' : 'done'} aria-label={`${outcome ? 'Undo' : 'Mark done'} · ${step.title}`}>
+                            {outcome ? 'Undo' : 'Mark done'}
+                          </button>
+                          {!outcome && <details class="check-skip">
+                            <summary>Skip step</summary>
+                            <label for={`reason-${anchor}`}>Reason</label>
+                            <input id={`reason-${anchor}`} name="reason" maxlength="120" />
+                            <button class="check-button check-button-small" name="outcome" value="skipped">Save reason</button>
+                          </details>}
+                        </form>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            </details>
+          </li>
+        );
+      })}
+    </ol>
+    {remaining.length > 0 && <details class="check-other">
+      <summary>{remaining.length} other {remaining.length === 1 ? 'breach' : 'breaches'}</summary>
+      <ul>
+        {remaining.map((finding) => <li><strong>{finding.title}</strong> · <time datetime={finding.date}>{date.format(new Date(finding.date))}</time></li>)}
+      </ul>
+    </details>}
+  </section>
+)}
