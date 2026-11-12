@@ -16,7 +16,13 @@ Updated 12 November 2026. Continue on the existing `MVP` branch and push each ma
 
 Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are missing, then `npm run dev`. Open `/app/` or go directly to `/app/?sample=1`. The sample needs no provider credentials. The separate password checker uses the public Pwned Passwords range API and needs no sign-in.
 
-## Connect a private preview
+## Hosted sample preview
+
+[Open the private cloud preview](https://koverr-mvp-preview.kondrat-adrian.chatgpt.site). Sign in to ChatGPT with the account that owns the Site if prompted. The cloud build uses the same sample findings, playbook, styling and password checker as the application. Sample progress stays in the browser tab and clears when you exit the sample. The preview has no email signup or personal breach lookup.
+
+The static preview source is in `MVP/preview/`. Build it from the repository root with `node node_modules/astro/bin/astro.mjs build --config MVP/preview/astro.config.mjs --outDir dist/preview`. ChatGPT Sites project ID is `appgprj_6af5c87a174881919bfe32be11ec951d`. Reuse that private Site and its source checkout for future updates. The deployment includes only the preview source and shared files it imports.
+
+## Connect a private live preview
 
 1. Apply [the migration](supabase/migrations/20261112140000_free_check.sql) to a UK or EU Supabase project. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
 2. Copy [the environment template](.env.example) to `MVP/.env` and fill in the exact app origin, Supabase URL and keys, and a Have I Been Pwned key that supports breached-account lookups. Keep the service-role and breach-index keys on the server. The live form is available only at the configured origin.

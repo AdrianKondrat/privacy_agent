@@ -1,0 +1,28 @@
+---
+import Shell from '../../../../../src/layouts/Shell.astro';
+import Brand from '../../../../../src/components/Brand.astro';
+import Findings from '../../../../components/Findings.astro';
+import { demoDate } from '../../../../lib/demo.ts';
+import { sampleFindings } from '../../../../lib/sample.ts';
+import '../../../../styles.css';
+---
+<Shell title="Sample leak check · Koverr" description="Explore fictional breaches and try tracking a fix." noindex>
+  <div class="check-app" data-koverr-preview>
+    <header class="check-header">
+      <div class="wrap check-header-inner">
+        <Brand />
+        <a class="check-link" href="/" data-preview-reset>Exit sample</a>
+      </div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <p class="check-notice">Sample data only. These findings are fictional.</p>
+      <noscript><p class="check-notice">Enable JavaScript to track sample fixes.</p></noscript>
+      <Findings findings={sampleFindings} progress={{}} checkedAt={demoDate} sample action="/app/" browserProgress />
+    </main>
+  </div>
+</Shell>
+
+<script>
+  import { mountPreviewProgress } from '../../../progress.ts';
+  mountPreviewProgress();
+</script>

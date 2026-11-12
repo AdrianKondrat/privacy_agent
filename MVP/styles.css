@@ -113,3 +113,6 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 #password-check fieldset { border: 0; min-inline-size: 0; padding: 0; margin: 0; }
 #password-check button { width: 100%; }
 #password-result:not(:empty) { margin-top: .85rem; }
+
+[data-koverr-preview] [hidden] { display: none; }
+[data-preview-error]:not(:empty) { margin-bottom: .85rem; }

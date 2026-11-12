@@ -7,9 +7,10 @@ interface Props {
   checkedAt: string;
   sample: boolean;
   action: string;
+  browserProgress?: boolean;
 }
 
-const { findings, progress, checkedAt, sample, action } = Astro.props;
+const { findings, progress, checkedAt, sample, action, browserProgress = false } = Astro.props;
 const top = findings.slice(0, 3);
 const remaining = findings.slice(3);
 const completed = top.flatMap((finding) => finding.steps.map((step) => progress[stepKey(finding, step)]))
@@ -30,8 +31,9 @@ const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: '
   <section class="check-results" aria-labelledby="fix-heading">
     <header class="check-section-head">
       <h2 id="fix-heading">Your next fixes</h2>
-      <p class:list={['check-meta', { 'check-done': completed > 0 }]}>{completed} {completed === 1 ? 'step' : 'steps'} done</p>
+      <p data-preview-count={browserProgress || undefined} aria-live={browserProgress ? "polite" : undefined} class:list={['check-meta', { 'check-done': completed > 0 }]}>{completed} {completed === 1 ? 'step' : 'steps'} done</p>
     </header>
+    {browserProgress && <p data-preview-error role="alert"></p>}
     <ol class="check-findings">
       {top.map((finding, index) => {
         const total = finding.steps.reduce((minutes, step) => minutes + step.minutes, 0);
@@ -59,22 +61,23 @@ const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: '
                           <h4>{step.title}</h4>
                           <p class="check-meta">About {step.minutes} min</p>
                           <p>{step.instructions}</p>
-                          {outcome && <p class:list={['check-outcome', { 'check-done': outcome.status === 'done' }]}>
+                          {browserProgress ? <p class="check-outcome" data-preview-outcome aria-live="polite"></p> : outcome && <p class:list={['check-outcome', { 'check-done': outcome.status === 'done' }]}>
                             {outcome.status === 'done' ? 'Marked done by you' : `Skipped · ${outcome.reason}`}
                             {' · '}<time datetime={outcome.at}>{date.format(new Date(outcome.at))}</time>
                           </p>}
                         </div>
-                        <form class="check-step-form" method="post" action={action}>
+                        <form class="check-step-form" method="post" action={action} data-preview-step={browserProgress ? key : undefined}>
                           <input type="hidden" name="intent" value="progress" />
                           <input type="hidden" name="step" value={key} />
-                          <button class="check-button check-button-small" name="outcome" value={outcome ? 'undo' : 'done'} aria-label={`${outcome ? 'Undo' : 'Mark done'} · ${step.title}`}>
+                          <button disabled={browserProgress} class="check-button check-button-small" name="outcome" value={outcome ? 'undo' : 'done'} aria-label={`${outcome ? 'Undo' : 'Mark done'} · ${step.title}`}>
                             {outcome ? 'Undo' : 'Mark done'}
                           </button>
+                          {browserProgress && <button class="check-button check-button-small" name="outcome" value="undo" aria-label={`Undo · ${step.title}`} hidden>Undo</button>}
                           {!outcome && <details class="check-skip">
                             <summary>Skip step</summary>
                             <label for={`reason-${anchor}`}>Reason</label>
                             <input id={`reason-${anchor}`} name="reason" maxlength="120" />
-                            <button class="check-button check-button-small" name="outcome" value="skipped">Save reason</button>
+                            <button disabled={browserProgress} class="check-button check-button-small" name="outcome" value="skipped">Save reason</button>
                           </details>}
                         </form>
                       </li>

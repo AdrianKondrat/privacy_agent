@@ -1,0 +1,20 @@
+---
+import Shell from '../../../../../../src/layouts/Shell.astro';
+import Brand from '../../../../../../src/components/Brand.astro';
+import '../../../../../styles.css';
+---
+<Shell title="MVP preview privacy · Koverr" description="How the Koverr preview uses data." noindex referrerPolicy="no-referrer">
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/">Back to preview</a></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <article class="check-privacy check-intro">
+        <h1>Preview privacy</h1>
+        <p>The leak check uses fictional results. Fix progress and any skip reasons stay in the current browser tab. Select Exit sample to clear them.</p>
+        <h2>Password check</h2>
+        <p>Your browser sends only the first five characters of a hash to <a href="https://haveibeenpwned.com/Passwords">Pwned Passwords</a>. It matches the returned candidates locally and clears the input. Koverr receives neither the password nor its hash and does not store the result.</p>
+      </article>
+    </main>
+  </div>
+</Shell>

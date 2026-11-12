@@ -1,0 +1,27 @@
+---
+import Shell from '../../../../src/layouts/Shell.astro';
+import Brand from '../../../../src/components/Brand.astro';
+import '../../../styles.css';
+---
+<Shell title="Koverr MVP Preview" description="Try Koverr’s free leak check with sample data." noindex>
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <section class="check-start" aria-labelledby="check-title">
+        <div class="check-intro">
+          <p class="check-label">Koverr MVP preview</p>
+          <h1 id="check-title">Find where your email leaked.</h1>
+          <p>See what was exposed in known breaches and get step-by-step fixes for the ones to tackle first.</p>
+        </div>
+        <div class="check-panel">
+          <h2>Try a sample check</h2>
+          <p>Explore fictional findings and track the fixes you try. Live email verification and personal breach searches are pending.</p>
+          <a class="check-button check-primary" href="/app/">View sample results</a>
+          <p class="check-meta"><a href="/app/password/">Check a password in your browser</a></p>
+        </div>
+      </section>
+    </main>
+  </div>
+</Shell>

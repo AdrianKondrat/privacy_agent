@@ -17,6 +17,7 @@ Astro.response.headers.set('X-Frame-Options', 'DENY');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content={referrerPolicy} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0f0f0e" />
     {noindex && <meta name="robots" content="noindex, follow" />}
@@ -25,6 +26,7 @@ Astro.response.headers.set('X-Frame-Options', 'DENY');
     <meta property="og:description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
+    <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
