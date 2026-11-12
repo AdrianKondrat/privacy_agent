@@ -4,12 +4,13 @@ Updated 12 November 2026. Continue on the existing `MVP` branch and push each ma
 
 ## Built
 
-- The implementation lives in `MVP/`. A small Astro integration mounts `/app/`, `/app/privacy/` and `/app/password/` in the existing project, using the shared shell and design tokens.
+- The implementation lives in `MVP/`. A small Astro integration mounts `/app/`, `/app/privacy/` `/app/password/` and `/app/inventory/` in the existing project, using the shared shell and design tokens.
 - Sample mode uses five fictional breaches. Done, skip and undo use a short-lived sample cookie that is cleared when the user exits.
 - The live free check sends a six-digit Supabase email code. Only a session with a confirmed email can reserve a scan. The lookup address comes from Supabase Auth, and the browser cannot supply a different address to scan.
 - The Have I Been Pwned adapter distinguishes a clean response from provider failures. It stores breach metadata and ranks the next three fixes from a versioned Stolen playbook.
 - Postgres stores the scan snapshot and fix outcomes. Row-level security scopes reads to the account owner. Only the server writes these tables. The database limits verification requests to five per address per rolling hour and prevents overlapping scans.
 - The password checker uses Web Crypto in the browser. It requests a padded range with only the first five hash characters, matches the suffix on-device and keeps no history.
+- The browser-local inventory imports CSV or accepts manual domains, deduplicates registrable sites, and records Keep, Close or Not sure in memory. Close reveals the next step and an official guide for the starter directory. Reloading clears the list. Nothing is uploaded.
 - Each of the top three breach plans asks whether the account is still used. Choosing no shows steps for closing it with the provider. Answers are editable, exported and deleted with the account.
 - The E3 pricing survey records a first choice after viewing results. The internal [free-check funnel query](supabase/reports/free-check-funnel.sql) reports completed checks, seven-day activation and paid intent. Sample choices stay local and are excluded.
 - Account controls provide a JSON export and hard deletion of the active account. Foreign keys cascade deletion to saved results and progress. The app has its own privacy notice.
@@ -20,7 +21,7 @@ Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are
 
 ## Hosted sample preview
 
-[Open the private cloud preview](https://koverr-mvp-preview.kondrat-adrian.chatgpt.site). Sign in to ChatGPT with the account that owns the Site if prompted. The cloud build uses the same sample findings, playbook, styling and password checker as the application. Sample progress stays in the browser tab and clears when you exit the sample. The preview has no email signup or personal breach lookup.
+[Open the private cloud preview](https://koverr-mvp-preview.kondrat-adrian.chatgpt.site). Sign in to ChatGPT with the account that owns the Site if prompted. The cloud build uses the same sample findings, playbook, styling and password checker as the application. Sample progress, closure answers and the sample pricing choice stay in the browser tab and clear when you exit the sample. The separate inventory screen also runs locally in the browser. The preview has no email signup or personal breach lookup.
 
 The static preview source is in `MVP/preview/`. Build it from the repository root with `node node_modules/astro/bin/astro.mjs build --config MVP/preview/astro.config.mjs --outDir dist/preview`. ChatGPT Sites project ID is `appgprj_6af5c87a174881919bfe32be11ec951d`. Reuse that private Site and its source checkout for future updates. The deployment includes only the preview source and shared files it imports.
 
@@ -41,10 +42,10 @@ npm run check
 npm run build
 ```
 
-The built route passed a headless Chromium walkthrough using mocked providers, including a wrong code, verification, scan, completion, undo, export and deletion. The migration passed an embedded Postgres check for OTP limits, scan retries, per-account reads, write restrictions and cascading deletion. Have I Been Pwned returned a result for its documented synthetic account using its public test key. On a mobile Chromium viewport, the real password-range lookup sent only the expected five-character prefix and made no request to Koverr. Live Supabase, SMTP and production breach-index credentials remain unconfigured.
+The built route passed a headless Chromium walkthrough using mocked providers, including a wrong code, verification, scan, completion, undo, export and deletion. The migrations passed embedded Postgres checks for OTP limits, scan retries, per-account reads, write restrictions, pricing deduplication, activation event capture and cascading deletion. Have I Been Pwned returned a result for its documented synthetic account using its public test key. On a mobile Chromium viewport, the real password-range lookup sent only the expected five-character prefix and made no request to Koverr. Live Supabase, SMTP and production breach-index credentials remain unconfigured.
 
 ## Next
 
-1. Build the browser-local inventory import and review flow. Record actual fix time if it becomes useful in the beta.
-2. Set up and verify the private preview. Before public signup, settle provider backup and log retention, scheduled expiry of rate-limit data, abuse protection and operational monitoring. Complete the launch-list import and public-launch items in the build plan.
-3. Continue with signed authority, browser-local account import, the company directory, request drafts and the concierge admin queue.
+1. Connect a private live preview with Supabase, SMTP and production breach-index credentials. Confirm backup and log retention, scheduled expiry of rate-limit data, abuse controls and operational monitoring. Import the launch list before expanding access.
+2. Expand the company directory and add server-side, domain-only inventory persistence behind the paid entitlement. Match to saved breaches where a service domain is known. Add reviewed policy classifications and a research queue for unknown domains. The current starter directory contains official closure instructions for Google, Apple and Microsoft.
+3. Continue with signed authority, request drafts and the concierge admin queue. Have the authority and templates reviewed before live sending. The pricing survey captures interest and has no checkout.

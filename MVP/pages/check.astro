@@ -215,6 +215,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
           <p class="check-notice">Sample data only. These findings are fictional.</p>
           <Findings findings={sampleFindings} progress={progress} accountUse={accountUse} checkedAt={demoDate} sample action={sampleUrl} />
           <PlanPicker action={sampleUrl} choice={planChoice} />
+          <p><a href="/app/inventory/">Try the account inventory</a></p>
         </>
       ) : identity ? (
         <>
@@ -291,6 +292,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
               <>
                 <h2>Try a sample check</h2>
                 <p>See what results and fixes look like using fictional breaches.</p>
+                <p class="check-meta"><a href="/app/inventory/">Try the account inventory</a></p>
               </>
             )}
             <a class:list={['check-button', { 'check-primary': !live }]} href={sampleUrl}>View sample results</a>

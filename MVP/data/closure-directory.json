@@ -1,0 +1,9 @@
+{
+  "google.com": { "name": "Google", "guide": "https://support.google.com/accounts/answer/32046?hl=en" },
+  "gmail.com": { "name": "Google", "guide": "https://support.google.com/accounts/answer/32046?hl=en" },
+  "apple.com": { "name": "Apple", "guide": "https://support.apple.com/en-us/102283" },
+  "icloud.com": { "name": "Apple", "guide": "https://support.apple.com/en-us/102283" },
+  "microsoft.com": { "name": "Microsoft", "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account" },
+  "live.com": { "name": "Microsoft", "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account" },
+  "outlook.com": { "name": "Microsoft", "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account" }
+}

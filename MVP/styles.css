@@ -130,3 +130,15 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 .check-choice-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 .check-choice-row button[aria-pressed="true"] { color: var(--bone-ink); background: var(--bone); }
 .check-account-use p:empty { margin-block: -.25rem; }
+
+[data-inventory] [hidden] { display: none; }
+[data-inventory-message]:empty { margin-block: -.425rem; }
+.inventory-results .check-choice-row { align-items: center; }
+.inventory-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.inventory-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .6rem 1rem; align-items: center; padding: .8rem 1rem; background: var(--card); overflow-wrap: anywhere; }
+.inventory-choice { min-height: 44px; padding: .35rem .55rem; color: var(--text); background: var(--raised); border: 1px solid var(--x2); border-radius: 2px; font: inherit; }
+.inventory-guidance { grid-column: 1 / -1; padding-top: .5rem; border-top: 1px solid var(--check-border); }
+@media (max-width: 460px) {
+  .inventory-list li { grid-template-columns: 1fr; }
+  .inventory-choice { justify-self: start; }
+}

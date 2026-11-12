@@ -22,7 +22,8 @@ totals as (
     count(*) filter (where verified_at <= now() - interval '7 days') as activation_eligible,
     count(*) filter (
       where verified_at <= now() - interval '7 days'
-        and seen_at is not null and first_fix_at between verified_at and verified_at + interval '7 days'
+        and seen_at between verified_at and verified_at + interval '7 days'
+        and first_fix_at between seen_at and verified_at + interval '7 days'
     ) as activated_within_seven_days,
     count(seen_at) as plan_picker_views,
     count(*) filter (where choice = 'once') as once_choices,
