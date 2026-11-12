@@ -241,6 +241,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
               </>
             )}
             <a class:list={['check-button', { 'check-primary': !live }]} href={sampleUrl}>View sample results</a>
+            {!pendingEmail && <p class="check-meta"><a href="/app/password/">Check a password in your browser</a></p>}
           </div>
         </section>
       )}

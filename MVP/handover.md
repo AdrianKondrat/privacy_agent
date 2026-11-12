@@ -4,16 +4,17 @@ Updated 12 November 2026. Continue on the existing `MVP` branch and push each ma
 
 ## Built
 
-- The implementation lives in `MVP/`. A small Astro integration mounts `/app/` and `/app/privacy/` in the existing project, using the shared shell and design tokens.
+- The implementation lives in `MVP/`. A small Astro integration mounts `/app/`, `/app/privacy/` and `/app/password/` in the existing project, using the shared shell and design tokens.
 - Sample mode uses five fictional breaches. Done, skip and undo use a short-lived sample cookie that is cleared when the user exits.
 - The live free check sends a six-digit Supabase email code. Only a session with a confirmed email can reserve a scan. The lookup address comes from Supabase Auth, and the browser cannot supply a different address to scan.
 - The Have I Been Pwned adapter distinguishes a clean response from provider failures. It stores breach metadata and ranks the next three fixes from a versioned Stolen playbook.
 - Postgres stores the scan snapshot and fix outcomes. Row-level security scopes reads to the account owner. Only the server writes these tables. The database limits verification requests to five per address per rolling hour and prevents overlapping scans.
+- The password checker uses Web Crypto in the browser. It requests a padded range with only the first five hash characters, matches the suffix on-device and keeps no history.
 - Account controls provide a JSON export and hard deletion of the active account. Foreign keys cascade deletion to saved results and progress. The app has its own privacy notice.
 
 ## Run the sample
 
-Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are missing, then `npm run dev`. Open `/app/` or go directly to `/app/?sample=1`. The sample needs no provider credentials.
+Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are missing, then `npm run dev`. Open `/app/` or go directly to `/app/?sample=1`. The sample needs no provider credentials. The separate password checker uses the public Pwned Passwords range API and needs no sign-in.
 
 ## Connect a private preview
 
@@ -32,10 +33,10 @@ npm run check
 npm run build
 ```
 
-The built route passed a headless Chromium walkthrough using mocked providers, including a wrong code, verification, scan, completion, undo, export and deletion. The migration passed an embedded Postgres check for OTP limits, scan retries, per-account reads, write restrictions and cascading deletion. Live Supabase, SMTP and breach-index credentials have not been configured or tested.
+The built route passed a headless Chromium walkthrough using mocked providers, including a wrong code, verification, scan, completion, undo, export and deletion. The migration passed an embedded Postgres check for OTP limits, scan retries, per-account reads, write restrictions and cascading deletion. Have I Been Pwned returned a result for its documented synthetic account using its public test key. On a mobile Chromium viewport, the real password-range lookup sent only the expected five-character prefix and made no request to Koverr. Live Supabase, SMTP and production breach-index credentials remain unconfigured.
 
 ## Next
 
-1. Add the browser-only password range check, the E3 plan picker and internal experiment events. Complete the P1 follow-up for accounts the user no longer uses and record actual time spent if useful in the beta.
+1. Add the E3 plan picker and internal experiment events. Complete the P1 follow-up for accounts the user no longer uses and record actual time spent if useful in the beta.
 2. Set up and verify the private preview. Before public signup, settle provider backup and log retention, scheduled expiry of rate-limit data, abuse protection and operational monitoring. Complete the launch-list import and public-launch items in the build plan.
 3. Continue with signed authority, browser-local account import, the company directory, request drafts and the concierge admin queue.

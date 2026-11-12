@@ -23,6 +23,7 @@ const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: '
     ? 'Start with the fixes below. Each one shows what was exposed, why it matters and how long the fix takes.'
     : 'This address did not appear in the breaches available to this check. Keep using unique passwords and turn on two-factor authentication for important accounts.'}</p>
   {!sample && <p class="check-meta">Checked <time datetime={checkedAt}>{date.format(new Date(checkedAt))}</time> · Source <a href="https://haveibeenpwned.com/">Have I Been Pwned</a></p>}
+  {!sample && <p class="check-meta"><a href="/app/password/">Check a password in your browser</a></p>}
 </section>
 
 {top.length > 0 && (

@@ -109,3 +109,7 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 .check-delete { max-width: 480px; }
 .check-privacy { max-width: 720px; display: grid; gap: 1rem; }
 .check-privacy h2 { font-size: var(--step-2); margin-top: .5rem; }
+
+#password-check fieldset { border: 0; min-inline-size: 0; padding: 0; margin: 0; }
+#password-check button { width: 100%; }
+#password-result:not(:empty) { margin-top: .85rem; }
