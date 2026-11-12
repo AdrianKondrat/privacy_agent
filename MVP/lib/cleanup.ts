@@ -1,5 +1,6 @@
 import type { AstroCookies } from 'astro';
 import { liveCheck, liveConfig, supabaseRequest, type Config } from './live.ts';
+import { draftPermissionVersion, type DraftPermission, type DraftPermissionEvent } from './draft-permission.ts';
 import { knownDomains, type InventoryChoice } from './inventory.ts';
 
 export type SavedSite = { domain: string; choice: InventoryChoice; updated_at: string };
@@ -24,6 +25,14 @@ export function cleanupStore(config: Config, request = fetch) {
       rpc<'saved' | 'limit' | 'locked' | 'invalid'>('koverr_import_inventory', { user_id_arg: id, domains_arg: domains }),
     setInventoryChoice: (id: string, domain: string, choice: InventoryChoice) =>
       rpc<boolean>('koverr_set_inventory_choice', { user_id_arg: id, domain_arg: domain, choice_arg: choice }),
+    async permission(id: string) {
+      const rows = await read<DraftPermission[]>('koverr_draft_permission?' + owner(id) + '&select=active,version,changed_at');
+      return rows[0] ?? null;
+    },
+    setPermission: (id: string, grant: boolean) =>
+      rpc<boolean>('koverr_set_draft_permission', { user_id_arg: id, active_arg: grant, version_arg: draftPermissionVersion }),
+    permissionHistory: (id: string) =>
+      rpc<DraftPermissionEvent[]>('koverr_draft_permission_history', { user_id_arg: id }),
     directoryResearch: () =>
       rpc<{ domain: string; accounts: number }[]>('koverr_directory_research', { known_domains_arg: knownDomains }),
   };

@@ -1,0 +1,28 @@
+---
+import { draftPermissionText, draftPermissionVersion, type DraftPermission } from '../lib/draft-permission.ts';
+
+interface Props { permission?: DraftPermission | null; canGrant?: boolean; sample?: boolean }
+const { permission, canGrant = false, sample = false } = Astro.props;
+const active = !!permission?.active;
+const date = permission && new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(permission.changed_at));
+---
+<section class="check-panel check-draft-permission" id="draft-permission" aria-labelledby="draft-permission-title">
+  <h2 id="draft-permission-title">Permission to prepare drafts</h2>
+  <p role="status" data-permission-status={sample || undefined}>
+    {active ? 'Permission active' : permission ? 'Permission withdrawn' : 'Permission is off'}{date && ` · ${date}`}
+  </p>
+  {(sample || canGrant) && (
+    <form class="check-permission-form" action="/app/cleanup/" method="post" data-permission-grant={sample || undefined} hidden={active}>
+      <label class="check-agreement">
+        <input type="checkbox" name="agreement" value={draftPermissionVersion} required disabled={sample} />
+        <span>{draftPermissionText}</span>
+      </label>
+      <button class="check-button check-primary" name="intent" value="grant-permission" disabled={sample}>Agree and enable drafts</button>
+    </form>
+  )}
+  {(sample || active) && (
+    <form class="check-permission-form" action="/app/cleanup/" method="post" data-permission-revoke={sample || undefined} hidden={!active}>
+      <button class="check-button" name="intent" value="revoke-permission" disabled={sample}>Withdraw permission</button>
+    </form>
+  )}
+</section>

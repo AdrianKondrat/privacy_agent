@@ -142,3 +142,8 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
   .inventory-list li { grid-template-columns: 1fr; }
   .inventory-choice { justify-self: start; }
 }
+
+.check-draft-permission { margin-block: 2rem; }
+.check-permission-form[hidden] { display: none; }
+.check-agreement { display: flex; gap: .65rem; align-items: flex-start; max-width: 65ch; margin-bottom: .85rem; }
+.check-panel .check-agreement input[type="checkbox"] { display: inline-block; width: 1.2rem; height: 1.2rem; min-height: 0; flex: 0 0 auto; margin: .2rem 0 0; accent-color: var(--bone); }

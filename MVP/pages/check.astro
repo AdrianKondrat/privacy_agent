@@ -140,11 +140,13 @@ try {
       } else if (intent === 'progress' || intent === 'account-use' || intent === 'export') {
         ({ check, progress } = await live.read(token, identity));
         if (intent === 'export') {
+          const cleanup = config ? cleanupStore(config) : null;
           return new Response(JSON.stringify({
             account: { id: identity.id, email: identity.email, emailVerifiedAt: identity.verifiedAt },
             check: check ?? null,
             fixProgress: progress,
-            cleanupInventory: config ? await cleanupStore(config).inventory(identity.id) : [],
+            cleanupInventory: cleanup ? await cleanup.inventory(identity.id) : [],
+            draftPermissionHistory: cleanup ? await cleanup.permissionHistory(identity.id) : [],
             breachedAccountUse: await live.readAccountUse(token, identity),
             experimentEvents: await live.readEvents(token, identity),
           }, null, 2), {

@@ -1,17 +1,37 @@
 ---
 import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
+import DraftPermission from '../components/DraftPermission.astro';
+import { permissionIntent, type DraftPermission as Permission } from '../lib/draft-permission.ts';
 import InventoryBoard from '../components/InventoryBoard.astro';
 import { cleanupSession, hasCleanupAccess } from '../lib/cleanup.ts';
 import '../styles.css';
 
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 Astro.response.headers.set('Content-Security-Policy', "connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
-const session = await cleanupSession(Astro.url, Astro.cookies).catch(() => null);
-if (!session) return Astro.redirect('/app/', 303);
-const access = await session.store.access(session.user.id).catch(() => null);
-const enabled = hasCleanupAccess(access);
-if (!enabled) Astro.response.status = 403;
+let enabled = false;
+let permission: Permission | null = null;
+let error = '';
+try {
+  const session = await cleanupSession(Astro.url, Astro.cookies);
+  if (!session) return Astro.redirect('/app/', 303);
+  const { user, store } = session;
+  if (Astro.request.method === 'POST') {
+    if (Astro.request.headers.get('origin') !== Astro.url.origin) return new Response(null, { status: 403 });
+    const intent = permissionIntent(await Astro.request.formData());
+    if (intent && await store.setPermission(user.id, intent === 'grant')) return Astro.redirect('/app/cleanup/#draft-permission', 303);
+    error = intent ? 'Cleanup access is required to grant permission.' : 'Confirm the agreement before enabling drafts.';
+    Astro.response.status = intent ? 403 : 400;
+  }
+  const [access, current] = await Promise.all([store.access(user.id), store.permission(user.id)]);
+  enabled = hasCleanupAccess(access);
+  permission = current;
+  if (!enabled && !error) Astro.response.status = 403;
+} catch {
+  error = 'Could not open the Cleanup workspace. Please try again shortly.';
+  Astro.response.status = 503;
+}
+
 ---
 <Shell title="Cleanup workspace · Koverr" description="Review and save your account inventory." noindex referrerPolicy="same-origin">
   <div class="check-app">
@@ -19,6 +39,7 @@ if (!enabled) Astro.response.status = 403;
       <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/">Back to leak check</a></div>
     </header>
     <main id="main" class="wrap check-main">
+      {error && <p class="check-notice" role="alert">{error}</p>}
       {enabled ? <InventoryBoard saved /> : (
         <section class="check-panel check-ready">
           <h1>Cleanup access is required.</h1>
@@ -26,6 +47,7 @@ if (!enabled) Astro.response.status = 403;
           <p><a href="/app/inventory/">Try the browser-only inventory</a></p>
         </section>
       )}
+      {(enabled || permission?.active) && <DraftPermission permission={permission} canGrant={enabled} />}
     </main>
   </div>
 </Shell>

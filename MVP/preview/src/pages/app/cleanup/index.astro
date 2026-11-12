@@ -1,0 +1,26 @@
+---
+import Shell from '../../../../../../src/layouts/Shell.astro';
+import Brand from '../../../../../../src/components/Brand.astro';
+import DraftPermission from '../../../../../components/DraftPermission.astro';
+import '../../../../../styles.css';
+---
+<Shell title="Cleanup walkthrough · Koverr" description="Try the Cleanup draft workflow with fictional data." noindex>
+  <div class="check-app" data-concierge-preview>
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/" data-cleanup-exit>Exit walkthrough</a></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <p class="check-notice">Sample walkthrough. Your choices stay in this tab.</p>
+      <section class="check-intro" aria-labelledby="cleanup-title">
+        <h1 id="cleanup-title">Cleanup workspace.</h1>
+        <p>Try the permission screen that lets Koverr prepare account-closure drafts for your review.</p>
+      </section>
+      <DraftPermission sample />
+    </main>
+  </div>
+</Shell>
+
+<script>
+  import { mountConciergePreview } from '../../../../concierge.ts';
+  mountConciergePreview();
+</script>
