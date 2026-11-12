@@ -4,7 +4,7 @@ import type { PlanChoice, ProductEvent } from './experiment.ts';
 import { checkBreaches } from './breaches.ts';
 import { rankBreaches, resolveProgressChange, type Finding, type Outcome, type Progress } from './findings.ts';
 
-type Identity = { id: string; email: string; verifiedAt: string };
+export type Identity = { id: string; email: string; verifiedAt: string };
 type Session = { token: string; identity: Identity; expiresIn: number };
 type Check = {
   attempted_at: string;
@@ -42,7 +42,7 @@ export function liveConfig() {
   return { origin: app.origin, url: supabase.origin, publicKey, serviceKey, hibpKey };
 }
 
-type Config = NonNullable<ReturnType<typeof liveConfig>>;
+export type Config = NonNullable<ReturnType<typeof liveConfig>>;
 
 class ServiceError extends Error {
   readonly status: number;
@@ -53,8 +53,8 @@ class ServiceError extends Error {
   }
 }
 
-export function liveCheck(config: Config, request = fetch) {
-  async function call<T>(path: string, options: { method?: string; token?: string; admin?: boolean; body?: unknown; prefer?: string } = {}) {
+export function supabaseRequest(config: Config, request = fetch) {
+  return async function call<T>(path: string, options: { method?: string; token?: string; admin?: boolean; body?: unknown; prefer?: string } = {}) {
     const { method = 'GET', token, admin, body, prefer } = options;
     const key = admin ? config.serviceKey : config.publicKey;
     const headers = new Headers({ apikey: key });
@@ -68,7 +68,11 @@ export function liveCheck(config: Config, request = fetch) {
     if (!response.ok) throw new ServiceError(response.status);
     const payload = await response.text();
     return (payload ? JSON.parse(payload) : undefined) as T;
-  }
+  };
+}
+
+export function liveCheck(config: Config, request = fetch) {
+  const call = supabaseRequest(config, request);
 
   async function identify(token: string): Promise<Identity | null> {
     try {

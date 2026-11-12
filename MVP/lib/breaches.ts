@@ -1,3 +1,4 @@
+import { inventoryDomain } from './domains.ts';
 import type { Breach } from './findings.ts';
 
 export type BreachCheck = { state: 'complete'; breaches: Breach[] } | { state: 'failed' };
@@ -30,6 +31,7 @@ export async function checkBreaches(email: string, apiKey: string, request = fet
       breaches.set(record.Name, {
         id: record.Name, title: record.Title, date: record.BreachDate, dataClasses: record.DataClasses,
         stealer: record.IsStealerLog === true,
+        domain: typeof record.Domain === 'string' ? inventoryDomain(record.Domain) ?? undefined : undefined,
       });
     }
     return { state: 'complete', breaches: [...breaches.values()] };

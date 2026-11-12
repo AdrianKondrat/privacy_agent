@@ -1,0 +1,31 @@
+---
+import Shell from '../../src/layouts/Shell.astro';
+import Brand from '../../src/components/Brand.astro';
+import InventoryBoard from '../components/InventoryBoard.astro';
+import { cleanupSession, hasCleanupAccess } from '../lib/cleanup.ts';
+import '../styles.css';
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+Astro.response.headers.set('Content-Security-Policy', "connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
+const session = await cleanupSession(Astro.url, Astro.cookies).catch(() => null);
+if (!session) return Astro.redirect('/app/', 303);
+const access = await session.store.access(session.user.id).catch(() => null);
+const enabled = hasCleanupAccess(access);
+if (!enabled) Astro.response.status = 403;
+---
+<Shell title="Cleanup workspace · Koverr" description="Review and save your account inventory." noindex referrerPolicy="same-origin">
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/">Back to leak check</a></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      {enabled ? <InventoryBoard saved /> : (
+        <section class="check-panel check-ready">
+          <h1>Cleanup access is required.</h1>
+          <p>Saved inventory is available to Cleanup pilot accounts.</p>
+          <p><a href="/app/inventory/">Try the browser-only inventory</a></p>
+        </section>
+      )}
+    </main>
+  </div>
+</Shell>

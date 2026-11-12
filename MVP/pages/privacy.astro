@@ -16,7 +16,7 @@ import '../styles.css';
         <p>Supabase stores your email address and verification record. It delivers your code through the configured email provider. We keep a keyed fingerprint of the address to limit code requests. Expired rate-limit records are cleared when the service next processes a code request.</p>
         <p>When you run a check, Koverr sends your verified email address to <a href="https://haveibeenpwned.com/Privacy">Have I Been Pwned</a>. Koverr stores the check date, breach names, exposed data categories, suggested steps, the outcomes you record and whether you still use a breached service.</p>
         <h2>Account inventory</h2>
-        <p>The account inventory reads CSV files on the device and keeps the resulting domains and decisions in the current page. Koverr receives no file or inventory data. Reloading clears the list.</p>
+        <p>The account inventory reads CSV files on the device and keeps the resulting domains and decisions in the current page. The browser-only inventory uploads nothing. Reloading clears the browser-only list. If you use the Cleanup workspace and choose Save websites, we store the domains you select and the decisions you record. Passwords, usernames, notes and the CSV file stay on your device.</p>
         <h2>Password check</h2>
         <p>Your browser hashes the password and sends only the first five hash characters to <a href="https://haveibeenpwned.com/Passwords">Pwned Passwords</a>. It compares the returned candidates on your device. Koverr receives neither the password nor the hash and does not record the result.</p>
         <h2>Product research</h2>

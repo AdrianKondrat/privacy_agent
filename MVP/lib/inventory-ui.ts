@@ -3,8 +3,9 @@ import {
   inventoryLimit, parseInventoryCsv, type InventoryChoice,
 } from './inventory.ts';
 
-export function mountInventory() {
-  const root = document.querySelector('[data-inventory]');
+export async function mountInventory(root: HTMLElement) {
+  const saved = root.hasAttribute('data-inventory-saved');
+  const endpoint = '/app/cleanup/inventory/';
   const file = root?.querySelector<HTMLInputElement>('#inventory-file');
   const manual = root?.querySelector<HTMLFormElement>('#inventory-manual');
   const website = root?.querySelector<HTMLInputElement>('#inventory-website');
@@ -14,20 +15,31 @@ export function mountInventory() {
   const list = root?.querySelector('[data-inventory-list]');
   const count = root?.querySelector('[data-inventory-count]');
   const clear = root?.querySelector<HTMLButtonElement>('[data-inventory-clear]');
-  if (!file || !manual || !website || !sample || !message || !results || !list || !count || !clear) return;
+  const save = root.querySelector<HTMLButtonElement>('[data-inventory-save]');
+  if (!file || !manual || !website || !message || !results || !list || !count || !clear) return;
 
   const accounts = new Map<string, InventoryChoice>();
+  const persisted = new Set<string>();
+  const matches = new Set<string>();
   let importing = false;
+  let saving = false;
   const announce = (text: string) => { message.textContent = text; };
   const updateCount = () => {
     const close = [...accounts.values()].filter((choice) => choice === 'close').length;
     count.textContent = accounts.size + (accounts.size === 1 ? ' website' : ' websites') + ' · ' + close + ' marked for closure';
     results.hidden = accounts.size === 0;
+    if (save) {
+      const unsaved = accounts.size - persisted.size;
+      save.hidden = unsaved === 0;
+      clear.hidden = unsaved === 0;
+      save.textContent = 'Save ' + unsaved + (unsaved === 1 ? ' website' : ' websites');
+    }
   };
 
-  function createRow(domain: string) {
+  function createRow(domain: string, current: InventoryChoice) {
     const company = companyFor(domain);
     const row = document.createElement('li');
+    row.dataset.inventoryDomain = domain;
     const info = document.createElement('div');
     const title = document.createElement('strong');
     title.textContent = company ? company.name + ' · ' + domain : domain;
@@ -35,6 +47,12 @@ export function mountInventory() {
     status.className = 'check-meta';
     status.textContent = company ? 'Official closure guide available' : 'Closure route to review';
     info.append(title, status);
+    if (saved) {
+      const match = document.createElement('p');
+      match.className = 'check-meta';
+      match.textContent = matches.has(domain) ? 'Found in your saved breach results' : 'No domain match in your saved results';
+      info.append(match);
+    }
 
     const choice = document.createElement('select');
     choice.className = 'inventory-choice';
@@ -43,7 +61,7 @@ export function mountInventory() {
 
     const guidance = document.createElement('p');
     guidance.className = 'inventory-guidance';
-    guidance.hidden = true;
+    guidance.hidden = current !== 'close';
     guidance.textContent = company
       ? 'Save any data you need and check active subscriptions before closing. '
       : 'Open the service directly and look for account closure in its privacy settings. If there’s no option, ask its official support team.';
@@ -56,9 +74,27 @@ export function mountInventory() {
       guidance.append(link);
     }
 
-    choice.addEventListener('change', () => {
+    choice.value = current;
+    choice.disabled = saved && !persisted.has(domain);
+    choice.addEventListener('change', async () => {
       const value = choice.value;
       if (!Object.hasOwn(inventoryChoices, value)) return;
+      if (saved) {
+        choice.disabled = true;
+        try {
+          const response = await fetch(endpoint, {
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ domain, choice: value }),
+          });
+          if (!response.ok) throw new Error();
+        } catch {
+          choice.value = accounts.get(domain) ?? 'review';
+          announce('Could not save that decision. Try again.');
+          return;
+        } finally {
+          choice.disabled = false;
+        }
+      }
       accounts.set(domain, value as InventoryChoice);
       guidance.hidden = value !== 'close';
       updateCount();
@@ -76,7 +112,7 @@ export function mountInventory() {
     const rows = document.createDocumentFragment();
     for (const domain of added) {
       accounts.set(domain, 'review');
-      rows.append(createRow(domain));
+      rows.append(createRow(domain, 'review'));
     }
     list.append(rows);
     updateCount();
@@ -115,18 +151,72 @@ export function mountInventory() {
     website.value = '';
     addDomains([domain]);
   });
-  sample.addEventListener('click', () => addDomains(['google.com', 'apple.com', 'live.com', 'wikipedia.org', 'bbc.co.uk']));
+  sample?.addEventListener('click', () => addDomains(['google.com', 'apple.com', 'live.com', 'wikipedia.org', 'bbc.co.uk']));
   clear.addEventListener('click', () => {
-    accounts.clear();
-    list.replaceChildren();
+    if (saving) return;
+    for (const row of list.querySelectorAll<HTMLElement>('[data-inventory-domain]')) {
+      const domain = row.dataset.inventoryDomain ?? '';
+      if (!persisted.has(domain)) {
+        accounts.delete(domain);
+        row.remove();
+      }
+    }
     updateCount();
-    announce('Cleared the website list.');
+    announce(saved ? 'Discarded unsaved websites.' : 'Cleared the website list.');
     website.focus();
   });
 
+  save?.addEventListener('click', async () => {
+    if (saving) return;
+    const domains = [...accounts.keys()].filter((domain) => !persisted.has(domain));
+    if (!domains.length) return;
+    saving = true;
+    save.disabled = true;
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ domains }),
+      });
+      if (!response.ok) {
+        announce(response.status === 409 ? 'Your saved inventory can hold up to 2,000 websites.' : 'Could not save the websites. Try again.');
+        return;
+      }
+      for (const domain of domains) persisted.add(domain);
+      for (const row of list.querySelectorAll<HTMLElement>('[data-inventory-domain]')) {
+        const select = row.querySelector('select');
+        if (select && persisted.has(row.dataset.inventoryDomain ?? '')) select.disabled = false;
+      }
+      updateCount();
+      announce('Websites saved. You can now record a decision for them.');
+    } catch {
+      announce('Could not save the websites. Try again.');
+    } finally {
+      saving = false;
+      save.disabled = false;
+    }
+  });
+
+  if (saved) {
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error();
+      const data: { sites: { domain: string; choice: InventoryChoice }[]; breachDomains: string[] } = await response.json();
+      for (const domain of data.breachDomains) matches.add(domain);
+      const rows = document.createDocumentFragment();
+      for (const { domain, choice } of data.sites) {
+        persisted.add(domain);
+        accounts.set(domain, choice);
+        rows.append(createRow(domain, choice));
+      }
+      list.append(rows);
+      updateCount();
+    } catch {
+      announce('Could not open the saved inventory. Reload to try again.');
+      return;
+    }
+  }
   file.disabled = false;
   website.disabled = false;
-  sample.disabled = false;
+  if (sample) sample.disabled = false;
   const submit = manual.querySelector('button');
   if (submit) submit.disabled = false;
 }

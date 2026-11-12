@@ -27,3 +27,16 @@ test('300 CSV rows produce a list containing only domains', () => {
   const rows = domains.map((domain) => 'https://auth.' + domain + '/secret,alice,password');
   assert.deepEqual(parseInventoryCsv(['URL,Username,Password', ...rows].join('\n')), { domains, skipped: 0 });
 });
+
+test('saved inventory import accepts domains only and rejects extra fields', async () => {
+  const { parseInventoryImport, parseInventoryDecision } = await import('../lib/inventory-payload.ts');
+  assert.deepEqual(parseInventoryImport({ domains: ['example.co.uk', 'example.co.uk'] }), ['example.co.uk']);
+  for (const payload of [
+    { domains: ['https://example.com/private'] },
+    { domains: ['login.example.com'] },
+    { domains: ['example.com'], password: 'private' },
+    { domains: [{ domain: 'example.com', username: 'alice' }] },
+  ]) assert.equal(parseInventoryImport(payload), null);
+  assert.deepEqual(parseInventoryDecision({ domain: 'example.com', choice: 'close' }), { domain: 'example.com', choice: 'close' });
+  assert.equal(parseInventoryDecision({ domain: 'example.com', choice: 'close', note: 'private' }), null);
+});

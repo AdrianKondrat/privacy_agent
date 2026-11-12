@@ -1,9 +1,46 @@
 {
-  "google.com": { "name": "Google", "guide": "https://support.google.com/accounts/answer/32046?hl=en" },
-  "gmail.com": { "name": "Google", "guide": "https://support.google.com/accounts/answer/32046?hl=en" },
-  "apple.com": { "name": "Apple", "guide": "https://support.apple.com/en-us/102283" },
-  "icloud.com": { "name": "Apple", "guide": "https://support.apple.com/en-us/102283" },
-  "microsoft.com": { "name": "Microsoft", "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account" },
-  "live.com": { "name": "Microsoft", "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account" },
-  "outlook.com": { "name": "Microsoft", "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account" }
+  "google.com": {
+    "name": "Google",
+    "guide": "https://support.google.com/accounts/answer/32046?hl=en"
+  },
+  "gmail.com": {
+    "name": "Google",
+    "guide": "https://support.google.com/accounts/answer/32046?hl=en"
+  },
+  "apple.com": {
+    "name": "Apple",
+    "guide": "https://support.apple.com/en-us/102283"
+  },
+  "icloud.com": {
+    "name": "Apple",
+    "guide": "https://support.apple.com/en-us/102283"
+  },
+  "microsoft.com": {
+    "name": "Microsoft",
+    "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account"
+  },
+  "live.com": {
+    "name": "Microsoft",
+    "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account"
+  },
+  "outlook.com": {
+    "name": "Microsoft",
+    "guide": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-close-your-microsoft-account"
+  },
+  "github.com": {
+    "name": "GitHub",
+    "guide": "https://docs.github.com/en/account-and-profile/how-tos/account-management/deleting-your-personal-account"
+  },
+  "dropbox.com": {
+    "name": "Dropbox",
+    "guide": "https://help.dropbox.com/account-access/delete-account"
+  },
+  "spotify.com": {
+    "name": "Spotify",
+    "guide": "https://support.spotify.com/cw-en/article/how-can-i-close-my-spotify-account/"
+  },
+  "adobe.com": {
+    "name": "Adobe",
+    "guide": "https://helpx.adobe.com/account/individual/manage-your-account/delete-adobe-account.html"
+  }
 }

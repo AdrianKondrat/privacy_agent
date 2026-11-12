@@ -1,12 +1,11 @@
 import { parse as parseCsv } from 'csv-parse/browser/esm/sync';
-import { parse as parseDomain } from 'tldts';
+import { inventoryDomain } from './domains.ts';
+export { inventoryDomain } from './domains.ts';
 import directory from '../data/closure-directory.json' with { type: 'json' };
 
 export const inventoryLimit = 2_000;
 export const inventoryFileLimit = 2 * 1024 * 1024;
 const urlHeaders = new Set(['url', 'website', 'web site', 'login uri', 'uri', 'site', 'login url']);
-const webProtocol = /^https?:\/\//i;
-const explicitProtocol = /^[a-z][a-z0-9+.-]*:\/\//i;
 export const inventoryChoices = {
   review: 'To review',
   keep: 'Keep',
@@ -14,19 +13,6 @@ export const inventoryChoices = {
   unsure: 'Not sure',
 } as const;
 export type InventoryChoice = keyof typeof inventoryChoices;
-
-export function inventoryDomain(value: string): string | null {
-  const candidate = value.trim();
-  if (!candidate || candidate.length > 4_096) return null;
-  if (!webProtocol.test(candidate) && (candidate.includes('@') || explicitProtocol.test(candidate))) return null;
-  try {
-    const url = new URL(webProtocol.test(candidate) ? candidate : 'https://' + candidate);
-    const parsed = parseDomain(url.hostname, { allowPrivateDomains: true });
-    return parsed.isIcann || parsed.isPrivate ? parsed.domain : null;
-  } catch {
-    return null;
-  }
-}
 
 export function parseInventoryCsv(contents: string) {
   const [headers, ...rows]: string[][] = parseCsv(contents, {
@@ -48,6 +34,8 @@ export function parseInventoryCsv(contents: string) {
   }
   return { domains: [...domains], skipped };
 }
+
+export const knownDomains = Object.keys(directory);
 
 export function companyFor(domain: string) {
   if (Object.hasOwn(directory, domain)) return directory[domain as keyof typeof directory];

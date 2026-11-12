@@ -1,0 +1,47 @@
+---
+interface Props { saved?: boolean }
+const { saved = false } = Astro.props;
+---
+<div data-inventory data-inventory-saved={saved || undefined}>
+<div class="check-start">
+  <section class="check-intro" aria-labelledby="inventory-title">
+    <p class="check-label">Account inventory</p>
+    <h1 id="inventory-title">Which accounts do you still need?</h1>
+    <p>Review the websites in your password manager and decide which to keep or close. {saved ? "Review and save the domains you want to keep in your Cleanup workspace." : "Your browser keeps the list on this page. Reloading clears it."}</p>
+  </section>
+  <section class="check-panel" aria-labelledby="inventory-import">
+    <h2 id="inventory-import">Add websites</h2>
+    <p>Import a CSV from a browser or password manager. Only website domains are kept in the list.</p>
+    <div>
+      <label for="inventory-file">Password manager CSV</label>
+      <input id="inventory-file" type="file" accept=".csv,text/csv" aria-describedby="inventory-file-limit" disabled />
+      <p id="inventory-file-limit" class="check-meta">Up to 2 MB</p>
+    </div>
+    <form id="inventory-manual">
+      <label for="inventory-website">Or enter a website</label>
+      <input id="inventory-website" type="text" inputmode="url" autocapitalize="none" spellcheck="false"
+        autocomplete="off" placeholder="example.com" maxlength="2048" disabled required />
+      <button class="check-button check-primary" type="submit" disabled>Add website</button>
+    </form>
+    {!saved && <button class="check-button" type="button" data-inventory-sample disabled>Use sample websites</button>}
+    <noscript><p>Enable JavaScript to review a CSV on this device.</p></noscript>
+    <p data-inventory-message role="status" aria-atomic="true"></p>
+  </section>
+</div>
+<section class="check-results inventory-results" data-inventory-results aria-labelledby="inventory-results-title" hidden>
+  <header class="check-section-head">
+    <h2 id="inventory-results-title">Websites to review</h2>
+    <div class="check-choice-row">
+      <p class="check-meta" data-inventory-count></p>
+      {saved && <button class="check-button check-primary" type="button" data-inventory-save hidden>Save websites</button>}
+      <button class="check-button check-button-small" type="button" data-inventory-clear>{saved ? 'Discard unsaved websites' : 'Clear list'}</button>
+    </div>
+  </header>
+  <ul class="inventory-list" data-inventory-list></ul>
+</section>
+</div>
+
+<script>
+  import { mountInventory } from '../lib/inventory-ui.ts';
+  document.querySelectorAll<HTMLElement>('[data-inventory]').forEach(mountInventory);
+</script>

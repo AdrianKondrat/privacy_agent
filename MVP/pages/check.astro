@@ -1,6 +1,7 @@
 ---
 import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
+import { cleanupStore } from '../lib/cleanup.ts';
 import PlanPicker from '../components/PlanPicker.astro';
 import { readAccountUseChange, sampleAccountUse, type AccountUseByBreach } from '../lib/account-use.ts';
 import { readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
@@ -143,6 +144,7 @@ try {
             account: { id: identity.id, email: identity.email, emailVerifiedAt: identity.verifiedAt },
             check: check ?? null,
             fixProgress: progress,
+            cleanupInventory: config ? await cleanupStore(config).inventory(identity.id) : [],
             breachedAccountUse: await live.readAccountUse(token, identity),
             experimentEvents: await live.readEvents(token, identity),
           }, null, 2), {
@@ -238,6 +240,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
           )}
           <details class="check-other check-account">
             <summary>Account and data</summary>
+            <p><a href="/app/cleanup/">Open Cleanup workspace</a></p>
             <p>Signed in as {identity.email}. <a href="/app/privacy/">MVP privacy notice</a></p>
             <form method="post" action={app}>
               <button class="check-button" name="intent" value="export">Export account data</button>

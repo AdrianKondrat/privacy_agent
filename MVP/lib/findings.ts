@@ -5,6 +5,7 @@ export interface Breach {
   title: string;
   date: string;
   dataClasses: string[];
+  domain?: string;
   stealer?: boolean;
 }
 
