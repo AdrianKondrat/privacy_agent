@@ -1,6 +1,8 @@
 ---
 import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
+import PlanPicker from '../components/PlanPicker.astro';
+import { readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
 import Findings from '../components/Findings.astro';
 import { demoDate } from '../lib/demo.ts';
 import { updateProgress } from '../lib/findings.ts';
@@ -12,6 +14,7 @@ const app = '/app/';
 const sampleUrl = '/app/?sample=1';
 const sample = Astro.url.searchParams.get('sample') === '1';
 const demoCookie = 'koverr_sample_progress';
+const samplePlanCookie = 'koverr_sample_plan';
 const tokenCookie = 'koverr_check_session';
 const deletedCookie = 'koverr_account_deleted';
 const pendingCookie = 'koverr_pending_email';
@@ -19,6 +22,7 @@ const config = sample ? null : liveConfig();
 const live = config && Astro.url.origin === config.origin ? liveCheck(config) : null;
 const cookieOptions = { path: app, httpOnly: true, sameSite: 'strict', secure: Astro.url.protocol === 'https:' } as const;
 let progress = sample ? sampleProgress(Astro.cookies.get(demoCookie)?.value) : {};
+let planChoice: PlanChoice | undefined = sample ? readPlanChoice(Astro.cookies.get(samplePlanCookie)?.value) : undefined;
 let token = Astro.cookies.get(tokenCookie)?.value;
 const pendingEmail = normalizeEmail(Astro.cookies.get(pendingCookie)?.value ?? null);
 let identity: Awaited<ReturnType<NonNullable<typeof live>['identify']>> = null;
@@ -68,7 +72,15 @@ try {
         return Astro.redirect(sampleUrl, 303);
       }
       showError('Choose a valid step. To skip a step, add a short reason.', 400);
+    } else if (sample && intent === 'plan-choice') {
+      const choice = readPlanChoice(fields.get('choice'));
+      if (!choice) showError('Choose one of the listed options.', 400);
+      else {
+        if (!planChoice) Astro.cookies.set(samplePlanCookie, choice, { ...cookieOptions, maxAge: 3600 });
+        return Astro.redirect(sampleUrl + '#plan-title', 303);
+      }
     } else if (sample && intent === 'exit') {
+      Astro.cookies.delete(samplePlanCookie, cookieOptions);
       Astro.cookies.delete(demoCookie, cookieOptions);
       return Astro.redirect(app, 303);
     } else if (live && !identity && (intent === 'send' || intent === 'resend')) {
@@ -101,7 +113,11 @@ try {
         await live.scan(token);
         return Astro.redirect(app, 303);
       }
-      if (intent === 'delete') {
+      if (intent === 'plan-choice') {
+        const choice = readPlanChoice(fields.get('choice'));
+        if (choice && await live.choosePlan(identity, choice)) return Astro.redirect(app + '#plan-title', 303);
+        showError('Choose a listed option after opening your results.', 400);
+      } else if (intent === 'delete') {
         if (fields.get('confirmation') === 'DELETE') {
           await live.deleteAccount(identity);
           clearSession();
@@ -116,6 +132,7 @@ try {
             account: { id: identity.id, email: identity.email, emailVerifiedAt: identity.verifiedAt },
             check: check ?? null,
             fixProgress: progress,
+            experimentEvents: await live.readEvents(token, identity),
           }, null, 2), {
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
@@ -138,6 +155,14 @@ try {
   }
 
   if (live && identity && token && !check) ({ check, progress } = await live.read(token, identity));
+  if (live && identity && token && !isPost) {
+    const events = await live.readEvents(token, identity);
+    if (!events.some((event) => event.event_name === 'email_verified')) await live.recordEvent(identity, 'email_verified');
+    if (check?.state === 'complete' && !events.some((event) => event.event_name === 'results_seen')) {
+      await live.recordEvent(identity, 'results_seen');
+    }
+    planChoice = readPlanChoice(events.find((event) => event.event_name === 'plan_choice')?.choice);
+  }
 } catch {
   showError('Koverr could not finish that action. Please try again shortly.', 503);
 }
@@ -165,11 +190,15 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
         <>
           <p class="check-notice">Sample data only. These findings are fictional.</p>
           <Findings findings={sampleFindings} progress={progress} checkedAt={demoDate} sample action={sampleUrl} />
+          <PlanPicker action={sampleUrl} choice={planChoice} />
         </>
       ) : identity ? (
         <>
           {check?.state === 'complete' && check.checked_at ? (
-            <Findings findings={check.findings} progress={progress} checkedAt={check.checked_at} sample={false} action={app} />
+            <>
+              <Findings findings={check.findings} progress={progress} checkedAt={check.checked_at} sample={false} action={app} />
+              <PlanPicker choice={planChoice} />
+            </>
           ) : (
             <section class="check-panel check-ready">
               <h1>{check?.state === 'failed' ? 'The check could not be completed.' : 'Check your verified email.'}</h1>

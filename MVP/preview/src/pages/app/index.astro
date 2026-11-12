@@ -1,6 +1,7 @@
 ---
 import Shell from '../../../../../src/layouts/Shell.astro';
 import Brand from '../../../../../src/components/Brand.astro';
+import PlanPicker from '../../../../components/PlanPicker.astro';
 import Findings from '../../../../components/Findings.astro';
 import { demoDate } from '../../../../lib/demo.ts';
 import { sampleFindings } from '../../../../lib/sample.ts';
@@ -18,6 +19,7 @@ import '../../../../styles.css';
       <p class="check-notice">Sample data only. These findings are fictional.</p>
       <noscript><p class="check-notice">Enable JavaScript to track sample fixes.</p></noscript>
       <Findings findings={sampleFindings} progress={{}} checkedAt={demoDate} sample action="/app/" browserProgress />
+      <PlanPicker preview />
     </main>
   </div>
 </Shell>

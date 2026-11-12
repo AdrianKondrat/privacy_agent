@@ -1,6 +1,8 @@
+import { planChoices, readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
 import { updateProgress, type Progress } from '../lib/findings.ts';
 import { sampleFindings, sampleProgress } from '../lib/sample.ts';
 
+const planKey = 'koverr-preview-plan';
 const storageKey = 'koverr-preview-progress';
 
 export function mountPreviewProgress() {
@@ -9,8 +11,12 @@ export function mountPreviewProgress() {
   const error = root?.querySelector('[data-preview-error]');
   if (!root || !count || !error) return;
 
+  const planForm = root.querySelector<HTMLFormElement>('[data-preview-plan]');
+  const planResult = root.querySelector('[data-plan-result]');
+  let choice: PlanChoice | undefined;
   let progress: Progress = {};
   try {
+    choice = readPlanChoice(sessionStorage.getItem(planKey));
     progress = sampleProgress(sessionStorage.getItem(storageKey) ?? undefined);
   } catch {
     // Keep sample progress in memory when storage is unavailable.
@@ -62,15 +68,34 @@ export function mountPreviewProgress() {
     });
     for (const button of form.querySelectorAll('button')) button.disabled = false;
   }
+  const renderPlan = () => {
+    if (!planForm || !planResult) return;
+    planForm.hidden = !!choice;
+    planResult.textContent = choice ? 'Preference saved in this tab · ' + planChoices[choice].label : '';
+  };
+  planForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (choice) return;
+    choice = readPlanChoice(new FormData(planForm, event.submitter).get('choice'));
+    if (choice) {
+      try { sessionStorage.setItem(planKey, choice); } catch { /* Keep the preference on this page. */ }
+      renderPlan();
+    }
+  });
+  for (const button of planForm?.querySelectorAll('button') ?? []) button.disabled = false;
   function reset() {
+    choice = undefined;
     progress = {};
     try {
       sessionStorage.removeItem(storageKey);
+      sessionStorage.removeItem(planKey);
     } catch {
       // No stored progress to remove.
     }
     render();
+    renderPlan();
   }
   root.querySelector('[data-preview-reset]')?.addEventListener('click', reset);
   render();
+  renderPlan();
 }

@@ -1,0 +1,21 @@
+---
+import { planChoices, type PlanChoice } from '../lib/experiment.ts';
+
+interface Props { action?: string; choice?: PlanChoice; preview?: boolean }
+const { action = '/app/', choice, preview = false } = Astro.props;
+---
+<section class="check-panel check-plan-picker" aria-labelledby="plan-title">
+  <h2 id="plan-title">What kind of cleanup would you choose?</h2>
+  <p>This is a pricing survey. Choosing a plan won’t start a subscription or charge you.</p>
+  <form method="post" action={action} data-preview-plan={preview || undefined} hidden={!!choice}>
+    <input type="hidden" name="intent" value="plan-choice" />
+    <div class="check-plan-options">
+      {Object.entries(planChoices).map(([value, plan]) => (
+        <button type="submit" class="check-button check-plan-option" name="choice" value={value} disabled={preview}>
+          <strong>{plan.label}</strong><span>{plan.detail}</span>
+        </button>
+      ))}
+    </div>
+  </form>
+  <p data-plan-result={preview || undefined} role="status">{choice && `Preference saved · ${planChoices[choice].label}`}</p>
+</section>

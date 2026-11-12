@@ -10,6 +10,7 @@ Updated 12 November 2026. Continue on the existing `MVP` branch and push each ma
 - The Have I Been Pwned adapter distinguishes a clean response from provider failures. It stores breach metadata and ranks the next three fixes from a versioned Stolen playbook.
 - Postgres stores the scan snapshot and fix outcomes. Row-level security scopes reads to the account owner. Only the server writes these tables. The database limits verification requests to five per address per rolling hour and prevents overlapping scans.
 - The password checker uses Web Crypto in the browser. It requests a padded range with only the first five hash characters, matches the suffix on-device and keeps no history.
+- The E3 pricing survey records a first choice after viewing results. The internal [free-check funnel query](supabase/reports/free-check-funnel.sql) reports completed checks, seven-day activation and paid intent. Sample choices stay local and are excluded.
 - Account controls provide a JSON export and hard deletion of the active account. Foreign keys cascade deletion to saved results and progress. The app has its own privacy notice.
 
 ## Run the sample
@@ -24,7 +25,7 @@ The static preview source is in `MVP/preview/`. Build it from the repository roo
 
 ## Connect a private live preview
 
-1. Apply [the migration](supabase/migrations/20261112140000_free_check.sql) to a UK or EU Supabase project. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
+1. Apply the SQL migrations in [supabase/migrations](supabase/migrations) in timestamp order to a UK or EU Supabase project. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
 2. Copy [the environment template](.env.example) to `MVP/.env` and fill in the exact app origin, Supabase URL and keys, and a Have I Been Pwned key that supports breached-account lookups. Keep the service-role and breach-index keys on the server. The live form is available only at the configured origin.
 3. Run `node --env-file=MVP/.env node_modules/astro/bin/astro.mjs dev --host 127.0.0.1 --port 4327`. Open `http://127.0.0.1:4327/app/`. For hosted builds, set `KOVERR_APP_ORIGIN` at build time as well as runtime so Astro can recognise the origin behind a proxy.
 4. Use a mailbox you control to verify code delivery, scan, complete a step, sign in again to confirm persistence, export and delete. Check that the account and saved rows are gone. Provider reference: [Supabase email OTP](https://supabase.com/docs/guides/auth/auth-email-passwordless) and [Have I Been Pwned API](https://haveibeenpwned.com/API/V3).
@@ -43,6 +44,6 @@ The built route passed a headless Chromium walkthrough using mocked providers, i
 
 ## Next
 
-1. Add the E3 plan picker and internal experiment events. Complete the P1 follow-up for accounts the user no longer uses and record actual time spent if useful in the beta.
+1. Complete the P1 follow-up for accounts the user no longer uses and record actual time spent if useful in the beta.
 2. Set up and verify the private preview. Before public signup, settle provider backup and log retention, scheduled expiry of rate-limit data, abuse protection and operational monitoring. Complete the launch-list import and public-launch items in the build plan.
 3. Continue with signed authority, browser-local account import, the company directory, request drafts and the concierge admin queue.

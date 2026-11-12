@@ -116,3 +116,10 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 
 [data-koverr-preview] [hidden] { display: none; }
 [data-preview-error]:not(:empty) { margin-bottom: .85rem; }
+
+.check-plan-picker { margin-block: 2rem; }
+.check-plan-picker form[hidden] { display: none; }
+.check-plan-picker [data-plan-result]:empty { margin-block: -.425rem; }
+.check-plan-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .6rem; }
+.check-plan-option { display: grid; align-content: center; justify-content: start; text-align: start; padding: .75rem; }
+.check-plan-option span { font-weight: 400; font-size: var(--small); color: var(--text-muted); }

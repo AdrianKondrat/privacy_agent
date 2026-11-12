@@ -1,4 +1,5 @@
 import { createHmac, randomUUID } from 'node:crypto';
+import type { PlanChoice, ProductEvent } from './experiment.ts';
 import { checkBreaches } from './breaches.ts';
 import { rankBreaches, resolveProgressChange, type Finding, type Outcome, type Progress } from './findings.ts';
 
@@ -117,6 +118,27 @@ export function liveCheck(config: Config, request = fetch) {
     return { check: checks[0], progress };
   }
 
+  async function readEvents(token: string, identity: Identity) {
+    const owner = encodeURIComponent(identity.id);
+    return call<ProductEvent[]>(`/rest/v1/koverr_events?user_id=eq.${owner}&select=event_name,happened_at,choice`, { token });
+  }
+
+  async function recordEvent(identity: Identity, event: 'email_verified' | 'results_seen') {
+    await call('/rest/v1/koverr_events', {
+      method: 'POST', admin: true, prefer: 'resolution=ignore-duplicates',
+      body: {
+        user_id: identity.id, event_name: event,
+        ...(event === 'email_verified' && { happened_at: identity.verifiedAt }),
+      },
+    });
+  }
+
+  async function choosePlan(identity: Identity, choice: PlanChoice) {
+    return call<boolean>('/rest/v1/rpc/koverr_choose_plan', {
+      method: 'POST', admin: true, body: { user_id_arg: identity.id, choice_arg: choice },
+    });
+  }
+
   async function scan(token: string): Promise<void> {
     const identity = await identify(token);
     if (!identity) return;
@@ -160,5 +182,5 @@ export function liveCheck(config: Config, request = fetch) {
     }
   }
 
-  return { identify, sendCode, verifyCode, read, scan, saveProgress, deleteAccount };
+  return { identify, sendCode, verifyCode, read, readEvents, recordEvent, choosePlan, scan, saveProgress, deleteAccount };
 }
