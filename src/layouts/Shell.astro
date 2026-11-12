@@ -6,9 +6,9 @@ import '@fontsource/archivo/latin-700.css';
 import '@fontsource/archivo/latin-800.css';
 import '../styles/site.css';
 import '../styles/market.css';
-interface Props { title: string; description: string; noindex?: boolean }
-const { title, description, noindex } = Astro.props;
-Astro.response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+interface Props { title: string; description: string; noindex?: boolean; referrerPolicy?: string }
+const { title, description, noindex, referrerPolicy = 'strict-origin-when-cross-origin' } = Astro.props;
+Astro.response.headers.set('Referrer-Policy', referrerPolicy);
 Astro.response.headers.set('X-Content-Type-Options', 'nosniff');
 Astro.response.headers.set('X-Frame-Options', 'DENY');
 ---

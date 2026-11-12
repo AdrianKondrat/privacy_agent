@@ -40,15 +40,23 @@ export type Progress = Record<string, Outcome>;
 
 export const stepKey = (finding: Finding, step: Step) => JSON.stringify([finding.id, finding.playbookVersion, step.id]);
 
-export function updateProgress(findings: Finding[], progress: Progress, fields: FormData, at: string): Progress | null {
+export function resolveProgressChange(findings: Finding[], fields: FormData, at: string): { key: string; outcome: Outcome | null } | null {
   const key = fields.get('step');
   const status = fields.get('outcome');
   const reason = fields.get('reason');
   if (typeof key !== 'string' || (status !== 'done' && status !== 'skipped' && status !== 'undo')) return null;
   if (status === 'skipped' && (typeof reason !== 'string' || !reason.trim() || reason.trim().length > 120)) return null;
   if (!findings.slice(0, 3).some((finding) => finding.steps.some((step) => stepKey(finding, step) === key))) return null;
+  const outcome: Outcome | null = status === 'skipped' ? { status, at, reason: String(reason).trim() }
+    : status === 'done' ? { status, at } : null;
+  return { key, outcome };
+}
+
+export function updateProgress(findings: Finding[], progress: Progress, fields: FormData, at: string): Progress | null {
+  const change = resolveProgressChange(findings, fields, at);
+  if (!change) return null;
   const updated = { ...progress };
-  if (status === 'undo') delete updated[key];
-  else updated[key] = status === 'skipped' ? { status, at, reason: String(reason).trim() } : { status, at };
+  if (change.outcome) updated[change.key] = change.outcome;
+  else delete updated[change.key];
   return updated;
 }

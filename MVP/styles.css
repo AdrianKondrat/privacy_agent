@@ -98,3 +98,14 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
   .check-finding-summary { grid-template-columns: 1rem minmax(0, 1fr); }
   .check-effort { grid-column: 2; }
 }
+
+.check-ready { max-width: 640px; }
+.check-ready h1 { font-size: var(--step-2); line-height: 1.1; }
+.check-controls { display: flex; flex-wrap: wrap; }
+.check-controls .check-link { padding-inline: 0; margin-inline-end: 1rem; }
+.check-panel form > .check-primary { width: 100%; }
+.check-account { margin-top: 2rem; }
+.check-account > :not(summary) { margin-bottom: .75rem; }
+.check-delete { max-width: 480px; }
+.check-privacy { max-width: 720px; display: grid; gap: 1rem; }
+.check-privacy h2 { font-size: var(--step-2); margin-top: .5rem; }

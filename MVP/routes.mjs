@@ -7,6 +7,10 @@ export default function mvpRoutes() {
           pattern: '/app/',
           entrypoint: new URL('./pages/check.astro', import.meta.url),
         });
+        injectRoute({
+          pattern: '/app/privacy/',
+          entrypoint: new URL('./pages/privacy.astro', import.meta.url),
+        });
       },
     },
   };

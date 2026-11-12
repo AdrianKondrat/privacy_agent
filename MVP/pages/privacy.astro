@@ -1,0 +1,23 @@
+---
+import Shell from '../../src/layouts/Shell.astro';
+import Brand from '../../src/components/Brand.astro';
+import '../styles.css';
+---
+<Shell title="Free leak check privacy · Koverr" description="How Koverr handles data during the free leak check." noindex referrerPolicy="no-referrer">
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/">Back to leak check</a></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <article class="check-privacy check-intro">
+        <h1>Free leak check privacy</h1>
+        <p>The sample check uses fictional data. It keeps sample progress in a browser cookie for up to one hour. Exiting the sample clears it.</p>
+        <h2>What the live check uses</h2>
+        <p>Supabase stores your email address and verification record. It delivers your code through the configured email provider. We keep a keyed fingerprint of the address to limit code requests. Expired rate-limit records are cleared when the service next processes a code request.</p>
+        <p>When you run a check, Koverr sends your verified email address to <a href="https://haveibeenpwned.com/Privacy">Have I Been Pwned</a>. Koverr stores the check date, breach names, exposed data categories, suggested steps and the outcomes you record.</p>
+        <h2>Your account controls</h2>
+        <p>Use Account and data to download a copy of your sign-in details, check results and fix progress. Deleting your account removes the sign-in and saved results and progress from the active database. Retention of provider logs and backups depends on how the preview is hosted.</p>
+      </article>
+    </main>
+  </div>
+</Shell>
