@@ -1,0 +1,71 @@
+---
+import Shell from '../../src/layouts/Shell.astro';
+import Brand from '../../src/components/Brand.astro';
+import ClosureMessage from '../components/ClosureMessage.astro';
+import { cleanupSession, isReviewer, type QueuedDraft } from '../lib/cleanup.ts';
+import { readDraftReview, renderClosureDraft } from '../lib/closure-drafts.ts';
+import '../styles.css';
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+let error = '';
+let drafts: QueuedDraft[] = [];
+let unknown: { domain: string; accounts: number }[] = [];
+try {
+  const session = await cleanupSession(Astro.url, Astro.cookies);
+  if (!session || !isReviewer(session.user.id)) return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
+  const { store, user } = session;
+  if (Astro.request.method === 'POST') {
+    if (Astro.request.headers.get('origin') !== Astro.url.origin) return new Response(null, { status: 403 });
+    const decision = readDraftReview(await Astro.request.formData());
+    if (decision && await store.reviewClosure(user.id, decision)) return Astro.redirect('/app/cleanup/review/', 303);
+    error = 'The draft was already processed or the decision could not be saved. Check the queue and try again.';
+    Astro.response.status = 409;
+  }
+  [drafts, unknown] = await Promise.all([store.reviewQueue(user.id), store.directoryResearch()]);
+} catch {
+  error = 'Could not open the review queue. Please try again shortly.';
+  Astro.response.status = 503;
+}
+const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' });
+---
+<Shell title="Founder review · Koverr" description="Review closure drafts and domains needing research." noindex referrerPolicy="same-origin">
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/">Back to leak check</a></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <div class="check-intro">
+        <h1>Founder review.</h1>
+        <p>Review closure wording and record the time spent before making a draft available to the customer.</p>
+      </div>
+      {error && <p class="check-notice check-section-space" role="alert">{error}</p>}
+      <section class="check-results" aria-labelledby="review-queue-title">
+        <h2 id="review-queue-title" class="check-subheading">Drafts awaiting review</h2>
+        {drafts.length ? <ul class="check-records">{drafts.map((item) => {
+          const message = renderClosureDraft(item.template_version, item.company_name, '[customer email]');
+          const input = 'minutes-' + item.id;
+          return <li class="check-panel">
+            <h3>{item.company_name}</h3>
+            <p class="check-meta">{item.domain} · Queued <time datetime={item.created_at}>{date.format(new Date(item.created_at))}</time></p>
+            {message && <ClosureMessage draft={message} />}
+            <form method="post" action="/app/cleanup/review/">
+              <input type="hidden" name="draft" value={item.id} />
+              <label for={input}>Minutes spent</label>
+              <input id={input} class="check-minutes" type="number" name="minutes" min="0" max="1440" step="1" required />
+              <div class="check-choice-row">
+                {message && <button class="check-button check-primary" name="outcome" value="ready">Make available</button>}
+                <button class="check-button" name="outcome" value="declined">Decline draft</button>
+              </div>
+            </form>
+          </li>;
+        })}</ul> : <p>No drafts waiting for review.</p>}
+      </section>
+      <section class="check-results" aria-labelledby="directory-title">
+        <h2 id="directory-title" class="check-subheading">Domains to research</h2>
+        {unknown.length ? <ul class="check-records">{unknown.map((item) => (
+          <li class="check-panel"><strong>{item.domain}</strong><p class="check-meta">{item.accounts} {item.accounts === 1 ? 'account' : 'accounts'}</p></li>
+        ))}</ul> : <p>No unknown domains in active Cleanup inventories.</p>}
+      </section>
+    </main>
+  </div>
+</Shell>

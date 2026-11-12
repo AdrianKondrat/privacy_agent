@@ -24,6 +24,14 @@ export default function mvpRoutes() {
           entrypoint: new URL('./pages/inventory-data.ts', import.meta.url),
         });
         injectRoute({
+          pattern: '/app/cleanup/drafts/',
+          entrypoint: new URL('./pages/closure-drafts.astro', import.meta.url),
+        });
+        injectRoute({
+          pattern: '/app/cleanup/review/',
+          entrypoint: new URL('./pages/closure-review.astro', import.meta.url),
+        });
+        injectRoute({
           pattern: '/app/password/',
           entrypoint: new URL('./pages/password.astro', import.meta.url),
         });

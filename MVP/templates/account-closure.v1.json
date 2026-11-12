@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "subject": "Request to close my {{company}} account",
+  "body": "Hello {{company}} support,\n\nI would like to close my personal account associated with {{email}}. Please tell me if I need to complete any steps in my account settings, and confirm when the account is closed.\n\nThank you."
+}

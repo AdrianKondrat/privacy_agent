@@ -1,7 +1,7 @@
 ---
 import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
-import { cleanupStore } from '../lib/cleanup.ts';
+import { cleanupStore, isReviewer } from '../lib/cleanup.ts';
 import PlanPicker from '../components/PlanPicker.astro';
 import { readAccountUseChange, sampleAccountUse, type AccountUseByBreach } from '../lib/account-use.ts';
 import { readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
@@ -141,14 +141,22 @@ try {
         ({ check, progress } = await live.read(token, identity));
         if (intent === 'export') {
           const cleanup = config ? cleanupStore(config) : null;
+          const [cleanupInventory, draftPermissionHistory, closureDrafts, breachedAccountUse, experimentEvents] = await Promise.all([
+            cleanup?.inventory(identity.id) ?? [],
+            cleanup?.permissionHistory(identity.id) ?? [],
+            cleanup?.closureDrafts(identity.id) ?? [],
+            live.readAccountUse(token, identity),
+            live.readEvents(token, identity),
+          ]);
           return new Response(JSON.stringify({
             account: { id: identity.id, email: identity.email, emailVerifiedAt: identity.verifiedAt },
             check: check ?? null,
             fixProgress: progress,
-            cleanupInventory: cleanup ? await cleanup.inventory(identity.id) : [],
-            draftPermissionHistory: cleanup ? await cleanup.permissionHistory(identity.id) : [],
-            breachedAccountUse: await live.readAccountUse(token, identity),
-            experimentEvents: await live.readEvents(token, identity),
+            cleanupInventory,
+            draftPermissionHistory,
+            closureDrafts,
+            breachedAccountUse,
+            experimentEvents,
           }, null, 2), {
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
@@ -243,6 +251,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
           <details class="check-other check-account">
             <summary>Account and data</summary>
             <p><a href="/app/cleanup/">Open Cleanup workspace</a></p>
+            {isReviewer(identity.id) && <p><a href="/app/cleanup/review/">Open founder review</a></p>}
             <p>Signed in as {identity.email}. <a href="/app/privacy/">MVP privacy notice</a></p>
             <form method="post" action={app}>
               <button class="check-button" name="intent" value="export">Export account data</button>

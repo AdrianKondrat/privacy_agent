@@ -1,0 +1,8 @@
+---
+interface Props { draft: { subject: string; body: string } }
+const { draft } = Astro.props;
+---
+<div class="check-closure-message">
+  <p><strong>Subject</strong> {draft.subject}</p>
+  <pre>{draft.body}</pre>
+</div>

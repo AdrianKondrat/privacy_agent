@@ -147,3 +147,12 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 .check-permission-form[hidden] { display: none; }
 .check-agreement { display: flex; gap: .65rem; align-items: flex-start; max-width: 65ch; margin-bottom: .85rem; }
 .check-panel .check-agreement input[type="checkbox"] { display: inline-block; width: 1.2rem; height: 1.2rem; min-height: 0; flex: 0 0 auto; margin: .2rem 0 0; accent-color: var(--bone); }
+
+.check-section-space { margin-top: 1.25rem; }
+.check-subheading { font-size: var(--step-2); margin-bottom: .8rem; }
+.check-records { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+.check-closure-message { display: grid; gap: .65rem; }
+.check-closure-message pre { font: inherit; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; padding: .8rem; background: var(--ground); }
+.check-panel input.check-minutes { max-width: 9rem; }
+
+[data-concierge-preview] [hidden] { display: none; }

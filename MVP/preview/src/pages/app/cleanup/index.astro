@@ -1,8 +1,11 @@
 ---
 import Shell from '../../../../../../src/layouts/Shell.astro';
 import Brand from '../../../../../../src/components/Brand.astro';
+import ClosureMessage from '../../../../../components/ClosureMessage.astro';
+import { closureTemplateVersion, renderClosureDraft } from '../../../../../lib/closure-drafts.ts';
 import DraftPermission from '../../../../../components/DraftPermission.astro';
 import '../../../../../styles.css';
+const draft = renderClosureDraft(closureTemplateVersion, 'Fieldnote', 'alex@example.test')!;
 ---
 <Shell title="Cleanup walkthrough · Koverr" description="Try the Cleanup draft workflow with fictional data." noindex>
   <div class="check-app" data-concierge-preview>
@@ -13,9 +16,18 @@ import '../../../../../styles.css';
       <p class="check-notice">Sample walkthrough. Your choices stay in this tab.</p>
       <section class="check-intro" aria-labelledby="cleanup-title">
         <h1 id="cleanup-title">Cleanup workspace.</h1>
-        <p>Try the permission screen that lets Koverr prepare account-closure drafts for your review.</p>
+        <p>Try draft permission, queue a fictional account for closure, and see what a reviewed draft looks like.</p>
       </section>
       <DraftPermission sample />
+      <section class="check-panel check-results" aria-labelledby="sample-draft-title">
+        <h2 id="sample-draft-title">Fieldnote account closure</h2>
+        <p role="status" data-sample-draft-status>Enable sample permission to queue a draft.</p>
+        <div class="check-choice-row">
+          <button class="check-button" type="button" data-sample-queue disabled hidden>Queue sample draft</button>
+          <button class="check-button" type="button" data-sample-review disabled hidden>Simulate founder review</button>
+        </div>
+        <div data-sample-draft-message hidden><ClosureMessage draft={draft} /></div>
+      </section>
     </main>
   </div>
 </Shell>

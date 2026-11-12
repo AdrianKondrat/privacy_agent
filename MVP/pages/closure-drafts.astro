@@ -1,0 +1,105 @@
+---
+import Shell from '../../src/layouts/Shell.astro';
+import Brand from '../../src/components/Brand.astro';
+import ClosureMessage from '../components/ClosureMessage.astro';
+import { cleanupSession, hasCleanupAccess, isReviewer } from '../lib/cleanup.ts';
+import { draftStateLabels, renderClosureDraft, type ClosureDraft } from '../lib/closure-drafts.ts';
+import { draftPermissionVersion } from '../lib/draft-permission.ts';
+import { companyFor } from '../lib/inventory.ts';
+import '../styles.css';
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+let error = '';
+let allowed = false;
+let active = false;
+let reviewer = false;
+let email = '';
+let drafts: ClosureDraft[] = [];
+let candidates: string[] = [];
+
+try {
+  const session = await cleanupSession(Astro.url, Astro.cookies);
+  if (!session) return Astro.redirect('/app/', 303);
+  const { user, store } = session;
+  email = user.email;
+  reviewer = isReviewer(user.id);
+  const [access, permission] = await Promise.all([store.access(user.id), store.permission(user.id)]);
+  allowed = hasCleanupAccess(access);
+  active = !!permission?.active && permission.version === draftPermissionVersion;
+  if (!allowed) Astro.response.status = 403;
+
+  if (Astro.request.method === 'POST') {
+    if (Astro.request.headers.get('origin') !== Astro.url.origin) return new Response(null, { status: 403 });
+    const fields = await Astro.request.formData();
+    const domain = fields.get('domain');
+    const company = typeof domain === 'string' ? companyFor(domain) : undefined;
+    if (allowed && active && fields.get('intent') === 'queue-closure' && company && typeof domain === 'string'
+        && await store.queueClosure(user.id, domain, company.name)) return Astro.redirect('/app/cleanup/drafts/', 303);
+    error = 'A draft needs active permission, a saved Close decision and a known closure guide.';
+    Astro.response.status = 400;
+  }
+
+  if (allowed) {
+    const [inventory, history] = await Promise.all([store.inventory(user.id), store.closureDrafts(user.id)]);
+    drafts = history;
+    const activeDomains = new Set(drafts.filter((draft) => draft.state === 'pending' || draft.state === 'ready').map((draft) => draft.domain));
+    candidates = inventory.filter(({ domain, choice }) => choice === 'close' && !activeDomains.has(domain)).map(({ domain }) => domain);
+  }
+} catch {
+  error = 'Could not open closure drafts. Please try again shortly.';
+  Astro.response.status = 503;
+}
+const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' });
+---
+<Shell title="Closure drafts · Koverr" description="Prepare closure drafts for your review." noindex referrerPolicy="same-origin">
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/cleanup/">Back to Cleanup</a></div>
+    </header>
+    <main id="main" class="wrap check-main">
+      <div class="check-intro">
+        <h1>Account-closure drafts.</h1>
+        <p>Queue a draft for review, then copy it into your own email or the service’s support form.</p>
+        {reviewer && <p><a href="/app/cleanup/review/">Open founder review</a></p>}
+      </div>
+      {error && <p class="check-notice check-section-space" role="alert">{error}</p>}
+      {!allowed && !error && <p class="check-notice check-section-space">Closure drafts are available to Cleanup pilot accounts.</p>}
+      {allowed && !active && <p class="check-notice check-section-space">Enable <a href="/app/cleanup/#draft-permission">draft permission</a> to prepare a request.</p>}
+      {allowed && active && (
+        <section class="check-results" aria-labelledby="candidate-title">
+          <h2 id="candidate-title" class="check-subheading">Websites marked Close</h2>
+          {candidates.length ? <ul class="check-records">
+            {candidates.map((domain) => {
+              const company = companyFor(domain);
+              return <li class="check-panel">
+                <h3>{company?.name ?? domain}</h3>
+                <p class="check-meta">{company ? domain : 'Closure guide needs review.'}</p>
+                {company && <form method="post" action="/app/cleanup/drafts/">
+                  <input type="hidden" name="domain" value={domain} />
+                  <button class="check-button" name="intent" value="queue-closure">Queue draft for review</button>
+                </form>}
+              </li>;
+            })}
+          </ul> : <p>Save a website and mark it Close in your <a href="/app/cleanup/">inventory</a> to get started.</p>}
+        </section>
+      )}
+      {allowed && drafts.length > 0 && (
+        <section class="check-results" aria-labelledby="history-title">
+          <h2 id="history-title" class="check-subheading">Draft history</h2>
+          <ul class="check-records">
+            {drafts.map((draft) => {
+              const message = active && draft.state === 'ready' ? renderClosureDraft(draft.template_version, draft.company_name, email) : null;
+              const company = companyFor(draft.domain);
+              return <li class="check-panel">
+                <h3>{draft.company_name}</h3>
+                <p class="check-meta">{draftStateLabels[draft.state]} · <time datetime={draft.created_at}>{date.format(new Date(draft.created_at))}</time></p>
+                {message && <ClosureMessage draft={message} />}
+                {message && company && <p><a href={company.guide} rel="noreferrer">Open the official closure guide</a></p>}
+              </li>;
+            })}
+          </ul>
+        </section>
+      )}
+    </main>
+  </div>
+</Shell>

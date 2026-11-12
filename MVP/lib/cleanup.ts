@@ -1,8 +1,10 @@
 import type { AstroCookies } from 'astro';
 import { liveCheck, liveConfig, supabaseRequest, type Config } from './live.ts';
+import { closureTemplateVersion, type ClosureDraft, type readDraftReview } from './closure-drafts.ts';
 import { draftPermissionVersion, type DraftPermission, type DraftPermissionEvent } from './draft-permission.ts';
 import { knownDomains, type InventoryChoice } from './inventory.ts';
 
+export type QueuedDraft = Pick<ClosureDraft, 'id' | 'domain' | 'company_name' | 'template_version' | 'created_at'>;
 export type SavedSite = { domain: string; choice: InventoryChoice; updated_at: string };
 const sessionCookie = 'koverr_check_session';
 
@@ -33,6 +35,16 @@ export function cleanupStore(config: Config, request = fetch) {
       rpc<boolean>('koverr_set_draft_permission', { user_id_arg: id, active_arg: grant, version_arg: draftPermissionVersion }),
     permissionHistory: (id: string) =>
       rpc<DraftPermissionEvent[]>('koverr_draft_permission_history', { user_id_arg: id }),
+    closureDrafts: (id: string) => rpc<ClosureDraft[]>('koverr_read_closure_drafts', { user_id_arg: id }),
+    queueClosure: (id: string, domain: string, company: string) =>
+      rpc<boolean>('koverr_queue_closure_draft', {
+        user_id_arg: id, domain_arg: domain, company_arg: company, version_arg: closureTemplateVersion,
+      }),
+    reviewQueue: (reviewer: string) => rpc<QueuedDraft[]>('koverr_closure_review_queue', { reviewer_id_arg: reviewer }),
+    reviewClosure: (reviewer: string, decision: NonNullable<ReturnType<typeof readDraftReview>>) =>
+      rpc<boolean>('koverr_review_closure_draft', {
+        draft_id_arg: decision.id, reviewer_id_arg: reviewer, outcome_arg: decision.outcome, minutes_arg: decision.minutes,
+      }),
     directoryResearch: () =>
       rpc<{ domain: string; accounts: number }[]>('koverr_directory_research', { known_domains_arg: knownDomains }),
   };

@@ -47,6 +47,7 @@ try {
           <p><a href="/app/inventory/">Try the browser-only inventory</a></p>
         </section>
       )}
+      {enabled && <p class="check-section-space"><a href="/app/cleanup/drafts/">Review account-closure drafts</a></p>}
       {(enabled || permission?.active) && <DraftPermission permission={permission} canGrant={enabled} />}
     </main>
   </div>
