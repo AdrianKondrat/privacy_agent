@@ -2,6 +2,13 @@
 
 Updated 17 November 2026. Continue on the existing `MVP` branch and push each major milestone. Product scope and build order live in the [PRD](../docs/03-prd-mvp.md), [architecture](../docs/05-architecture.md), [build plan](../docs/07-validation-and-build-plan.md) and [design direction](../docs/08-design-direction.md).
 
+## Start here in the next session
+
+- The free pilot code is on `origin/MVP`. The last implementation commit is `5a579a7`. The private cloud preview is a sample walkthrough. Live deployment is the next priority.
+- The dedicated Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). Its SQL Editor confirmed 11 Koverr tables after applying all eight migrations through `20261117104500`. The management login available in the previous session returned HTTP 403 for this project, while the signed-in dashboard had access.
+- Still needed before a real end-to-end test: an HTTPS Node 24 host, a rotated Supabase server key in its secret store, Supabase Auth SMTP and OTP templates, and a production Have I Been Pwned API key. Rotate the Supabase server key shared in the previous chat before deployment. Use the host's secret store for the replacement.
+- After the controlled mailbox test passes, take the reconciled SQLite launch-list backup through dry run and import, verify the retention jobs and operational checks, then run an invited cohort. No real list has been imported and no invitations have been sent. The [deployment runbook](deploy/live-pilot.md) contains the commands and acceptance checks.
+
 ## Built
 
 - The implementation lives in `MVP/`. A small Astro integration mounts the free check, password checker, browser-only inventory and Cleanup workspace in the existing project, using the shared shell and design tokens.
@@ -34,7 +41,7 @@ The static preview source is in `MVP/preview/`. Build it from the repository roo
 
 See the [live deployment runbook](deploy/live-pilot.md) for the Node container, runtime settings and deployed acceptance checks.
 
-1. Apply the SQL migrations in [supabase/migrations](supabase/migrations) in timestamp order to a UK or EU Supabase project. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
+1. For a fresh database, apply the SQL migrations in [supabase/migrations](supabase/migrations) in timestamp order to a UK or EU Supabase project. The dedicated pilot project already has all eight migrations. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
 2. Copy [the environment template](.env.example) to `MVP/.env` and fill in the exact app origin, Supabase URL and keys, and a Have I Been Pwned key that supports breached-account lookups. Keep the service-role and breach-index keys on the server. The live form is available only at the configured origin.
 3. Run `node --env-file=MVP/.env node_modules/astro/bin/astro.mjs dev --host 127.0.0.1 --port 4327`. Open `http://127.0.0.1:4327/app/`. For hosted builds, set `KOVERR_APP_ORIGIN` at build time as well as runtime so Astro can recognise the origin behind a proxy.
 4. Use a mailbox you control to verify code delivery, scan, complete a step, sign in again to confirm persistence, export and delete. Check that the account and saved rows are gone. Provider reference: [Supabase email OTP](https://supabase.com/docs/guides/auth/auth-email-passwordless) and [Have I Been Pwned API](https://haveibeenpwned.com/API/V3).
@@ -60,6 +67,8 @@ node --test MVP/test/*.test.ts
 npm run check
 npm run build
 ```
+
+The last implementation passed all 23 automated tests, Astro diagnostics, and both the server and static preview builds.
 
 The built route passed a headless Chromium walkthrough using mocked providers, including a wrong code, verification, scan, completion, undo, export and deletion. The migrations passed embedded Postgres checks for OTP limits, scan retries, per-account reads, write restrictions, pricing deduplication, activation event capture, Cleanup access, draft permission and withdrawal, reviewer separation and cascading deletion. Have I Been Pwned returned a result for its documented synthetic account using its public test key. On a mobile Chromium viewport, the real password-range lookup sent only the expected five-character prefix and made no request to Koverr. All eight migrations are applied in the Koverr Supabase project (West EU, Ireland). The server has not been deployed against it, and SMTP and the production breach-index key are pending. The invite gate and aggregate report passed local verification with synthetic data. Docker image execution remains unverified because the local daemon was unavailable.
 
