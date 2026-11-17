@@ -16,11 +16,12 @@ async function main() {
     console.log(JSON.stringify({ mode: 'dry-run', validRows: rows.length }));
     return;
   }
-  const { KOVERR_SUPABASE_URL, KOVERR_SUPABASE_SERVICE_ROLE_KEY } = process.env;
-  if (!KOVERR_SUPABASE_URL || !KOVERR_SUPABASE_SERVICE_ROLE_KEY) throw new Error('Set the destination Supabase URL and server key.');
-  const url = URL.parse(KOVERR_SUPABASE_URL);
+  const urlValue = process.env.KOVERR_SUPABASE_URL;
+  const key = process.env.KOVERR_SUPABASE_SECRET_KEY || process.env.KOVERR_SUPABASE_SERVICE_ROLE_KEY;
+  if (!urlValue || !key) throw new Error('Set the destination Supabase URL and server key.');
+  const url = URL.parse(urlValue);
   if (!url || url.protocol !== 'https:' || url.href !== url.origin + '/') throw new Error('Set a valid HTTPS Supabase origin.');
-  console.log(JSON.stringify({ mode: 'apply', ...await importLaunchList(rows, url, KOVERR_SUPABASE_SERVICE_ROLE_KEY) }));
+  console.log(JSON.stringify({ mode: 'apply', ...await importLaunchList(rows, url, key) }));
 }
 
 try {

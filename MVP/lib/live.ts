@@ -1,4 +1,5 @@
 import { createHmac, randomUUID } from 'node:crypto';
+import { supabaseHeaders } from './supabase-headers.ts';
 import type { AccountUse } from './account-use.ts';
 import type { PlanChoice, ProductEvent } from './experiment.ts';
 import { checkBreaches } from './breaches.ts';
@@ -28,8 +29,10 @@ function verifiedIdentity(user?: AuthUser): Identity | null {
 export function liveConfig() {
   const {
     KOVERR_APP_ORIGIN: origin, KOVERR_SUPABASE_URL: url, KOVERR_SUPABASE_PUBLISHABLE_KEY: publicKey,
-    KOVERR_SUPABASE_SERVICE_ROLE_KEY: serviceKey, KOVERR_HIBP_API_KEY: hibpKey,
+    KOVERR_SUPABASE_SERVICE_ROLE_KEY: legacyKey, KOVERR_HIBP_API_KEY: hibpKey,
+    KOVERR_PILOT_MODE: mode,
   } = process.env;
+  const serviceKey = process.env.KOVERR_SUPABASE_SECRET_KEY || legacyKey;
   if (!origin || !url || !publicKey || !serviceKey || !hibpKey) return null;
   const app = new URL(origin);
   const supabase = new URL(url);
@@ -39,10 +42,11 @@ export function liveConfig() {
       throw new Error('Koverr service origins must be HTTPS origins or local development addresses.');
     }
   }
-  return { origin: app.origin, url: supabase.origin, publicKey, serviceKey, hibpKey };
+  if (mode && mode !== 'invite-only' && mode !== 'open') throw new Error('Invalid Koverr pilot mode.');
+  return { origin: app.origin, url: supabase.origin, publicKey, serviceKey, hibpKey, inviteOnly: mode === 'invite-only' };
 }
 
-export type Config = NonNullable<ReturnType<typeof liveConfig>>;
+export type Config = Omit<NonNullable<ReturnType<typeof liveConfig>>, 'inviteOnly'> & { inviteOnly?: boolean };
 
 class ServiceError extends Error {
   readonly status: number;
@@ -57,8 +61,7 @@ export function supabaseRequest(config: Config, request = fetch) {
   return async function call<T>(path: string, options: { method?: string; token?: string; admin?: boolean; body?: unknown; prefer?: string } = {}) {
     const { method = 'GET', token, admin, body, prefer } = options;
     const key = admin ? config.serviceKey : config.publicKey;
-    const headers = new Headers({ apikey: key });
-    if (token || admin) headers.set('authorization', `Bearer ${token ?? key}`);
+    const headers = supabaseHeaders(key, token, admin);
     if (prefer) headers.set('prefer', prefer);
     if (body !== undefined) headers.set('content-type', 'application/json');
     const response = await request(`${config.url}${path}`, {
@@ -83,22 +86,31 @@ export function liveCheck(config: Config, request = fetch) {
     }
   }
 
+  function canParticipate(email: string) {
+    if (!config.inviteOnly) return Promise.resolve(true);
+    return call<boolean>('/rest/v1/rpc/koverr_pilot_invited', {
+      method: 'POST', admin: true, body: { email_arg: email },
+    });
+  }
+
   async function sendCode(email: string): Promise<'sent' | 'limited'> {
     const addressKey = createHmac('sha256', config.serviceKey).update(email).digest('hex');
     const allowed = await call<boolean>('/rest/v1/rpc/koverr_claim_otp', {
       method: 'POST', admin: true, body: { address_key_arg: addressKey },
     });
-    if (!allowed) return 'limited';
+    if (!allowed) return config.inviteOnly ? 'sent' : 'limited';
+    if (!await canParticipate(email)) return 'sent';
     try {
       await call('/auth/v1/otp', { method: 'POST', body: { email, create_user: true } });
       return 'sent';
     } catch (error) {
-      if (error instanceof ServiceError && error.status === 429) return 'limited';
+      if (error instanceof ServiceError && error.status === 429) return config.inviteOnly ? 'sent' : 'limited';
       throw error;
     }
   }
 
   async function verifyCode(email: string, code: string): Promise<Session | null> {
+    if (!await canParticipate(email)) return null;
     try {
       const result = await call<{ access_token: string; expires_in: number; user?: AuthUser }>('/auth/v1/verify', {
         method: 'POST', body: { email, token: code, type: 'email' },
@@ -161,7 +173,7 @@ export function liveCheck(config: Config, request = fetch) {
 
   async function scan(token: string): Promise<void> {
     const identity = await identify(token);
-    if (!identity) return;
+    if (!identity || !await canParticipate(identity.email)) return;
     const claim = randomUUID();
     const allowed = await call<boolean>('/rest/v1/rpc/koverr_claim_scan', {
       method: 'POST', admin: true, body: { user_id_arg: identity.id, claim_id_arg: claim },
@@ -202,5 +214,5 @@ export function liveCheck(config: Config, request = fetch) {
     }
   }
 
-  return { identify, sendCode, verifyCode, read, readAccountUse, saveAccountUse, readEvents, recordEvent, choosePlan, scan, saveProgress, deleteAccount };
+  return { identify, canParticipate, sendCode, verifyCode, read, readAccountUse, saveAccountUse, readEvents, recordEvent, choosePlan, scan, saveProgress, deleteAccount };
 }

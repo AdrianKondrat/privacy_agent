@@ -1,4 +1,5 @@
 import { DatabaseSync } from 'node:sqlite';
+import { supabaseHeaders } from './supabase-headers.ts';
 import { isVariant, regionKey, worryKey } from '../../src/lib/launch.ts';
 
 export function loadLaunchList(path: string) {
@@ -39,11 +40,11 @@ export async function importLaunchList(rows: LaunchListRow[], url: URL, serviceK
   for (let start = 0; start < rows.length; start += 200) {
     const batch = rows.slice(start, start + 200);
     try {
+      const headers = supabaseHeaders(serviceKey, undefined, true);
+      headers.set('content-type', 'application/json');
+      headers.set('prefer', 'resolution=ignore-duplicates,return=representation');
       const response = await request(target, {
-        method: 'POST', headers: {
-          apikey: serviceKey, authorization: 'Bearer ' + serviceKey,
-          'content-type': 'application/json', prefer: 'resolution=ignore-duplicates,return=representation',
-        }, body: JSON.stringify(batch), redirect: 'error', signal: AbortSignal.timeout(15_000),
+        method: 'POST', headers, body: JSON.stringify(batch), redirect: 'error', signal: AbortSignal.timeout(15_000),
       });
       if (!response.ok) throw new Error();
       const result: unknown = await response.json();

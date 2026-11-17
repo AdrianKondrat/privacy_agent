@@ -10,7 +10,7 @@ RUN mkdir -p /storage && chown node:node /storage
 
 FROM node:24-bookworm-slim AS runtime
 WORKDIR /app
-ENV NODE_ENV=production HOST=0.0.0.0 PORT=4321 WAITLIST_DB_PATH=/storage/waitlist.sqlite
+ENV NODE_ENV=production KOVERR_PILOT_MODE=invite-only HOST=0.0.0.0 PORT=4321 WAITLIST_DB_PATH=/storage/waitlist.sqlite
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /storage /storage

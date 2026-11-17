@@ -94,3 +94,54 @@ test('verification rejects a provider result for an email other than the request
   }));
   assert.equal(await live.verifyCode('other@example.test', '123456'), null);
 });
+
+test('invite-only mode avoids sending codes or verifying for addresses outside the invited cohort', async () => {
+  const calls: string[] = [];
+  const store = liveCheck({ ...config, inviteOnly: true }, async (input, options) => {
+    const path = new URL(String(input)).pathname;
+    calls.push(path);
+    if (path.endsWith('/koverr_claim_otp')) return Response.json(true);
+    if (path.endsWith('/koverr_pilot_invited')) {
+      assert.deepEqual(JSON.parse(String(options?.body)), { email_arg: identity.email });
+      return Response.json(false);
+    }
+    if (path.endsWith('/auth/v1/user')) return Response.json(identity);
+    assert.fail('An uninvited account must never call the provider or reserve a breach scan');
+  });
+  assert.equal(await store.sendCode(identity.email), 'sent');
+  assert.equal(await store.verifyCode(identity.email, '123456'), null);
+  await store.scan('valid-session-issued-elsewhere');
+  assert.deepEqual(calls, [
+    '/rest/v1/rpc/koverr_claim_otp', '/rest/v1/rpc/koverr_pilot_invited',
+    '/rest/v1/rpc/koverr_pilot_invited', '/auth/v1/user', '/rest/v1/rpc/koverr_pilot_invited',
+  ]);
+});
+
+test('invite-only mode sends a code for an invited address', async () => {
+  const store = liveCheck({ ...config, inviteOnly: true }, async (input) => {
+    const path = new URL(String(input)).pathname;
+    if (path.endsWith('/koverr_claim_otp') || path.endsWith('/koverr_pilot_invited')) return Response.json(true);
+    assert.equal(path, '/auth/v1/otp');
+    return Response.json({});
+  });
+  assert.equal(await store.sendCode(identity.email), 'sent');
+});
+
+test('managed Supabase server secrets use the API key header and user sessions remain bearer tokens', async () => {
+  const secretConfig = { ...config, serviceKey: 'sb_secret_synthetic' };
+  const store = liveCheck(secretConfig, async (input, options) => {
+    const path = new URL(String(input)).pathname;
+    const headers = new Headers(options?.headers);
+    if (path.endsWith('/koverr_claim_otp')) {
+      assert.equal(headers.get('apikey'), secretConfig.serviceKey);
+      assert.equal(headers.get('authorization'), null);
+      return Response.json(false);
+    }
+    assert.equal(path, '/auth/v1/user');
+    assert.equal(headers.get('apikey'), config.publicKey);
+    assert.equal(headers.get('authorization'), 'Bearer customer-session');
+    return Response.json(identity);
+  });
+  assert.equal(await store.sendCode(identity.email), 'limited');
+  assert.equal((await store.identify('customer-session'))?.id, identity.id);
+});

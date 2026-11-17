@@ -32,6 +32,7 @@ const pendingEmail = normalizeEmail(Astro.cookies.get(pendingCookie)?.value ?? n
 let identity: Awaited<ReturnType<NonNullable<typeof live>['identify']>> = null;
 let check: Awaited<ReturnType<NonNullable<typeof live>['read']>>['check'] | undefined;
 let error = '';
+let pilotEligible = true;
 
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 
@@ -66,6 +67,7 @@ try {
       token = undefined;
     }
   }
+  if (live && identity && config?.inviteOnly) pilotEligible = await live.canParticipate(identity.email);
   if (fields) {
     const intent = fields.get('intent');
 
@@ -122,10 +124,12 @@ try {
       }
     } else if (live && identity && token) {
       if (intent === 'scan') {
-        await live.scan(token);
-        return Astro.redirect(app, 303);
-      }
-      if (intent === 'plan-choice') {
+        if (pilotEligible) {
+          await live.scan(token);
+          return Astro.redirect(app, 303);
+        }
+        showError('A pilot invitation is required to run a new check.', 403);
+      } else if (intent === 'plan-choice') {
         const choice = readPlanChoice(fields.get('choice'));
         if (choice && await live.choosePlan(identity, choice)) return Astro.redirect(app + '#plan-title', 303);
         showError('Choose a listed option after opening your results.', 400);
@@ -241,7 +245,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
               <h1>{check?.state === 'failed' ? 'The check could not be completed.' : 'Check your verified email.'}</h1>
               <p class="check-meta">{identity.email}</p>
               <p>We send this address to <a href="https://haveibeenpwned.com/">Have I Been Pwned</a> to look for known breaches.</p>
-              {canRetry ? (
+              {!pilotEligible ? <p>A pilot invitation is required to run a check.</p> : canRetry ? (
                 <form method="post" action={app}>
                   <button class="check-button check-primary" name="intent" value="scan">{check ? 'Try again' : 'Run breach check'}</button>
                 </form>
@@ -280,7 +284,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
             {live && pendingEmail ? (
               <>
                 <h2>Enter your verification code</h2>
-                <p>Check the inbox for {maskedEmail}.</p>
+                <p>{config?.inviteOnly ? 'If this address has pilot access, a code will arrive at ' : 'Check the inbox for '}{maskedEmail}.</p>
                 <form method="post" action={app}>
                   <label for="code">Six-digit code</label>
                   <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required />
@@ -294,7 +298,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
             ) : live ? (
               <>
                 <h2>Verify your email</h2>
-                <p>We’ll email you a code to confirm the address is yours.</p>
+                <p>{config?.inviteOnly ? 'Use the address that received your pilot invitation.' : 'We’ll email you a code to confirm the address is yours.'}</p>
                 <form method="post" action={app}>
                   <label for="email">Email address</label>
                   <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required />
