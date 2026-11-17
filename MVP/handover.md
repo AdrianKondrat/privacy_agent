@@ -1,6 +1,6 @@
 # Koverr MVP handover
 
-Updated 12 November 2026. Continue on the existing `MVP` branch and push each major milestone. Product scope and build order live in the [PRD](../docs/03-prd-mvp.md), [architecture](../docs/05-architecture.md), [build plan](../docs/07-validation-and-build-plan.md) and [design direction](../docs/08-design-direction.md).
+Updated 17 November 2026. Continue on the existing `MVP` branch and push each major milestone. Product scope and build order live in the [PRD](../docs/03-prd-mvp.md), [architecture](../docs/05-architecture.md), [build plan](../docs/07-validation-and-build-plan.md) and [design direction](../docs/08-design-direction.md).
 
 ## Built
 
@@ -29,6 +29,8 @@ Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are
 The static preview source is in `MVP/preview/`. Build it from the repository root with `node node_modules/astro/bin/astro.mjs build --config MVP/preview/astro.config.mjs --outDir dist/preview`. ChatGPT Sites project ID is `appgprj_6af5c87a174881919bfe32be11ec951d`. Reuse that private Site and its source checkout for future updates. The deployment includes only the preview source and shared files it imports.
 
 ## Connect a private live preview
+
+See the [live deployment runbook](deploy/live-pilot.md) for the Node container, runtime settings and deployed acceptance checks.
 
 1. Apply the SQL migrations in [supabase/migrations](supabase/migrations) in timestamp order to a UK or EU Supabase project. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
 2. Copy [the environment template](.env.example) to `MVP/.env` and fill in the exact app origin, Supabase URL and keys, and a Have I Been Pwned key that supports breached-account lookups. Keep the service-role and breach-index keys on the server. The live form is available only at the configured origin.
