@@ -21,3 +21,16 @@ Run the container with the live environment injected by the host, a persistent w
 - Use a dedicated mailbox you control. Confirm that email delivery works and an incorrect code is rejected. Verify a real code, run a scan, record a fix when available, export, sign out, sign back in, and delete the test account.
 - Check that the account's rows are gone from the active database. Check that a provider error shows an inconclusive or failed result. Verify the password range request contains only the prefix.
 - Configure alerts for app health, provider availability and repeated scan failures. Keep email addresses, tokens, request bodies and provider lookup URLs out of application and proxy logs.
+
+## Migrate the launch list
+
+Use a consistent SQLite backup made by the landing-site operator. Reconcile opt-outs and recent signup answers before making the backup. Keep the file and any copies private.
+
+```sh
+node MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite
+node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite --apply
+```
+
+The dry run validates the full input before any writes. The import preserves the email, signup variant, consent version, signup date and optional answers. It reports counts and leaves existing rows and invitation status unchanged. It never transfers follow-up tokens, provisions Auth users or sends messages. Avoid replaying an older backup after handling opt-outs. Reconcile removals on both sides while the landing page remains on SQLite.
+
+Enable Supabase Cron for the live deployment and schedule `select public.koverr_expire_otp_limits();` hourly if it is available on the selected project. Verify the job ran and that provider backup and log retention match the privacy notice. The application also prunes stale counters when processing a code request.

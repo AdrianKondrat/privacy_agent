@@ -15,6 +15,7 @@ Updated 17 November 2026. Continue on the existing `MVP` branch and push each ma
 - Verified Cleanup pilot users can grant or withdraw versioned permission to prepare closure drafts. Changes are audited and included in account export. The agreement covers draft preparation only.
 - Each of the top three breach plans asks whether the account is still used. Choosing no shows steps for closing it with the provider. Answers are editable, exported and deleted with the account.
 - Customers can queue one active closure draft per saved website marked Close when an official guide is known. An allowlisted founder can review or decline the fixed template and log minutes. Reviewers see an email placeholder. Permission withdrawal or changing the Close decision cancels active drafts while retaining the review outcome.
+- The launch-list migration validates SQLite backups in dry-run mode and copies consent and survey answers into a restricted Supabase roster. The real list has not been imported.
 - The E3 pricing survey records a first choice after viewing results. The internal [free-check funnel query](supabase/reports/free-check-funnel.sql) reports completed checks, seven-day activation and paid intent. Sample choices stay local and are excluded.
 - Account controls provide a JSON export and hard deletion of the active account. Foreign keys cascade deletion to saved results and progress. The app has its own privacy notice.
 
