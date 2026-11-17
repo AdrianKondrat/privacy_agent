@@ -19,14 +19,22 @@ The Koverr pilot project is in West EU (Ireland). Its eight migrations through `
 
 ## Verify the deployed server
 
+- Set `KOVERR_PILOT_MODE=invite-only` for the hosted deployment. Before importing the launch list, add a dedicated test mailbox you control directly in the Supabase SQL editor. Replace the example address with the lowercase test address. The insert leaves any existing roster row untouched.
+
+```sql
+insert into public.koverr_launch_list (email, variant, consent_version, joined_at, invited_at)
+values ('controlled-test-address@example.test', 'breach', 'controlled-test', now(), now())
+on conflict (email) do nothing;
+```
+
 - Check that `/app/health/` returns HTTP 200 and that the free-check page responds at the configured HTTPS origin. The health endpoint checks the app process only.
-- Use a dedicated mailbox you control. Confirm that email delivery works and an incorrect code is rejected. Verify a real code, run a scan, record a fix when available, export, sign out, sign back in, and delete the test account.
-- Check that the account's rows are gone from the active database. Check that a provider error shows an inconclusive or failed result. Verify the password range request contains only the prefix.
+- Confirm that email delivery works and an incorrect code is rejected. Verify a real code, run a scan, record a fix when available, export, sign out, sign back in, and delete the test account.
+- Check that the account's rows are gone from the active database and remove the dedicated `controlled-test` roster row. Check that a provider error shows an inconclusive or failed result. Verify the password range request contains only the prefix.
 - Configure alerts for app health, provider availability and repeated scan failures. Keep email addresses, tokens, request bodies and provider lookup URLs out of application and proxy logs.
 
 ## Migrate the launch list
 
-Use a consistent SQLite backup made by the landing-site operator. Reconcile opt-outs and recent signup answers before making the backup. Keep the file and any copies private.
+After the controlled mailbox checks pass, use a consistent SQLite backup made by the landing-site operator. Reconcile opt-outs and recent signup answers before making the backup. Keep the file and any copies private.
 
 ```sh
 node MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite
@@ -39,17 +47,9 @@ Enable Supabase Cron for the live deployment and schedule `select public.koverr_
 
 ## Run the invited free pilot
 
-1. Set `KOVERR_PILOT_MODE=invite-only`. Import the reconciled launch list. Importing leaves every new row uninvited.
-2. Start with a controlled mailbox you own. Mark it invited and verify the full flow. For the real cohort, mark only selected recipients when their invitation batch is ready.
-
-```sql
-update public.koverr_launch_list
-set invited_at = now()
-where invited_at is null and email in ('controlled-test-address@example.test');
-```
-
-3. Send an approved invitation from your normal launch channel to the selected consented addresses. Use the HTTPS `/app/` link with no address or private data in the URL. To stop access for an invitation, clear its `invited_at`; handle launch-list removal separately under the signup privacy notice. If a removed user needs access to an existing export or deletion request, route them through the privacy contact.
-4. Set the invite window in [the cohort report](../supabase/reports/pilot-cohort.sql). Review completed checks, seven-day activation among accounts that have had seven full days, and paid intent among users shown the picker. Use a fresh test address outside the real cohort's window. Compare landing variants using the aggregate visit counts from the marketing host as denominators. The SQL shows signup variant for invited users and contains no traffic counts.
-5. Compare with G1 in `docs/07-validation-and-build-plan.md`. The targets are 100 completed checks, 40% seven-day activation and 10% paid intent. Expand to open signup only when the launch checks and pilot decision are complete. To switch modes, set `KOVERR_PILOT_MODE=open` and redeploy.
+1. Confirm that the live deployment is in invite-only mode, the controlled mailbox checks passed, and the roster import completed. Importing leaves every new row uninvited.
+2. Once launch emails are explicitly authorized, set `invited_at` for the selected consented recipients when their batch is ready and send the approved invitation from your normal launch channel. Use the HTTPS `/app/` link with no address or private data in the URL. To stop access for an invitation, clear its `invited_at`. Handle launch-list removal separately under the signup privacy notice. If a removed user needs access to an existing export or deletion request, route them through the privacy contact.
+3. Set the invite window in [the cohort report](../supabase/reports/pilot-cohort.sql). Review completed checks, seven-day activation among accounts that have had seven full days, and paid intent among users shown the picker. Use a fresh test address outside the real cohort's window. Compare landing variants using the aggregate visit counts from the marketing host as denominators. The SQL shows signup variant for invited users and contains no traffic counts.
+4. Compare with G1 in `docs/07-validation-and-build-plan.md`. The targets are 100 completed checks, 40% seven-day activation and 10% paid intent. Expand to open signup only when the launch checks and pilot decision are complete. To switch modes, set `KOVERR_PILOT_MODE=open` and redeploy.
 
 The invite gate applies at the app's OTP request, verification and scan entry points. Supabase Auth is a separate public API. Configure provider-side delivery and signup abuse protection before sending invitations.
