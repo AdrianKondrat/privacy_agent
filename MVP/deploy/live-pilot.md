@@ -27,7 +27,7 @@ values ('controlled-test-address@example.test', 'breach', 'controlled-test', now
 on conflict (email) do nothing;
 ```
 
-- Check that `/app/health/` returns HTTP 200 and that the free-check page responds at the configured HTTPS origin. The health endpoint checks the app process only.
+- Run `node MVP/scripts/check-live-pilot.ts https://pilot.example.com` with the public HTTPS origin. The script checks the health route and confirms that the live invite-only form is available. It sends no code and needs no credentials.
 - Confirm that email delivery works and an incorrect code is rejected. Verify a real code, run a scan, record a fix when available, export, sign out, sign back in, and delete the test account.
 - Check that the account's rows are gone from the active database and remove the dedicated `controlled-test` roster row. Check that a provider error shows an inconclusive or failed result. Verify the password range request contains only the prefix.
 - Configure alerts for app health, provider availability and repeated scan failures. Keep email addresses, tokens, request bodies and provider lookup URLs out of application and proxy logs.
@@ -39,9 +39,12 @@ After the controlled mailbox checks pass, use a consistent SQLite backup made by
 ```sh
 node MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite
 node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite --apply
+node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite --verify
 ```
 
 The dry run validates the full input before any writes. The import preserves the email, signup variant, consent version, signup date and optional answers. It reports counts and leaves existing rows and invitation status unchanged. It never transfers follow-up tokens, provisions Auth users or sends messages. Avoid replaying an older backup after handling opt-outs. Reconcile removals on both sides while the landing page remains on SQLite.
+
+Run the read-only verification before marking any invitations. Remove the controlled test row first. Keep the destination roster unchanged during verification. Check that `matched` equals the dry-run row count and that `different`, `extra`, `missing` and `invited` are zero. The command returns a nonzero exit status for any of these differences. Reconcile each difference privately and repeat the check with the current backup.
 
 Enable Supabase Cron for the live deployment and schedule `select public.koverr_expire_otp_limits();` hourly if it is available on the selected project. Verify the job ran and that provider backup and log retention match the privacy notice. The application also prunes stale counters when processing a code request.
 
@@ -49,7 +52,7 @@ Enable Supabase Cron for the live deployment and schedule `select public.koverr_
 
 1. Confirm that the live deployment is in invite-only mode, the controlled mailbox checks passed, and the roster import completed. Importing leaves every new row uninvited.
 2. Once launch emails are explicitly authorized, set `invited_at` for the selected consented recipients when their batch is ready and send the approved invitation from your normal launch channel. Use the HTTPS `/app/` link with no address or private data in the URL. To stop access for an invitation, clear its `invited_at`. Handle launch-list removal separately under the signup privacy notice. If a removed user needs access to an existing export or deletion request, route them through the privacy contact.
-3. Set the invite window in [the cohort report](../supabase/reports/pilot-cohort.sql). Review completed checks, seven-day activation among accounts that have had seven full days, and paid intent among users shown the picker. Use a fresh test address outside the real cohort's window. Compare landing variants using the aggregate visit counts from the marketing host as denominators. The SQL shows signup variant for invited users and contains no traffic counts.
-4. Compare with G1 in `docs/07-validation-and-build-plan.md`. The targets are 100 completed checks, 40% seven-day activation and 10% paid intent. Expand to open signup only when the launch checks and pilot decision are complete. To switch modes, set `KOVERR_PILOT_MODE=open` and redeploy.
+3. Set the UTC invite window in [the cohort report](../supabase/reports/pilot-cohort.sql). The report excludes the `controlled-test` marker. Review completed checks, seven-day activation among accounts that have had seven full days, and paid intent among users shown the picker. Compare landing variants using the visit counts from the marketing host.
+4. Read the three G1 flags on the total row. The targets are 100 completed checks, 40% seven-day activation and 10% paid intent. A null rate flag means the report has no eligible users for that rate. Use [the build plan](../../docs/07-validation-and-build-plan.md) to decide when to expand signup. To expand access, set `KOVERR_PILOT_MODE=open` and deploy again.
 
 The invite gate applies at the app's OTP request, verification and scan entry points. Supabase Auth is a separate public API. Configure provider-side delivery and signup abuse protection before sending invitations.

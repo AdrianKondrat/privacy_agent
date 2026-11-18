@@ -56,3 +56,50 @@ export async function importLaunchList(rows: LaunchListRow[], url: URL, serviceK
   }
   return { inserted, existing: rows.length - inserted };
 }
+
+export async function verifyLaunchList(rows: LaunchListRow[], url: URL, serviceKey: string, request = fetch) {
+  const unmatched = new Map(rows.map((row) => [row.email, row]));
+  const seen = new Set<string>();
+  const counts = { matched: 0, different: 0, extra: 0, missing: 0, invited: 0 };
+  const target = new URL('/rest/v1/koverr_launch_list', url);
+  target.search = new URLSearchParams({
+    select: 'email,variant,consent_version,joined_at,region,worry,invited_at',
+    order: 'email.asc',
+    limit: '200',
+  }).toString();
+  const headers = supabaseHeaders(serviceKey, undefined, true);
+
+  try {
+    for (;;) {
+      target.searchParams.set('offset', String(seen.size));
+      const response = await request(target.href, { headers, redirect: 'error', signal: AbortSignal.timeout(15_000) });
+      if (!response.ok) throw new Error();
+      const records = await response.json() as (LaunchListRow & { invited_at: string | null })[];
+      if (!Array.isArray(records) || records.length > 200) throw new Error();
+      if (records.length === 0) break;
+
+      for (const record of records) {
+        if (typeof record?.email !== 'string' || !record.email || seen.has(record.email)) throw new Error();
+        seen.add(record.email);
+        if (record.invited_at !== null) counts.invited++;
+        const source = unmatched.get(record.email);
+        if (!source) {
+          counts.extra++;
+          continue;
+        }
+        unmatched.delete(record.email);
+        if (source.variant === record.variant && source.consent_version === record.consent_version
+          && Date.parse(source.joined_at) === Date.parse(record.joined_at)
+          && source.region === record.region && source.worry === record.worry) {
+          counts.matched++;
+        } else {
+          counts.different++;
+        }
+      }
+    }
+  } catch {
+    throw new Error('Could not verify the destination roster. Check the connection and keep the roster unchanged during verification.');
+  }
+  counts.missing = unmatched.size;
+  return counts;
+}

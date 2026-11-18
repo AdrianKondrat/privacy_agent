@@ -299,7 +299,7 @@ if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
               <>
                 <h2>Verify your email</h2>
                 <p>{config?.inviteOnly ? 'Use the address that received your pilot invitation.' : 'We’ll email you a code to confirm the address is yours.'}</p>
-                <form method="post" action={app}>
+                <form method="post" action={app} data-koverr-pilot={config?.inviteOnly ? 'invite-only' : undefined}>
                   <label for="email">Email address</label>
                   <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required />
                   <button class="check-button check-primary" name="intent" value="send">Send verification code</button>

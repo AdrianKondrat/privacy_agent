@@ -1,0 +1,19 @@
+%%{init: {"theme": "base", "flowchart": {"htmlLabels": false}, "themeVariables": {"fontFamily": "Arial", "fontSize": "17px", "lineColor": "#526174"}}}%%
+graph TD
+  Built["Available in the MVP"]
+  Built --> A["Free breach check<br/>Verify the email address and get steps to correct problems"]
+  Built --> B["Privacy controls<br/>Check passwords in the browser and export or delete account data"]
+  Built --> C["Cleanup<br/>Review saved sites and prepare closure drafts"]
+  A --> D["Pilot tools<br/>Check the live form, compare the roster, and measure results"]
+  B --> D
+  C --> D
+  D --> Next["Next three milestones"]
+  Next --> E["1. Deploy and test the private pilot<br/>Use one test mailbox"]
+  E --> F["2. Import and verify the roster<br/>Check the retention job"]
+  F --> G["3. Run the invited pilot<br/>Measure checks, first fixes, and paid intent"]
+  classDef headings fill:#24354a,stroke:#24354a,color:#fff;
+  classDef built fill:#e9f3f1,stroke:#36766b,color:#183b36;
+  classDef next fill:#fff4df,stroke:#ac7933,color:#55380d;
+  class Built,Next headings;
+  class A,B,C,D built;
+  class E,F,G next;
