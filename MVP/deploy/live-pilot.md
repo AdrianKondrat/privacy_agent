@@ -15,7 +15,9 @@ docker build -f MVP/deploy/Dockerfile \
 
 Run the container with the live environment injected by the host, a persistent writable volume mounted at `/storage` for the standalone landing site's SQLite data, and the HTTPS proxy forwarding the configured public host and scheme. Alternatively, run `npm ci`, `npm run build`, and `npm start` on a Node 24 host. The app listens on the host-provided `PORT`. Restrict direct access to the server behind the proxy.
 
-The Koverr pilot project is in West EU (Ireland). Its eight migrations through `20261117104500` were applied in the Supabase SQL editor on 17 November 2026. Runtime secret injection, SMTP, the Node host, the production breach-index key, and the real roster import are pending.
+The Koverr pilot project is in West EU (Ireland). Its eight migrations through `20261117104500` were applied in the Supabase SQL editor on 17 November 2026.
+
+Email confirmation is on. The email code length is six digits and the expiry is 600 seconds. The dashboard uses the default sign-in link template while custom SMTP is off. The Koverr form needs a numeric code. Set up Brevo Free, then put `{{ .Token }}` in the Confirm sign up and Magic link or OTP templates. [Brevo SMTP instructions](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP)
 
 ## Verify the deployed server
 

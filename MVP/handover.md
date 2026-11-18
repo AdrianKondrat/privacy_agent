@@ -5,8 +5,10 @@ Updated 18 November 2026. Continue on the existing `MVP` branch. See the [PRD](.
 ## Start here in the next session
 
 - The private cloud preview shows the sample workflow. The next step is to deploy and test the private pilot. Use the [deployment instructions](deploy/live-pilot.md).
-- The Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). On 17 November, its SQL Editor showed 11 Koverr tables after all eight migrations. On 18 November, the Management API returned HTTP 403. The browser showed the Supabase sign-in page.
-- The live test needs an HTTPS Node 24 host, a replacement Supabase server key, SMTP, and a production Have I Been Pwned key. Put the new keys in the host's secret store. Set the email code templates in Supabase Auth.
+- The Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). The signed-in Chrome dashboard shows the 11 Koverr tables. The available Management API token returned HTTP 403.
+- Supabase Auth has email confirmation on. The email code length is six digits and the expiry is 600 seconds. The dashboard requires custom SMTP to change the default sign-in link to a code.
+- **Follow-up task.** Configure Brevo Free in Supabase. Set `{{ .Token }}` in the Confirm sign up and Magic link or OTP templates. Verify delivery and sign-in with one test mailbox before you invite pilot users.
+- The live test also needs an HTTPS Node 24 host, a replacement Supabase server key, and a production Have I Been Pwned key. Put these keys in the host's secret store.
 - The live mailbox test, real roster import, and invited pilot are pending. Use one mailbox that you control for the live test. Get the reconciled SQLite backup from the landing-site operator after that test passes.
 
 ## MVP development
