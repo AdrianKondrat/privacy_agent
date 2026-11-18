@@ -5,7 +5,7 @@ Updated 18 November 2026. Continue on the existing `MVP` branch. See the [PRD](.
 ## Start here in the next session
 
 - The private cloud preview shows the sample workflow. The next step is to deploy and test the private pilot. Use the [deployment instructions](deploy/live-pilot.md).
-- The dedicated Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). Its SQL Editor confirmed 11 Koverr tables after applying all eight migrations through `20261117104500`. The management login available in the previous session returned HTTP 403 for this project, while the signed-in dashboard had access.
+- The Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). On 17 November, its SQL Editor showed 11 Koverr tables after all eight migrations. On 18 November, the Management API returned HTTP 403. The browser showed the Supabase sign-in page.
 - The live test needs an HTTPS Node 24 host, a replacement Supabase server key, SMTP, and a production Have I Been Pwned key. Put the new keys in the host's secret store. Set the email code templates in Supabase Auth.
 - The live mailbox test, real roster import, and invited pilot are pending. Use one mailbox that you control for the live test. Get the reconciled SQLite backup from the landing-site operator after that test passes.
 
@@ -15,7 +15,7 @@ Updated 18 November 2026. Continue on the existing `MVP` branch. See the [PRD](.
 - The browser checks passwords. The user can export or delete account data.
 - Cleanup lets the user review saved sites and request closure drafts. A founder can review these drafts.
 - The deployment script checks the health route and the invite-only form. It uses the public HTTPS address.
-- The roster script compares Supabase records with the SQLite backup. It shows counts for matches, differences, and invitations.
+- The roster export saves six fields to a new private SQLite file. It omits follow-up tokens. The verification script compares this file with Supabase and gives counts.
 - The cohort report excludes the controlled test mailbox marker. It shows whether the cohort met each of the three G1 targets.
 
 ![MVP development and next three milestones](diagrams/mvp-development.svg)
@@ -81,14 +81,14 @@ npm run check
 npm run build
 ```
 
-All 26 automated tests passed. Astro diagnostics, the server build, and the static preview build passed. A local server with test settings showed the invite-only form. Embedded Postgres tests passed for roster access, email code counter expiry, and the cohort report. The production checks in the [deployment instructions](deploy/live-pilot.md) need the live host and provider settings.
+All 27 automated tests passed. Astro diagnostics and the server build passed. The Docker container passed its health check and showed the invite-only form behind simulated HTTPS proxy headers. The roster export and import dry run passed with test data. Embedded Postgres tests passed for roster access, email code counter expiry, and the cohort report. The [live checks](deploy/live-pilot.md) need the HTTPS host and provider settings.
 
-The built route passed a headless Chromium walkthrough using mocked providers, including a wrong code, verification, scan, completion, undo, export and deletion. The migrations passed embedded Postgres checks for OTP limits, scan retries, per-account reads, write restrictions, pricing deduplication, activation event capture, Cleanup access, draft permission and withdrawal, reviewer separation and cascading deletion. Have I Been Pwned returned a result for its documented synthetic account using its public test key. On a mobile Chromium viewport, the real password-range lookup sent only the expected five-character prefix and made no request to Koverr. All eight migrations are applied in the Koverr Supabase project (West EU, Ireland). The server has not been deployed against it, and SMTP and the production breach-index key are pending. The invite gate and aggregate report passed local verification with synthetic data. Docker image execution remains unverified because the local daemon was unavailable.
+The built route passed a headless Chromium walkthrough using test providers. The test covered a wrong code, verification, scan, completion, undo, export, and deletion. The database tests also covered scan retries, account isolation, pricing choices, Cleanup access, draft withdrawal, and cascading deletion. Have I Been Pwned returned a result for its documented test account. In a mobile browser, the password checker sent only the five-character prefix to the password service.
 
 ## Next
 
 1. Deploy the private pilot. Run the HTTPS check. Use one test mailbox to check code delivery, breach lookup, export, and account deletion.
-2. Import and verify the roster. Compare it with the reconciled backup. Check that the scheduled job removes expired email code counters.
+2. Export the reconciled roster from the landing host. Import it and verify the records. Schedule the email code counter cleanup and check the job status.
 3. Run the invited pilot. Measure completed checks, first fixes in seven days, and paid intent. Compare the results with G1 before you expand signup.
 
 Use the [build plan](../docs/07-validation-and-build-plan.md) for the paid Cleanup work after G1. Expand the directory of official guides. Get legal review of sending authority and templates before you add relay sending.

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
-import { importLaunchList, loadLaunchList, verifyLaunchList } from '../lib/launch-list-migration.ts';
+import { exportLaunchList, importLaunchList, loadLaunchList, verifyLaunchList } from '../lib/launch-list-migration.ts';
 
 test('imports old and current SQLite snapshots without follow-up tokens or invitation state', async () => {
   const folder = mkdtempSync(join(tmpdir(), 'koverr-list-test-'));
@@ -67,4 +67,30 @@ test('verifies roster pages and reports differences without sending addresses or
   assert.deepEqual(counts, { matched: 1, different: 1, extra: 1, missing: 1, invited: 1 });
   await assert.rejects(verifyLaunchList(rows, url, 'fixture-key',
     async () => Response.json(pages[0])), /Could not verify the destination roster/);
+});
+
+test('exports only the roster fields from a live SQLite database and preserves existing output', () => {
+  const folder = mkdtempSync(join(tmpdir(), 'koverr-export-test-'));
+  const source = join(folder, 'source.sqlite');
+  const destination = join(folder, 'roster.sqlite');
+  const db = new DatabaseSync(source);
+  try {
+    db.exec(`PRAGMA journal_mode = WAL;
+      CREATE TABLE waitlist (
+        email TEXT, variant TEXT, consent_version TEXT, joined_at TEXT, region TEXT, worry TEXT, followup_token TEXT
+      );
+      INSERT INTO waitlist VALUES
+        ('Owner@Example.test','breach','v1','2026-11-17T10:00:00Z','uk','breach','private-token');`);
+    assert.equal(exportLaunchList(source, destination), 1);
+    assert.deepEqual(loadLaunchList(destination), loadLaunchList(source));
+    assert.equal(statSync(destination).mode & 0o777, 0o600);
+    const original = readFileSync(destination);
+    assert.equal(original.includes('private-token'), false);
+    assert.equal(original.includes('followup_token'), false);
+    assert.throws(() => exportLaunchList(source, destination), { code: 'EEXIST' });
+    assert.deepEqual(readFileSync(destination), original);
+  } finally {
+    db.close();
+    rmSync(folder, { recursive: true, force: true });
+  }
 });

@@ -34,19 +34,46 @@ on conflict (email) do nothing;
 
 ## Migrate the launch list
 
-After the controlled mailbox checks pass, use a consistent SQLite backup made by the landing-site operator. Reconcile opt-outs and recent signup answers before making the backup. Keep the file and any copies private.
+After the controlled mailbox test passes, reconcile opt-outs and recent signup answers. From the landing site's data host, make a roster snapshot in a private directory. Use the live SQLite path from `WAITLIST_DB_PATH`. The export copies the six roster fields and prints the row count. The export omits follow-up tokens.
 
 ```sh
-node MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite
-node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite --apply
-node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/waitlist.sqlite --verify
+node MVP/scripts/export-launch-list.ts --source /storage/waitlist.sqlite --output /private/roster.sqlite
+```
+
+Use the same snapshot for the dry run, import, and verification. Keep the snapshot outside Git.
+
+```sh
+node MVP/scripts/import-launch-list.ts --source /private/roster.sqlite
+node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/roster.sqlite --apply
+node --env-file=MVP/.env MVP/scripts/import-launch-list.ts --source /private/roster.sqlite --verify
 ```
 
 The dry run validates the full input before any writes. The import preserves the email, signup variant, consent version, signup date and optional answers. It reports counts and leaves existing rows and invitation status unchanged. It never transfers follow-up tokens, provisions Auth users or sends messages. Avoid replaying an older backup after handling opt-outs. Reconcile removals on both sides while the landing page remains on SQLite.
 
 Run the read-only verification before marking any invitations. Remove the controlled test row first. Keep the destination roster unchanged during verification. Check that `matched` equals the dry-run row count and that `different`, `extra`, `missing` and `invited` are zero. The command returns a nonzero exit status for any of these differences. Reconcile each difference privately and repeat the check with the current backup.
 
-Enable Supabase Cron for the live deployment and schedule `select public.koverr_expire_otp_limits();` hourly if it is available on the selected project. Verify the job ran and that provider backup and log retention match the privacy notice. The application also prunes stale counters when processing a code request.
+Enable Supabase Cron on the pilot project. Run this command in the SQL Editor to schedule the job every hour. Use the same job name if you must update the schedule.
+
+```sql
+select cron.schedule(
+  'koverr-expire-otp-limits',
+  '0 * * * *',
+  'select public.koverr_expire_otp_limits();'
+);
+```
+
+After the scheduled time, check the latest run. Make sure the job is active and the latest run status is `succeeded`. Check that provider backup and log retention match the privacy notice.
+
+```sql
+select j.active, j.schedule, r.status, r.start_time, r.end_time
+from cron.job j
+left join cron.job_run_details r on r.jobid = j.jobid
+where j.jobname = 'koverr-expire-otp-limits'
+order by r.start_time desc nulls last
+limit 1;
+```
+
+[Supabase Cron instructions](https://supabase.com/docs/guides/cron/quickstart)
 
 ## Run the invited free pilot
 

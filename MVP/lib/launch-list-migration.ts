@@ -1,10 +1,13 @@
 import { DatabaseSync } from 'node:sqlite';
+import { closeSync, linkSync, mkdtempSync, openSync, rmSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { supabaseHeaders } from './supabase-headers.ts';
 import { isVariant, regionKey, worryKey } from '../../src/lib/launch.ts';
 
 export function loadLaunchList(path: string) {
   const db = new DatabaseSync(path, { readOnly: true });
   try {
+    db.exec('PRAGMA busy_timeout = 3000; BEGIN');
     const columns = new Set(db.prepare("PRAGMA table_info('waitlist')").all().map((column) => column.name));
     if (!['email', 'variant', 'consent_version', 'joined_at'].every((column) => columns.has(column))) {
       throw new Error('The source does not contain a supported waitlist table.');
@@ -33,6 +36,34 @@ export function loadLaunchList(path: string) {
 }
 
 export type LaunchListRow = ReturnType<typeof loadLaunchList>[number];
+
+export function exportLaunchList(source: string, destination: string) {
+  const rows = loadLaunchList(source);
+  const folder = mkdtempSync(join(dirname(destination), '.koverr-roster-'));
+  try {
+    const snapshot = join(folder, 'snapshot.sqlite');
+    closeSync(openSync(snapshot, 'wx', 0o600));
+    const db = new DatabaseSync(snapshot);
+    try {
+      db.exec(`BEGIN;
+        CREATE TABLE waitlist (
+          email TEXT PRIMARY KEY, variant TEXT NOT NULL, consent_version TEXT NOT NULL,
+          joined_at TEXT NOT NULL, region TEXT, worry TEXT
+        ) STRICT`);
+      const insert = db.prepare('INSERT INTO waitlist (email, variant, consent_version, joined_at, region, worry) VALUES (?, ?, ?, ?, ?, ?)');
+      for (const row of rows) {
+        insert.run(row.email, row.variant, row.consent_version, row.joined_at, row.region, row.worry);
+      }
+      db.exec('COMMIT');
+    } finally {
+      db.close();
+    }
+    linkSync(snapshot, destination);
+  } finally {
+    rmSync(folder, { recursive: true, force: true });
+  }
+  return rows.length;
+}
 
 export async function importLaunchList(rows: LaunchListRow[], url: URL, serviceKey: string, request = fetch) {
   const target = new URL('/rest/v1/koverr_launch_list?on_conflict=email&select=variant', url);
