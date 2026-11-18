@@ -17,7 +17,7 @@ for (const origin of [process.env.WAITLIST_ORIGIN, process.env.KOVERR_APP_ORIGIN
   });
 }
 
-export default defineConfig({
+const server = defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   integrations: [react(), mvpRoutes()],
@@ -25,3 +25,9 @@ export default defineConfig({
   telemetry: false,
   security: { allowedDomains },
 });
+
+const cloudflarePreview = process.env.WORKERS_CI === '1' && process.env.WORKERS_CI_BRANCH === 'MVP';
+
+export default cloudflarePreview
+  ? (await import('./MVP/preview/astro.config.mjs')).default
+  : server;

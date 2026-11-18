@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   srcDir: './MVP/preview/src',
   output: 'static',
+  outDir: './dist/cloudflare-preview',
   trailingSlash: 'always',
   telemetry: false,
   integrations: [{

@@ -68,6 +68,12 @@ Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are
 
 The static preview source is in `MVP/preview/`. Build it from the repository root with `node node_modules/astro/bin/astro.mjs build --config MVP/preview/astro.config.mjs --outDir dist/preview`. ChatGPT Sites project ID is `appgprj_6af5c87a174881919bfe32be11ec951d`. Reuse that private Site and its source checkout for future updates. The deployment includes only the preview source and shared files it imports.
 
+### Cloudflare sample preview
+
+Workers Builds runs `npm run build` on the `MVP` branch. Astro writes the six sample pages to `dist/cloudflare-preview`. The root [Wrangler configuration](../wrangler.jsonc) points to that directory and enables the preview command. Use the Preview URL from the Cloudflare build. The preview uses fictional data and needs no production keys.
+
+To make the same build locally, run `WORKERS_CI=1 WORKERS_CI_BRANCH=MVP npm run build`. Then run `npx wrangler dev` to open the sample on your computer.
+
 ## Connect a private live preview
 
 See the [live deployment runbook](deploy/live-pilot.md) for the Node container, runtime settings and deployed acceptance checks.
