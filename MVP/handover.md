@@ -20,9 +20,24 @@ Updated 18 November 2026. Continue on the existing `MVP` branch. See the [PRD](.
 - The roster export saves six fields to a new private SQLite file. It omits follow-up tokens. The verification script compares this file with Supabase and gives counts.
 - The cohort report excludes the controlled test mailbox marker. It shows whether the cohort met each of the three G1 targets.
 
-![MVP development and next three milestones](diagrams/mvp-development.svg)
+## Full development plan
+
+The diagram shows the plan from the landing page to the Watch retention decision. The week numbers show the order in the [build plan](../docs/07-validation-and-build-plan.md).
+
+![Koverr development plan with status and dependencies](diagrams/mvp-development.svg)
 
 [Mermaid source](diagrams/mvp-development.mmd) · [Editable Excalidraw file](diagrams/mvp-development.excalidraw) · [PNG](diagrams/mvp-development.png)
+
+### What can proceed now
+
+| Open item | Work that needs it | Work that can proceed |
+| --- | --- | --- |
+| Brevo Free account, or another SMTP sender | Connect the sender and set the Supabase code templates. Test code delivery and sign-in with one real mailbox. | Set up the HTTPS host. Test the container and routes with test data. Check the sample workflows. |
+| HTTPS host, Supabase server keys, and production Have I Been Pwned key | Run the full live test from sign-in to breach lookup, export, and deletion. | Set up and verify the email sender. Reconcile the launch list. Set up the scheduled cleanup job. |
+| Successful live mailbox test | Import and verify the real launch list. Send invitations after verification. | Prepare the invitation text and choose the pilot group. Keep the current opt-out list up to date. |
+| Free pilot results and G1 decision | Decide whether to proceed to the paid Cleanup beta. | Expand the directory of official guides. Prepare sending authority and request templates for legal review. |
+
+Brevo is the selected SMTP follow-up. Another supported SMTP sender can fill the same role. Pilot invitations can come from the founder’s mailbox. Supabase sends the sign-in codes through the SMTP sender.
 
 ## Built
 
