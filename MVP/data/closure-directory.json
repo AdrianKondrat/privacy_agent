@@ -42,5 +42,21 @@
   "adobe.com": {
     "name": "Adobe",
     "guide": "https://helpx.adobe.com/account/individual/manage-your-account/delete-adobe-account.html"
+  },
+  "discord.com": {
+    "name": "Discord",
+    "guide": "https://support.discord.com/hc/en-us/articles/212500837-How-to-Delete-your-Discord-Account"
+  },
+  "linkedin.com": {
+    "name": "LinkedIn",
+    "guide": "https://www.linkedin.com/help/linkedin/answer/a1380049"
+  },
+  "x.com": {
+    "name": "X",
+    "guide": "https://help.x.com/en/managing-your-account/how-to-deactivate-x-account"
+  },
+  "twitter.com": {
+    "name": "X",
+    "guide": "https://help.x.com/en/managing-your-account/how-to-deactivate-x-account"
   }
 }

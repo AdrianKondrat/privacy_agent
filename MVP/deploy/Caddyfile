@@ -1,0 +1,13 @@
+{$KOVERR_APP_ORIGIN} {
+	@root path /
+	redir @root /app/ 302
+
+	@pilot path /app /app/* /_astro/* /favicon.svg
+	handle @pilot {
+		reverse_proxy app:4321
+	}
+
+	handle {
+		respond 404
+	}
+}

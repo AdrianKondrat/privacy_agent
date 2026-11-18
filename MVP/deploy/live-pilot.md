@@ -15,6 +15,21 @@ docker build -f MVP/deploy/Dockerfile \
 
 Run the container with the live environment injected by the host, a persistent writable volume mounted at `/storage` for the standalone landing site's SQLite data, and the HTTPS proxy forwarding the configured public host and scheme. Alternatively, run `npm ci`, `npm run build`, and `npm start` on a Node 24 host. The app listens on the host-provided `PORT`. Restrict direct access to the server behind the proxy.
 
+### Use the dedicated pilot stack on a Docker host
+
+1. Point the pilot domain to the host. Allow ports 80 and 443 to reach Caddy so it can obtain a certificate. [Caddy HTTPS instructions](https://caddyserver.com/docs/automatic-https)
+2. Set the values from [the environment example](../.env.example) in the host's secret store or in a private environment file. Set `KOVERR_APP_ORIGIN` to the exact public HTTPS origin. Use the new Supabase server secret.
+3. Run these commands from the repository root on the host. Use the path to the private environment file.
+
+```sh
+docker compose --env-file /private/koverr-pilot.env -f MVP/deploy/compose.yaml config --quiet
+docker compose --env-file /private/koverr-pilot.env -f MVP/deploy/compose.yaml up -d --build --wait
+```
+
+If the host supplies the settings as environment variables, omit `--env-file` and its path.
+
+The [Compose stack](compose.yaml) runs the app in invite-only mode. Only Caddy publishes ports. It redirects the root URL to `/app/` and serves the pilot routes and assets. The marketing pages and signup endpoint are outside the pilot routes. Caddy saves its certificate state in a Docker volume.
+
 The Koverr pilot project is in West EU (Ireland). Its eight migrations through `20261117104500` were applied in the Supabase SQL editor on 17 November 2026.
 
 Email confirmation is on. The email code length is six digits and the expiry is 600 seconds. The dashboard uses the default sign-in link template while custom SMTP is off. The Koverr form needs a numeric code. Set up Brevo Free, then put `{{ .Token }}` in the Confirm sign up and Magic link or OTP templates. [Brevo SMTP instructions](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP)
@@ -54,7 +69,9 @@ The dry run validates the full input before any writes. The import preserves the
 
 Run the read-only verification before marking any invitations. Remove the controlled test row first. Keep the destination roster unchanged during verification. Check that `matched` equals the dry-run row count and that `different`, `extra`, `missing` and `invited` are zero. The command returns a nonzero exit status for any of these differences. Reconcile each difference privately and repeat the check with the current backup.
 
-Enable Supabase Cron on the pilot project. Run this command in the SQL Editor to schedule the job every hour. Use the same job name if you must update the schedule.
+The pilot project has an active hourly job named `koverr-expire-otp-limits`. Supabase scheduled its first run for 15:00 GMT on 18 November 2026. Check the run before you import the real launch list.
+
+For a new project, enable Supabase Cron and run this command in the SQL Editor. Use the same job name if you must update the schedule.
 
 ```sql
 select cron.schedule(
@@ -80,7 +97,7 @@ limit 1;
 ## Run the invited free pilot
 
 1. Confirm that the live deployment is in invite-only mode, the controlled mailbox checks passed, and the roster import completed. Importing leaves every new row uninvited.
-2. Once launch emails are explicitly authorized, set `invited_at` for the selected consented recipients when their batch is ready and send the approved invitation from your normal launch channel. Use the HTTPS `/app/` link with no address or private data in the URL. To stop access for an invitation, clear its `invited_at`. Handle launch-list removal separately under the signup privacy notice. If a removed user needs access to an existing export or deletion request, route them through the privacy contact.
+2. Once launch emails are explicitly authorized, set `invited_at` for the selected consented recipients when their batch is ready. Send the approved [pilot invitation](../pilot-preparation.md) from your normal launch channel. Use the HTTPS `/app/` link with no address or private data in the URL. To stop access for an invitation, clear its `invited_at`. Handle launch-list removal separately under the signup privacy notice. If a removed user needs access to an existing export or deletion request, route them through the privacy contact.
 3. Set the UTC invite window in [the cohort report](../supabase/reports/pilot-cohort.sql). The report excludes the `controlled-test` marker. Review completed checks, seven-day activation among accounts that have had seven full days, and paid intent among users shown the picker. Compare landing variants using the visit counts from the marketing host.
 4. Read the three G1 flags on the total row. The targets are 100 completed checks, 40% seven-day activation and 10% paid intent. A null rate flag means the report has no eligible users for that rate. Use [the build plan](../../docs/07-validation-and-build-plan.md) to decide when to expand signup. To expand access, set `KOVERR_PILOT_MODE=open` and deploy again.
 

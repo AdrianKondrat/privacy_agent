@@ -8,8 +8,10 @@ Updated 18 November 2026. Continue on the existing `MVP` branch. See the [PRD](.
 - The Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). The signed-in Chrome dashboard shows the 11 Koverr tables. The available Management API token returned HTTP 403.
 - Supabase Auth has email confirmation on. The email code length is six digits and the expiry is 600 seconds. The dashboard requires custom SMTP to change the default sign-in link to a code.
 - **Follow-up task.** Configure Brevo Free in Supabase. Set `{{ .Token }}` in the Confirm sign up and Magic link or OTP templates. Verify delivery and sign-in with one test mailbox before you invite pilot users.
-- The live test also needs an HTTPS Node 24 host, a replacement Supabase server key, and a production Have I Been Pwned key. Put these keys in the host's secret store.
+- The [dedicated Docker stack](deploy/compose.yaml) passed a local HTTPS test. The live test needs an HTTPS host, a replacement Supabase server key, and a production Have I Been Pwned key. Put these keys in the host's secret store.
+- The hourly job `koverr-expire-otp-limits` is active in Supabase. Its first run is scheduled for 15:00 GMT on 18 November 2026. Check the run status before you import the real roster.
 - The live mailbox test, real roster import, and invited pilot are pending. Use one mailbox that you control for the live test. Get the reconciled SQLite backup from the landing-site operator after that test passes.
+- The [pilot preparation file](pilot-preparation.md) contains the free pilot invitation, a draft authority, and four paid Cleanup request drafts. Send the invitation after the live test and roster verification. Get legal review of the paid drafts before use.
 
 ## MVP development
 
@@ -32,10 +34,10 @@ The diagram shows the plan from the landing page to the Watch retention decision
 
 | Open item | Work that needs it | Work that can proceed |
 | --- | --- | --- |
-| Brevo Free account, or another SMTP sender | Connect the sender and set the Supabase code templates. Test code delivery and sign-in with one real mailbox. | Set up the HTTPS host. Test the container and routes with test data. Check the sample workflows. |
-| HTTPS host, Supabase server keys, and production Have I Been Pwned key | Run the full live test from sign-in to breach lookup, export, and deletion. | Set up and verify the email sender. Reconcile the launch list. Set up the scheduled cleanup job. |
-| Successful live mailbox test | Import and verify the real launch list. Send invitations after verification. | Prepare the invitation text and choose the pilot group. Keep the current opt-out list up to date. |
-| Free pilot results and G1 decision | Decide whether to proceed to the paid Cleanup beta. | Expand the directory of official guides. Prepare sending authority and request templates for legal review. |
+| Brevo Free account, or another SMTP sender | Connect the sender and set the Supabase code templates. Test code delivery and sign-in with one real mailbox. | Set up the HTTPS host with the tested Docker stack. Check the sample workflows. |
+| HTTPS host, Supabase server keys, and production Have I Been Pwned key | Run the full live test from sign-in to breach lookup, export, and deletion. | Verify the sender domain. Reconcile the launch list when the operator gives access. Check the first run of the cleanup job. |
+| Successful live mailbox test | Import and verify the real launch list. Send invitations after verification. | Review the draft invitation and choose the pilot group. Keep the opt-out list up to date. |
+| Free pilot results and G1 decision | Decide whether to proceed to the paid Cleanup beta. | Review the draft authority and request templates. Continue to add official closure guides. |
 
 Brevo is the selected SMTP follow-up. Another supported SMTP sender can fill the same role. Pilot invitations can come from the founder’s mailbox. Supabase sends the sign-in codes through the SMTP sender.
 
@@ -98,14 +100,14 @@ npm run check
 npm run build
 ```
 
-All 27 automated tests passed. Astro diagnostics and the server build passed. The Docker container passed its health check and showed the invite-only form behind simulated HTTPS proxy headers. The roster export and import dry run passed with test data. Embedded Postgres tests passed for roster access, email code counter expiry, and the cohort report. The [live checks](deploy/live-pilot.md) need the HTTPS host and provider settings.
+All 27 automated tests passed. Astro diagnostics and the server build passed. The Docker stack passed the local HTTPS test. The proxy served the invite-only form and rejected the landing signup endpoint. The roster export and import dry run passed with test data. Embedded Postgres tests passed for roster access, email code counter expiry, and the cohort report. The [live checks](deploy/live-pilot.md) need the HTTPS host and provider settings.
 
 The built route passed a headless Chromium walkthrough using test providers. The test covered a wrong code, verification, scan, completion, undo, export, and deletion. The database tests also covered scan retries, account isolation, pricing choices, Cleanup access, draft withdrawal, and cascading deletion. Have I Been Pwned returned a result for its documented test account. In a mobile browser, the password checker sent only the five-character prefix to the password service.
 
 ## Next three milestones
 
 1. **Deploy and test the private pilot.** Connect Brevo Free to Supabase. Set both email code templates. Set up the HTTPS host and add the server keys. Use one test mailbox to check code delivery, sign-in, breach lookup, export, and account deletion.
-2. **Import and verify the roster.** After the mailbox test passes, export the reconciled roster from the landing host. Run the import and verify the records. Schedule the email code counter cleanup. Confirm that the job succeeds.
+2. **Import and verify the roster.** After the mailbox test passes, export the reconciled roster from the landing host. Confirm that the scheduled cleanup job succeeds. Run the import and verify the records.
 3. **Run the invited pilot.** Send the pilot invitations. Supabase sends the sign-in codes through Brevo. Measure completed checks, first fixes in seven days, and paid intent. Compare the results with G1 before you expand signup.
 
 Use the [build plan](../docs/07-validation-and-build-plan.md) for the paid Cleanup work after G1. Expand the directory of official guides. Get legal review of sending authority and templates before you add relay sending.
