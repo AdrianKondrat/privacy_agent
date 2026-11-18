@@ -1,6 +1,8 @@
 # Koverr MVP handover
 
-Updated 18 November 2026. Continue on the existing `MVP` branch. See the [PRD](../docs/03-prd-mvp.md), [architecture](../docs/05-architecture.md), [build plan](../docs/07-validation-and-build-plan.md) and [design direction](../docs/08-design-direction.md).
+The MVP now has its own private repository at [AdrianKondrat/koverr_mvp](https://github.com/AdrianKondrat/koverr_mvp). Continue app development on `main` there. Its [handover](https://github.com/AdrianKondrat/koverr_mvp/blob/main/MVP/handover.md) and full roadmap are the current app records. This branch keeps the existing sample preview.
+
+Updated 18 November 2026. See the [PRD](../docs/03-prd-mvp.md), [architecture](../docs/05-architecture.md), [build plan](../docs/07-validation-and-build-plan.md) and [design direction](../docs/08-design-direction.md).
 
 ## Start here in the next session
 
