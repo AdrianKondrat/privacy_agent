@@ -70,7 +70,9 @@ The static preview source is in `MVP/preview/`. Build it from the repository roo
 
 ### Cloudflare sample preview
 
-Workers Builds runs `npm run build` on the `MVP` branch. Astro writes the six sample pages to `dist/cloudflare-preview`. The root [Wrangler configuration](../wrangler.jsonc) points to that directory and enables the preview command. Use the Preview URL from the Cloudflare build. The preview uses fictional data and needs no production keys.
+[Open the Cloudflare sample preview](https://mvp-koverr-privacy-agent.uceiond.workers.dev/). The deployed sample showed the results, marked a fix done, and undid the change. The preview uses fictional data and needs no production keys.
+
+Workers Builds runs `npm run build` on the `MVP` branch. Astro writes the six sample pages to `dist/cloudflare-preview`. The root [Wrangler configuration](../wrangler.jsonc) points to that directory and enables the preview command.
 
 To make the same build locally, run `WORKERS_CI=1 WORKERS_CI_BRANCH=MVP npm run build`. Then run `npx wrangler dev` to open the sample on your computer.
 
