@@ -87,10 +87,10 @@ All 27 automated tests passed. Astro diagnostics and the server build passed. Th
 
 The built route passed a headless Chromium walkthrough using test providers. The test covered a wrong code, verification, scan, completion, undo, export, and deletion. The database tests also covered scan retries, account isolation, pricing choices, Cleanup access, draft withdrawal, and cascading deletion. Have I Been Pwned returned a result for its documented test account. In a mobile browser, the password checker sent only the five-character prefix to the password service.
 
-## Next
+## Next three milestones
 
-1. Deploy the private pilot. Run the HTTPS check. Use one test mailbox to check code delivery, breach lookup, export, and account deletion.
-2. Export the reconciled roster from the landing host. Import it and verify the records. Schedule the email code counter cleanup and check the job status.
-3. Run the invited pilot. Measure completed checks, first fixes in seven days, and paid intent. Compare the results with G1 before you expand signup.
+1. **Deploy and test the private pilot.** Connect Brevo Free to Supabase. Set both email code templates. Set up the HTTPS host and add the server keys. Use one test mailbox to check code delivery, sign-in, breach lookup, export, and account deletion.
+2. **Import and verify the roster.** After the mailbox test passes, export the reconciled roster from the landing host. Run the import and verify the records. Schedule the email code counter cleanup. Confirm that the job succeeds.
+3. **Run the invited pilot.** Send the pilot invitations. Supabase sends the sign-in codes through Brevo. Measure completed checks, first fixes in seven days, and paid intent. Compare the results with G1 before you expand signup.
 
 Use the [build plan](../docs/07-validation-and-build-plan.md) for the paid Cleanup work after G1. Expand the directory of official guides. Get legal review of sending authority and templates before you add relay sending.

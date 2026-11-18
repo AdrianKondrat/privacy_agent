@@ -1,19 +1,19 @@
 %%{init: {"theme": "base", "flowchart": {"htmlLabels": false}, "themeVariables": {"fontFamily": "Arial", "fontSize": "17px", "lineColor": "#526174"}}}%%
 graph TD
-  Built["Available in the MVP"]
-  Built --> A["Free breach check<br/>Verify the email address and get steps to correct problems"]
-  Built --> B["Privacy controls<br/>Check passwords in the browser and export or delete account data"]
-  Built --> C["Cleanup<br/>Review saved sites and prepare closure drafts"]
-  A --> D["Pilot tools<br/>Check the live form, compare the roster, and measure results"]
-  B --> D
-  C --> D
-  D --> Next["Next three milestones"]
-  Next --> E["1. Deploy and test the private pilot<br/>Use one test mailbox"]
-  E --> F["2. Import and verify the roster<br/>Check the retention job"]
-  F --> G["3. Run the invited pilot<br/>Measure checks, first fixes, and paid intent"]
+  Built["Koverr MVP status"]
+  Built --> A["Built and tested locally<br/>Breach check, privacy controls, and Cleanup"]
+  Built --> B["Built and tested locally<br/>Roster tools and pilot report"]
+  Built --> C["Saved in Supabase<br/>Email confirmation is on<br/>Six digits, 10-minute expiry"]
+  C --> D["Pending<br/>Connect Brevo Free<br/>Set both email code templates"]
+  A --> H["Pending<br/>Set up the HTTPS host<br/>Add the server keys"]
+  D --> E["1. Test the private pilot<br/>Use one mailbox to check sign-in,<br/>breach lookup, export, and deletion"]
+  H --> E
+  B --> F["2. Import and verify the roster<br/>Check the scheduled cleanup job"]
+  E --> F
+  F --> G["3. Run the invited pilot<br/>Send invitations and measure results"]
   classDef headings fill:#24354a,stroke:#24354a,color:#fff;
   classDef built fill:#e9f3f1,stroke:#36766b,color:#183b36;
   classDef next fill:#fff4df,stroke:#ac7933,color:#55380d;
-  class Built,Next headings;
-  class A,B,C,D built;
-  class E,F,G next;
+  class Built headings;
+  class A,B,C built;
+  class D,H,E,F,G next;
