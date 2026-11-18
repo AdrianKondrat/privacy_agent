@@ -2,10 +2,10 @@
 graph TD
   Ready["Built and tested locally<br/>Landing, free check, and Cleanup drafts<br/>Roster tools and pilot report"]
   Auth["Current position<br/>Supabase confirmation is on<br/>Six digits. Ten-minute expiry."]
-  Email["Required for live email<br/>Connect Brevo Free or another SMTP sender<br/>Set the sign-up and sign-in code templates"]
+  Email["Resend is configured<br/>Both code templates are saved<br/>Verify delivery in the live test"]
   Host["Docker stack tested over HTTPS<br/>Pending live host and server keys"]
   RosterPrep["Hourly cleanup job is active<br/>Check its first run<br/>Get the reconciled launch list"]
-  Live["Blocked until email and hosting are ready<br/>Test the private pilot with one mailbox"]
+  Live["Waiting for the live host and keys<br/>Test delivery and sign-in with one mailbox"]
   Import["After the mailbox test passes<br/>Import and verify the launch list<br/>Confirm that the cleanup job succeeds"]
   Pilot["Weeks 1–2 · Invited free pilot<br/>Invitation draft is ready<br/>Send and measure after roster verification"]
   G1{"G1 · Review pilot results<br/>100 completed checks<br/>40% first fixes in 7 days<br/>10% paid intent"}
@@ -37,8 +37,8 @@ graph TD
   classDef independent fill:#eaf1ff,stroke:#476b9a,color:#203a5d;
   classDef waiting fill:#fff3df,stroke:#a9742e,color:#56390f;
   classDef planned fill:#f4f4f8,stroke:#777b8b,color:#282d3f;
-  class Ready ready;
+  class Ready,Email ready;
   class Auth current;
   class Host,RosterPrep,Prep independent;
-  class Email,Live,Import,Pilot waiting;
+  class Live,Import,Pilot waiting;
   class G1,Rework,Paid,Assisted,SelfServe,Watch planned;

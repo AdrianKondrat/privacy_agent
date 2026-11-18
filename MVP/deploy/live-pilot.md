@@ -32,7 +32,7 @@ The [Compose stack](compose.yaml) runs the app in invite-only mode. Only Caddy p
 
 The Koverr pilot project is in West EU (Ireland). Its eight migrations through `20261117104500` were applied in the Supabase SQL editor on 17 November 2026.
 
-Email confirmation is on. The email code length is six digits and the expiry is 600 seconds. The dashboard uses the default sign-in link template while custom SMTP is off. The Koverr form needs a numeric code. Set up Brevo Free, then put `{{ .Token }}` in the Confirm sign up and Magic link or OTP templates. [Brevo SMTP instructions](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP)
+Email confirmation is on. The email code length is six digits and the expiry is 600 seconds. The pilot project has Resend SMTP and uses `{{ .Token }}` in the Confirm sign up and Magic link or OTP templates. Verify delivery during the live mailbox test. [Resend SMTP instructions](https://resend.com/changelog/smtp-service)
 
 ## Verify the deployed server
 
