@@ -3,30 +3,33 @@ import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
 import '../styles.css';
 ---
-<Shell title="Free leak check privacy · Koverr" description="How Koverr handles data during the free leak check." noindex referrerPolicy="no-referrer">
+<Shell title="Koverr privacy notice · Koverr" description="How Koverr uses data during the assisted audit and account Cleanup." noindex referrerPolicy="no-referrer">
   <div class="check-app">
     <header class="check-header">
-      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/">Back to leak check</a></div>
+      <div class="wrap check-header-inner"><Brand /><a class="check-link" href="/app/">Back to audit</a></div>
     </header>
     <main id="main" class="wrap check-main">
       <article class="check-privacy check-intro">
-        <h1>Free leak check privacy</h1>
+        <h1>Koverr privacy notice</h1>
         <p>The sample check uses fictional data. It keeps sample progress in a browser cookie for up to one hour. Exiting the sample clears it.</p>
-        <h2>What the live check uses</h2>
-        <p>Supabase stores your email address and verification record. It delivers your code through the configured email provider. We keep a keyed fingerprint of the address to limit code requests. Expired rate-limit records are cleared when the service next processes a code request.</p>
-        <p>When you run a check, Koverr sends your verified email address to <a href="https://haveibeenpwned.com/Privacy">Have I Been Pwned</a>. Koverr stores the check date, breach names, exposed data categories, suggested steps, the outcomes you record and whether you still use a breached service.</p>
+        <h2>Sign-in and pilot access</h2>
+        <p>Supabase stores your email address and verification record. Resend delivers the sign-in code. We keep a keyed fingerprint of your email address to limit code requests.</p>
+        <p>During the invite-only pilot, we compare your email address with the invitation list. Reply to your pilot invitation for help.</p>
+        <h2>Assisted exposure audit</h2>
+        <p>Koverr records your country, the types of information you choose to check, and your agreement to save the audit. Enter your search terms on the source websites you choose. Each website applies its own privacy notice.</p>
+        <p>Koverr saves the check status, dates, result page address, information type and your match decision. A page address can itself include personal information. Use public result pages and omit any private links.</p>
+        <p>Koverr saves submissions you confirm, reply and recheck labels, follow-up dates, and pilot time totals. You submit requests on the organization's website. The audit has no external sending service.</p>
+        <p>Your audit and cases expire after 90 days. The database clears expired records hourly. The account remains available until you delete it.</p>
+        <h2>Previous breach check</h2>
+        <p>Fictional breach findings are available in the sample. If you previously used the live breach check, your export includes its retained results and related product research events.</p>
         <h2>Account inventory</h2>
         <p>The account inventory reads CSV files on the device and keeps the resulting domains and decisions in the current page. The browser-only inventory uploads nothing. Reloading clears the browser-only list. If you use the Cleanup workspace and choose Save websites, we store the domains you select and the decisions you record. Passwords, usernames, notes and the CSV file stay on your device.</p>
         <h2>Password check</h2>
         <p>Your browser hashes the password and sends only the first five hash characters to <a href="https://haveibeenpwned.com/Passwords">Pwned Passwords</a>. It compares the returned candidates on your device. Koverr receives neither the password nor the hash and does not record the result.</p>
         <h2>Draft permission</h2>
         <p>If you enable draft preparation, we keep a dated record of the agreement and any withdrawal. This permission covers preparing account-closure drafts for review. We store the website, draft version and review outcome. Reviewers see the template with an email placeholder. Withdrawing permission cancels pending and ready drafts.</p>
-        <h2>Invited pilot</h2>
-        <p>During the invite-only pilot, we compare the address you enter with the launch list to check access. We use signup answers and account events to report aggregate pilot results. If you need help with an invitation or deleting your data, use the contact on the <a href="/privacy/">launch-list privacy page</a>.</p>
-        <h2>Product research</h2>
-        <p>We record when your account verifies an email, finishes a check, opens results, marks a first fix done or answers the pricing survey. The record uses your account ID and contains no email address, password or free text. You can export it or delete it with your account.</p>
         <h2>Your account controls</h2>
-        <p>Use Account and data to download a copy of your sign-in details, check results and fix progress. Deleting your account removes the sign-in and saved results and progress from the active database. Retention of provider logs and backups depends on how the preview is hosted.</p>
+        <p>Use Account and data to download a copy of your sign-in details, audit, saved cases and previous results. Deleting your account removes the sign-in and saved data from the active database. Retention of provider logs and backups depends on how the preview is hosted.</p>
       </article>
     </main>
   </div>

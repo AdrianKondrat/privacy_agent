@@ -8,6 +8,14 @@ export default function mvpRoutes() {
           entrypoint: new URL('./pages/check.astro', import.meta.url),
         });
         injectRoute({
+          pattern: '/app/audit/',
+          entrypoint: new URL('./pages/audit.astro', import.meta.url),
+        });
+        injectRoute({
+          pattern: '/app/breach/',
+          entrypoint: new URL('./pages/check.astro', import.meta.url),
+        });
+        injectRoute({
           pattern: '/app/health/',
           entrypoint: new URL('./pages/health.ts', import.meta.url),
         });

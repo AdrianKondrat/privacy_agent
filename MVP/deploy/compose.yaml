@@ -11,7 +11,7 @@ services:
       KOVERR_SUPABASE_URL: ${KOVERR_SUPABASE_URL:?Set the Supabase origin}
       KOVERR_SUPABASE_PUBLISHABLE_KEY: ${KOVERR_SUPABASE_PUBLISHABLE_KEY:?Set the Supabase publishable key}
       KOVERR_SUPABASE_SECRET_KEY: ${KOVERR_SUPABASE_SECRET_KEY:?Set the Supabase server secret}
-      KOVERR_HIBP_API_KEY: ${KOVERR_HIBP_API_KEY:?Set the Have I Been Pwned key}
+      KOVERR_HIBP_API_KEY: ${KOVERR_HIBP_API_KEY:-}
       KOVERR_CONCIERGE_REVIEWER_IDS: ${KOVERR_CONCIERGE_REVIEWER_IDS:-}
     restart: unless-stopped
 

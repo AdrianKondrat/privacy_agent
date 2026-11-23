@@ -1,0 +1,218 @@
+---
+import Shell from '../../src/layouts/Shell.astro';
+import Brand from '../../src/components/Brand.astro';
+import ExposureBoard from '../components/ExposureBoard.astro';
+import { exportAccount } from '../lib/account-data.ts';
+import { exposureStore, type AuditRecord } from '../lib/exposure-store.ts';
+import { identifierTypes, updateExposure } from '../lib/exposure.ts';
+import { liveCheck, liveConfig, normalizeEmail, type Identity } from '../lib/live.ts';
+import '../styles.css';
+
+const app = '/app/audit/';
+const tokenCookie = 'koverr_check_session';
+const pendingCookie = 'koverr_pending_email';
+const deletedCookie = 'koverr_account_deleted';
+const config = liveConfig();
+const live = config?.origin === Astro.url.origin && config ? liveCheck(config) : null;
+const cookieOptions = {
+  path: '/app/', httpOnly: true, sameSite: 'strict', secure: Astro.url.protocol === 'https:',
+} as const;
+const pending = normalizeEmail(Astro.cookies.get(pendingCookie)?.value ?? null);
+const token = Astro.cookies.get(tokenCookie)?.value;
+let identity: Identity | null = null;
+let eligible = false;
+let record: AuditRecord | null = null;
+let error = '';
+const deleted = Astro.cookies.get(deletedCookie)?.value === '1';
+if (deleted) Astro.cookies.delete(deletedCookie, cookieOptions);
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+Astro.response.headers.set('Referrer-Policy', 'same-origin');
+
+function fail(message: string, status = 400) {
+  error = message;
+  Astro.response.status = status;
+}
+function clearSession() {
+  Astro.cookies.delete(tokenCookie, cookieOptions);
+  Astro.cookies.delete(pendingCookie, cookieOptions);
+}
+
+try {
+  const posting = Astro.request.method === 'POST';
+  if (posting && (!live || Astro.request.headers.get('origin') !== config?.origin)) {
+    return new Response(null, { status: 403, headers: { 'Cache-Control': 'no-store' } });
+  }
+  const fields = posting ? await Astro.request.formData() : null;
+  const intent = fields?.get('intent');
+  if (intent === 'sign-out') {
+    clearSession();
+    return Astro.redirect(app, 303);
+  }
+
+  if (live && token) {
+    identity = await live.identify(token);
+    if (!identity) Astro.cookies.delete(tokenCookie, cookieOptions);
+  }
+  if (live && fields && !identity) {
+    if (intent === 'send' || intent === 'resend') {
+      const email = intent === 'send' ? normalizeEmail(fields.get('email')) : pending;
+      if (!email) fail('Enter a valid email address.');
+      else if (await live.sendCode(email) === 'limited') fail('Wait before you request another code.', 429);
+      else {
+        Astro.cookies.set(pendingCookie, email, { ...cookieOptions, maxAge: 600 });
+        return Astro.redirect(app, 303);
+      }
+    } else if (intent === 'change-email') {
+      Astro.cookies.delete(pendingCookie, cookieOptions);
+      return Astro.redirect(app, 303);
+    } else if (intent === 'verify') {
+      const code = fields.get('code');
+      const session = pending && typeof code === 'string' && /^\d{6}$/.test(code) ? await live.verifyCode(pending, code) : null;
+      if (!session) fail('Check the code or request a new one.');
+      else {
+        Astro.cookies.set(tokenCookie, session.token, { ...cookieOptions, maxAge: Math.min(session.expiresIn, 3600) });
+        Astro.cookies.delete(pendingCookie, cookieOptions);
+        return Astro.redirect(app, 303);
+      }
+    } else {
+      fail('Sign in to continue.', 401);
+    }
+  }
+
+  if (live && config && token && identity) {
+    if (intent === 'delete') {
+      if (fields?.get('confirmation') !== 'DELETE') fail('Type DELETE to confirm account deletion.');
+      else {
+        await live.deleteAccount(identity);
+        clearSession();
+        Astro.cookies.set(deletedCookie, '1', { ...cookieOptions, maxAge: 30 });
+        return Astro.redirect(app, 303);
+      }
+    }
+    if (intent === 'export') return await exportAccount(config, token, identity);
+
+    eligible = await live.canParticipate(identity.email);
+    if (eligible) {
+      const store = exposureStore(config);
+      record = await store.read(token, identity.id);
+      if (fields && intent !== 'delete') {
+        const revision = record?.revision ?? 0;
+        if (fields.get('revision') !== String(revision)) {
+          fail('This audit changed. Review the current information and try again.', 409);
+        } else {
+          const result = updateExposure(record?.data ?? null, fields, new Date().toISOString());
+          if ('error' in result) fail(result.error);
+          else if (!await store.write(identity.id, revision, result.data)) {
+            record = await store.read(token, identity.id);
+            fail('This audit changed. Review the current information and try again.', 409);
+          } else {
+            const source = fields.get('source');
+            const anchor = source === '192' || source === 'ukphonebook' || source === 'google' || source === 'experian' || source === 'register'
+              ? '#source-' + source
+              : intent === 'assisted-session' ? '#progress' : '#sources';
+            return Astro.redirect(app + anchor, 303);
+          }
+        }
+      }
+    } else if (fields && intent !== 'delete') {
+      fail('An invitation is required to use the pilot.', 403);
+    }
+  }
+} catch {
+  fail('Koverr could not finish that action. Try again shortly.', 503);
+}
+---
+
+<Shell title="Public exposure audit · Koverr" description="Check public sources for your personal information and track removal requests." noindex referrerPolicy="same-origin">
+  <div class="check-app">
+    <header class="check-header">
+      <div class="wrap check-header-inner">
+        <Brand />
+        {identity && <form method="post" action={app}><button class="check-link" name="intent" value="sign-out">Sign out</button></form>}
+      </div>
+    </header>
+    <main id="main" class="wrap check-main audit-main">
+      {error && <p class="check-notice" role="alert">{error}</p>}
+      {deleted && <p class="check-notice" role="status">Your Koverr account was deleted.</p>}
+      <section class={identity ? 'check-intro' : 'check-start'} aria-labelledby="audit-title">
+        <div class="check-intro">
+          <p class="check-label">UK pilot · Assisted audit</p>
+          <h1 id="audit-title">Find and remove exposed personal information.</h1>
+          {(!identity || !record) && <p>Check a short list of public sources. Review possible matches and follow the official steps to remove your information.</p>}
+          {!identity && <div class="check-controls">
+            <a class="check-link" href="/app/?sample=1">View the original breach sample</a>
+            <a class="check-link" href="/app/password/">Check a password</a>
+          </div>}
+        </div>
+        {!identity && <div class="check-panel">
+          {!live ? <><h2>Pilot sign-in is unavailable</h2><p>The assisted audit needs a pilot account.</p></>
+            : pending ? <>
+              <h2>Enter your email code</h2>
+              <p>If your address is eligible, a six-digit code will arrive by email.</p>
+              <form method="post" action={app}>
+                <label for="audit-code">Email code</label>
+                <input id="audit-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" required />
+                <button class="check-button check-primary" name="intent" value="verify">Verify email</button>
+              </form>
+              <form method="post" action={app} class="check-choice-row">
+                <button class="check-link" name="intent" value="resend">Send a new code</button>
+                <button class="check-link" name="intent" value="change-email">Use a different email</button>
+              </form>
+            </> : <>
+              <h2>{config?.inviteOnly ? 'Sign in with a pilot invitation' : 'Sign in'}</h2>
+              <form method="post" action={app} data-koverr-pilot={config?.inviteOnly ? 'invite-only' : 'open'}>
+                <label for="audit-email">Email address</label>
+                <input id="audit-email" name="email" type="email" autocomplete="email" required />
+                <button class="check-button check-primary" name="intent" value="send">Send email code</button>
+              </form>
+              <p class="check-meta"><a href="/app/privacy/">Privacy notice</a></p>
+            </>}
+        </div>}
+      </section>
+
+      {identity && eligible && !record && Astro.response.status !== 503 && <form class="check-panel audit-setup" method="post" action={app}>
+        <h2>Set up your audit</h2>
+        <input type="hidden" name="revision" value="0" />
+        <div>
+          <label for="audit-country">Country</label>
+          <select class="inventory-choice" id="audit-country" name="country" required>
+            <option value="">Select a country</option>
+            <option value="GB">United Kingdom</option>
+          </select>
+        </div>
+        <fieldset class="audit-fields">
+          <legend>What do you want to check? (Optional)</legend>
+          {Object.entries(identifierTypes).map(([value, label]) => <label class="check-agreement">
+            <input type="checkbox" name="identifier" value={value} /> {label}
+          </label>)}
+          <p class="check-meta">Koverr saves the types you select. Enter the actual details only on the source websites you choose to use.</p>
+        </fieldset>
+        <p>The audit covers the free pages you check. Each site receives the details you enter there. Skip searches that ask you to pay.</p>
+        <label class="check-agreement"><input type="checkbox" name="agreement" value="yes" required />
+          I will check my own information. I agree that Koverr can save my check results and case history.
+        </label>
+        <div><button class="check-button check-primary" name="intent" value="start">Start free audit</button></div>
+      </form>}
+
+      {identity && eligible && record && <ExposureBoard record={record} />}
+      {identity && !eligible && !error && <p class="check-notice">An invitation is required to use the pilot.</p>}
+      {identity && <details class="check-other check-account">
+        <summary>Account and data</summary>
+        <p><a href="/app/privacy/">Privacy notice</a> · <a href="/app/cleanup/">Account Cleanup</a> · <a href="/app/password/">Password checker</a></p>
+        <form method="post" action={app}><button class="check-button" name="intent" value="export">Export account data</button></form>
+        <details class="check-delete">
+          <summary>Delete account</summary>
+          <form method="post" action={app} class="check-panel">
+            <p>This permanently deletes your sign-in, audit and saved cases from the active database.</p>
+            <div>
+              <label for="audit-delete">Type DELETE to confirm</label>
+              <input id="audit-delete" name="confirmation" autocomplete="off" required />
+            </div>
+            <button class="check-button" name="intent" value="delete">Permanently delete account</button>
+          </form>
+        </details>
+      </details>}
+    </main>
+  </div>
+</Shell>

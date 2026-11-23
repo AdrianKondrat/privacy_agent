@@ -1,44 +1,22 @@
-%%{init: {"theme": "base", "flowchart": {"htmlLabels": false, "nodeSpacing": 35, "rankSpacing": 34, "curve": "monotoneY"}, "themeVariables": {"fontFamily": "Arial", "fontSize": "16px", "lineColor": "#526174"}}}%%
+%%{init: {"theme": "base", "flowchart": {"htmlLabels": false, "nodeSpacing": 25, "rankSpacing": 27}, "themeVariables": {"fontFamily": "Arial", "fontSize": "17px", "lineColor": "#53627A"}}}%%
 graph TD
-  Ready["Cloudflare sample preview is online<br/>Live app, roster tools, and pilot report<br/>passed local tests"]
-  Auth["Current position<br/>Supabase confirmation is on<br/>Six digits. Ten-minute expiry."]
-  Email["Resend is configured<br/>Both code templates are saved<br/>Verify delivery in the live test"]
-  Host["Docker stack tested over HTTPS<br/>Pending live host and server keys"]
-  RosterPrep["Hourly cleanup job is active<br/>Check its first run<br/>Get the reconciled launch list"]
-  Live["Waiting for the live host and keys<br/>Test delivery and sign-in with one mailbox"]
-  Import["After the mailbox test passes<br/>Import and verify the launch list<br/>Confirm that the cleanup job succeeds"]
-  Pilot["Weeks 1–2 · Invited free pilot<br/>Invitation draft is ready<br/>Send and measure after roster verification"]
-  G1{"G1 · Review pilot results<br/>100 completed checks<br/>40% first fixes in 7 days<br/>10% paid intent"}
-  Rework["If the results require rework<br/>Correct the problem and test again"]
-  Prep["Cleanup drafts are ready for review<br/>Added official closure guides<br/>Legal review is pending"]
-  Paid["Weeks 3–4 · Paid Cleanup · G2<br/>Test the founding offer<br/>Review requests, label replies, and log time"]
-  Assisted["Weeks 5–8 · Assisted Cleanup · G3<br/>Add reminders, reports, and billing<br/>Compare reply labels with founder reviews"]
-  SelfServe["Weeks 9–12 · Self-serve Cleanup · G4<br/>Add checkout and onboarding<br/>Offer Watch and test Autopilot internally"]
-  Watch["After week 12 · Watch decision<br/>Measure take-up at day 90 and retention in month 4<br/>Use the results to decide whether to scale"]
+  BUILT["Built in the MVP"]
+  A["Account controls<br/>Verify email<br/>Export or delete account data"]
+  B["UK assisted audit<br/>Record and confirm matches<br/>Open official removal forms"]
+  C["Case history<br/>Record submissions and replies<br/>Add follow-ups and rechecks"]
+  NEXT["Next three milestones"]
+  D["1. Verify the private deployment<br/>Test an approved mailbox and data controls"]
+  E["2. Run the assisted pilot<br/>Record real outcomes and founder time"]
+  F["3. Review the pilot results<br/>Decide if paid Cleanup is ready"]
 
-  Ready --> Auth
-  Ready --> Host
-  Ready --> RosterPrep
-  Auth --> Email
-  Email --> Live
-  Host --> Live
-  Live --> Import
-  RosterPrep --> Import
-  Import --> Pilot --> G1
-  G1 --> Rework
-  G1 -->|Continue| Paid
-  Prep --> Paid
-  Paid -->|G2 · Continue| Assisted
-  Assisted -->|G3 · Continue| SelfServe
-  SelfServe -->|G4 · Scale or hold| Watch
+  BUILT --> A --> NEXT
+  BUILT --> B --> NEXT
+  BUILT --> C --> NEXT
+  NEXT --> D --> E --> F
 
-  classDef ready fill:#e8f3ed,stroke:#36715c,color:#16382b;
-  classDef current fill:#24354a,stroke:#24354a,color:#fff;
-  classDef independent fill:#eaf1ff,stroke:#476b9a,color:#203a5d;
-  classDef waiting fill:#fff3df,stroke:#a9742e,color:#56390f;
-  classDef planned fill:#f4f4f8,stroke:#777b8b,color:#282d3f;
-  class Ready,Email ready;
-  class Auth current;
-  class Host,RosterPrep,Prep independent;
-  class Live,Import,Pilot waiting;
-  class G1,Rework,Paid,Assisted,SelfServe,Watch planned;
+  classDef heading fill:#243449,stroke:#243449,color:#FFFFFF,stroke-width:1.5px;
+  classDef built fill:#EDF5F2,stroke:#397661,color:#17362C,stroke-width:1.5px;
+  classDef next fill:#FFF2DE,stroke:#956120,color:#4C2D0B,stroke-width:1.5px;
+  class BUILT,NEXT heading;
+  class A,B,C built;
+  class D,E,F next;

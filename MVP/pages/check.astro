@@ -1,7 +1,7 @@
 ---
 import Shell from '../../src/layouts/Shell.astro';
 import Brand from '../../src/components/Brand.astro';
-import { cleanupStore, isReviewer } from '../lib/cleanup.ts';
+import { isReviewer } from '../lib/cleanup.ts';
 import PlanPicker from '../components/PlanPicker.astro';
 import { readAccountUseChange, sampleAccountUse, type AccountUseByBreach } from '../lib/account-use.ts';
 import { readPlanChoice, type PlanChoice } from '../lib/experiment.ts';
@@ -10,9 +10,10 @@ import { demoDate } from '../lib/demo.ts';
 import { updateProgress } from '../lib/findings.ts';
 import { sampleFindings, sampleProgress } from '../lib/sample.ts';
 import { liveCheck, liveConfig, normalizeEmail } from '../lib/live.ts';
+import { exportAccount } from '../lib/account-data.ts';
 import '../styles.css';
 
-const app = '/app/';
+const app = '/app/breach/';
 const sampleUrl = '/app/?sample=1';
 const sample = Astro.url.searchParams.get('sample') === '1';
 const demoCookie = 'koverr_sample_progress';
@@ -22,7 +23,8 @@ const tokenCookie = 'koverr_check_session';
 const deletedCookie = 'koverr_account_deleted';
 const pendingCookie = 'koverr_pending_email';
 const config = sample ? null : liveConfig();
-const live = config && Astro.url.origin === config.origin ? liveCheck(config) : null;
+if (!sample && Astro.url.pathname === '/app/' && Astro.request.method !== 'POST') return Astro.redirect('/app/audit/', 302);
+const live = config?.hibpKey && Astro.url.origin === config.origin ? liveCheck(config) : null;
 const cookieOptions = { path: app, httpOnly: true, sameSite: 'strict', secure: Astro.url.protocol === 'https:' } as const;
 let progress = sample ? sampleProgress(Astro.cookies.get(demoCookie)?.value) : {};
 let accountUse: AccountUseByBreach = sample ? sampleAccountUse(sampleFindings, Astro.cookies.get(sampleUseCookie)?.value) : {};
@@ -96,7 +98,7 @@ try {
       Astro.cookies.delete(samplePlanCookie, cookieOptions);
       Astro.cookies.delete(sampleUseCookie, cookieOptions);
       Astro.cookies.delete(demoCookie, cookieOptions);
-      return Astro.redirect(app, 303);
+      return Astro.redirect('/app/audit/', 303);
     } else if (live && !identity && (intent === 'send' || intent === 'resend')) {
       const email = intent === 'send' ? normalizeEmail(fields.get('email')) : pendingEmail;
       if (!email) showError('Enter a valid email address.', 400);
@@ -142,34 +144,8 @@ try {
         }
         showError('Type DELETE to confirm account deletion.', 400);
       } else if (intent === 'progress' || intent === 'account-use' || intent === 'export') {
+        if (intent === 'export' && config) return await exportAccount(config, token, identity);
         ({ check, progress } = await live.read(token, identity));
-        if (intent === 'export') {
-          const cleanup = config ? cleanupStore(config) : null;
-          const [cleanupInventory, draftPermissionHistory, closureDrafts, breachedAccountUse, experimentEvents] = await Promise.all([
-            cleanup?.inventory(identity.id) ?? [],
-            cleanup?.permissionHistory(identity.id) ?? [],
-            cleanup?.closureDrafts(identity.id) ?? [],
-            live.readAccountUse(token, identity),
-            live.readEvents(token, identity),
-          ]);
-          return new Response(JSON.stringify({
-            account: { id: identity.id, email: identity.email, emailVerifiedAt: identity.verifiedAt },
-            check: check ?? null,
-            fixProgress: progress,
-            cleanupInventory,
-            draftPermissionHistory,
-            closureDrafts,
-            breachedAccountUse,
-            experimentEvents,
-          }, null, 2), {
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-              'Content-Disposition': 'attachment; filename="koverr-export.json"',
-              'Cache-Control': 'private, no-store',
-              'X-Content-Type-Options': 'nosniff',
-            },
-          });
-        }
         if (intent === 'account-use') {
           const change = check?.state === 'complete' && readAccountUseChange(check.findings, fields);
           if (change) {

@@ -1,22 +1,42 @@
 # Koverr pilot preparation
 
-## Draft invitation for the free pilot
+## Source decision
 
-Use this draft after the live mailbox test and roster verification pass. Replace `https://pilot.example.com/app/` with the live address. Send it to each approved participant from the founder’s mailbox.
+Checked on 23 November 2026. Use the assisted audit in the United Kingdom. The user checks the source in their browser. Koverr records the result. The search API allowance is zero. Stop if a source asks for payment, blocks access, or has no free searches left.
+
+Brave lists five US dollars in monthly Search API credit. A payment card is required. Prepaid usage stops when the balance reaches zero and auto-reload is off. An older postpaid account can incur overage charges. Brave restricts storage of API results and describes a query retention period of up to 90 days. Koverr has no approved account for automated use. [Pricing](https://api-dashboard.search.brave.com/documentation/pricing) · [Account and storage rules](https://api-dashboard.search.brave.com/documentation/resources/help-feedback) · [API privacy notice](https://api-dashboard.search.brave.com/documentation/resources/privacy-notice)
+
+| Test | Result |
+| --- | --- |
+| Public result | An indexed search for the British Broadcasting Corporation on 192.com found a public company listing. This test used a public organization. [Listing](https://www.192.com/atoz/financial/business/RC000057/) |
+| Empty result | The test query `"Koverr Fallowmere Test QZ73928" "Wrenhaven"` found no results in the test index. The terms are fictional. |
+| Failed check | The test browser could not open the indexed listing URL. Record the page check as inconclusive. The indexed result does not show that the page is still available. |
+
+| Route | What to check |
+| --- | --- |
+| 192.com | Send the form for each relevant address. Confirm it in the email from 192.com. The site uses a suppression list. [Official form](https://www.192.com/c01/new-request/) |
+| ukphonebook.com | Use the free residential directory. The provider allows five free searches a day. Complete the removal form manually. [Directory](https://www.ukphonebook.com/residential-telephone-directory) · [Official form](https://www.ukphonebook.com/remove-me) |
+| Google Search | Check the eligibility rules. An approved request can remove a result from the index. The original page can stay online. [Results about you](https://support.google.com/websearch/answer/12719076?hl=en-GB) |
+| Experian UK | Select a direct marketing opt-out. The route applies to marketing data. [Opt-out options](https://www.experian.co.uk/privacy/consumer-information-portal/opt-out-options/) |
+| Open electoral register | Ask the electoral registration office to remove the listing from the open register. The full electoral register has separate rules. [GOV.UK instructions](https://www.gov.uk/electoral-register/opt-out-of-the-open-register) |
+
+## Draft invitation for the assisted pilot
+
+Use this draft after the controlled mailbox test passes. Get approval for each recipient and for sending the invitation.
 
 **Subject**
 
-Your invitation to try Koverr
+Try the Koverr UK exposure audit
 
 **Message**
 
 Hi [first name],
 
-You joined the Koverr launch list. I’m inviting a small group to try the free breach check.
+I am inviting you to try Koverr's free UK exposure audit. I can help you check a short list of public websites and find the official steps to remove a listing.
 
-Open https://pilot.example.com/app/ and enter the email address you used to join the list. Koverr will send you a six-digit code. Enter the code on the Koverr page. The check will show known breaches for that address and steps you can take.
+Open [pilot address]. Enter your invited email address, then enter the six-digit code. You choose the sites to check and submit any requests yourself. Koverr can keep a record of the requests and what happens next.
 
-If you get stuck, reply to this email and tell me which step caused the problem. Keep sign-in codes and passwords private.
+Reply if you want to arrange an assisted session. Keep your password and sign-in codes private.
 
 Thanks,
 

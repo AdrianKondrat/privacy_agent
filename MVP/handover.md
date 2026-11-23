@@ -1,122 +1,46 @@
 # Koverr MVP handover
 
-The MVP now has its own private repository at [AdrianKondrat/koverr_mvp](https://github.com/AdrianKondrat/koverr_mvp). Continue app development on `main` there. Its [handover](https://github.com/AdrianKondrat/koverr_mvp/blob/main/MVP/handover.md) and full roadmap are the current app records. This branch keeps the existing sample preview.
+Updated 23 November 2026. Use the `MVP/` folder on the `MVP` branch of `AdrianKondrat/privacy_agent`. The previous session used `koverr_mvp/main` to deploy a separate Cloudflare Worker. The current branch contains the new work. Read the [development plan](../docs/07-validation-and-build-plan.md) before you continue.
 
-Updated 18 November 2026. See the [PRD](../docs/03-prd-mvp.md), [architecture](../docs/05-architecture.md), [build plan](../docs/07-validation-and-build-plan.md) and [design direction](../docs/08-design-direction.md).
+## What the MVP does
 
-## Start here in the next session
+1. The user signs in with an email code. Supabase verifies the address.
+2. The user selects the United Kingdom. They can select the types of information to check.
+3. The free audit gives instructions for 192.com and ukphonebook.com. The deeper audit adds Google Search.
+4. The user checks each site. Koverr records the result, the date, and the coverage gaps. Search terms go directly to the site.
+5. The user selects Mine, Not mine, or Unsure for a possible match. Koverr gives the official removal step for a confirmed match.
+6. The user submits the request on the official site. They record the submission date in Koverr.
+7. The case history shows replies, follow-up dates, and public rechecks. A failed recheck has the status Inconclusive recheck.
+8. The user can export all account data or delete the account. The audit expires after 90 days.
 
-- The private cloud preview shows the sample workflow. The next step is to deploy and test the private pilot. Use the [deployment instructions](deploy/live-pilot.md).
-- The Supabase project `koverr_privacy_agent_alpha` (`xehicmrxtxbabgxbabll`) is in West EU (Ireland). The signed-in Chrome dashboard shows the 11 Koverr tables. The available Management API token returned HTTP 403.
-- Supabase Auth has email confirmation on. The email code length is six digits and the expiry is 600 seconds. Resend is configured as the SMTP sender. Both the Confirm sign up and Magic link or OTP templates contain `{{ .Token }}`.
-- Test Resend delivery with one mailbox that you control. Verify that the code arrives and that Koverr accepts it. Email delivery is pending verification.
-- The [dedicated Docker stack](deploy/compose.yaml) passed a local HTTPS test. The live test needs an HTTPS host, a replacement Supabase server key, and a production Have I Been Pwned key. Put these keys in the host's secret store.
-- The hourly job `koverr-expire-otp-limits` is active in Supabase. Its first run is scheduled for 15:00 GMT on 18 November 2026. Check the run status before you import the real roster.
-- The live mailbox test, real roster import, and invited pilot are pending. Use one mailbox that you control for the live test. Get the reconciled SQLite backup from the landing-site operator after that test passes.
-- The [pilot preparation file](pilot-preparation.md) contains the free pilot invitation, a draft authority, and four paid Cleanup request drafts. Send the invitation after the live test and roster verification. Get legal review of the paid drafts before use.
+The deeper audit also gives two optional opt-out routes. The user can track Experian marketing suppression and the open electoral register opt-out. Each route shows Holding not confirmed.
 
-## MVP development
+## Verification and limits
 
-- The free check verifies an email address. It shows known breaches and gives the user steps to correct problems.
-- The browser checks passwords. The user can export or delete account data.
-- Cleanup lets the user review saved sites and request closure drafts. A founder can review these drafts.
-- The deployment script checks the health route and the invite-only form. It uses the public HTTPS address.
-- The roster export saves six fields to a new private SQLite file. It omits follow-up tokens. The verification script compares this file with Supabase and gives counts.
-- The cohort report excludes the controlled test mailbox marker. It shows whether the cohort met each of the three G1 targets.
+- All 33 automated tests passed. Astro diagnostics, the Node build, the static sample build, and the Docker Compose configuration check passed.
+- Chromium passed a local test with synthetic accounts. It checked the email code, match review, submission, reply, recheck, export, and deletion.
+- Embedded Postgres passed the owner access, expiry, deletion, and report checks. Check the scheduled job on Supabase during deployment.
 
-## Full development plan
-
-The diagram shows the plan from the landing page to the Watch retention decision. The week numbers show the order in the [build plan](../docs/07-validation-and-build-plan.md).
-
-![Koverr development plan with status and dependencies](diagrams/mvp-development.svg)
-
-[Mermaid source](diagrams/mvp-development.mmd) · [Editable Excalidraw file](diagrams/mvp-development.excalidraw) · [PNG](diagrams/mvp-development.png)
-
-### What can proceed now
-
-| Open item | Work that needs it | Work that can proceed |
-| --- | --- | --- |
-| HTTPS host, Supabase server keys, and production Have I Been Pwned key | Run the full live test from sign-in to breach lookup, export, and deletion. | Reconcile the launch list when the operator gives access. Check the first run of the cleanup job. |
-| Successful live mailbox test | Import and verify the real launch list. Send invitations after verification. | Review the draft invitation and choose the pilot group. Keep the opt-out list up to date. |
-| Free pilot results and G1 decision | Decide whether to proceed to the paid Cleanup beta. | Review the draft authority and request templates. Continue to add official closure guides. |
-
-Pilot invitations can come from the founder’s mailbox. Supabase sends the sign-in codes through Resend.
-
-## Built
-
-- The implementation lives in `MVP/`. A small Astro integration mounts the free check, password checker, browser-only inventory and Cleanup workspace in the existing project, using the shared shell and design tokens.
-- Sample mode uses five fictional breaches. Done, skip and undo use a short-lived sample cookie that is cleared when the user exits.
-- The live free check sends a six-digit Supabase email code. Only a session with a confirmed email can reserve a scan. The lookup address comes from Supabase Auth, and the browser cannot supply a different address to scan.
-- The Have I Been Pwned adapter distinguishes a clean response from provider failures. It stores breach metadata and ranks the next three fixes from a versioned Stolen playbook.
-- Postgres stores the scan snapshot and fix outcomes. Row-level security scopes reads to the account owner. Only the server writes these tables. The database limits verification requests to five per address per rolling hour and prevents overlapping scans.
-- The password checker uses Web Crypto in the browser. It requests a padded range with only the first five hash characters, matches the suffix on-device and keeps no history.
-- Cleanup pilot accounts can explicitly save registrable domains and review choices. The app matches domains against saved breach metadata when available. An aggregate research query surfaces unknown domains without account identifiers.
-- The browser-local inventory imports CSV or accepts manual domains, deduplicates registrable sites, and records Keep, Close or Not sure in memory. Close reveals the next step and an official guide for the starter directory. Reloading clears the list. Nothing is uploaded.
-- Verified Cleanup pilot users can grant or withdraw versioned permission to prepare closure drafts. Changes are audited and included in account export. The agreement covers draft preparation only.
-- Each of the top three breach plans asks whether the account is still used. Choosing no shows steps for closing it with the provider. Answers are editable, exported and deleted with the account.
-- Customers can queue one active closure draft per saved website marked Close when an official guide is known. An allowlisted founder can review or decline the fixed template and log minutes. Reviewers see an email placeholder. Permission withdrawal or changing the Close decision cancels active drafts while retaining the review outcome.
-- The invited free pilot gates OTP, verification and scans by invitation status. An aggregate report measures the invited cohort by signup variant, region and concern. No cohort has been invited yet.
-- The launch-list migration validates SQLite backups in dry-run mode and copies consent and survey answers into a restricted Supabase roster. The real list has not been imported.
-- The E3 pricing survey records a first choice after viewing results. The internal [free-check funnel query](supabase/reports/free-check-funnel.sql) reports completed checks, seven-day activation and paid intent. Sample choices stay local and are excluded.
-- Account controls provide a JSON export and hard deletion of the active account. Foreign keys cascade deletion to saved results and progress. The app has its own privacy notice.
-
-## Run the sample
-
-Use Node 24 or newer. From the repository root, run `npm ci` if dependencies are missing, then `npm run dev`. Open `/app/` or go directly to `/app/?sample=1`. The sample needs no provider credentials. The separate password checker uses the public Pwned Passwords range API and needs no sign-in.
-
-## Hosted sample preview
-
-[Open the private cloud preview](https://koverr-mvp-preview.kondrat-adrian.chatgpt.site). Sign in to ChatGPT with the account that owns the Site if prompted. The cloud build uses the same sample findings, playbook, styling and password checker as the application. Sample progress, closure answers and the sample pricing choice stay in the browser tab and clear when you exit the sample. The separate inventory screen also runs locally in the browser. The Cleanup walkthrough lets you enable sample permission, queue a fictional draft, simulate founder review and withdraw permission. The preview has no email signup or personal breach lookup.
-
-The static preview source is in `MVP/preview/`. Build it from the repository root with `node node_modules/astro/bin/astro.mjs build --config MVP/preview/astro.config.mjs --outDir dist/preview`. ChatGPT Sites project ID is `appgprj_6af5c87a174881919bfe32be11ec951d`. Reuse that private Site and its source checkout for future updates. The deployment includes only the preview source and shared files it imports.
-
-### Cloudflare sample preview
-
-[Open the Cloudflare sample preview](https://mvp-koverr-privacy-agent.uceiond.workers.dev/). The deployed sample showed the results, marked a fix done, and undid the change. The preview uses fictional data and needs no production keys.
-
-Workers Builds runs `npm run build` on the `MVP` branch. Astro writes the six sample pages to `dist/cloudflare-preview`. The root [Wrangler configuration](../wrangler.jsonc) points to that directory and enables the preview command.
-
-To make the same build locally, run `WORKERS_CI=1 WORKERS_CI_BRANCH=MVP npm run build`. Then run `npx wrangler dev` to open the sample on your computer.
-
-## Connect a private live preview
-
-See the [live deployment runbook](deploy/live-pilot.md) for the Node container, runtime settings and deployed acceptance checks.
-
-1. For a fresh database, apply the SQL migrations in [supabase/migrations](supabase/migrations) in timestamp order to a UK or EU Supabase project. The dedicated pilot project already has all eight migrations. Configure transactional SMTP for the preview and put `{{ .Token }}` in the sign-up confirmation and sign-in email templates. Use a six-digit code and a ten-minute expiry. Review provider-side abuse limits and require confirmation for email sign-ins.
-2. Copy [the environment template](.env.example) to `MVP/.env` and fill in the exact app origin, Supabase URL and keys, and a Have I Been Pwned key that supports breached-account lookups. Keep the service-role and breach-index keys on the server. The live form is available only at the configured origin.
-3. Run `node --env-file=MVP/.env node_modules/astro/bin/astro.mjs dev --host 127.0.0.1 --port 4327`. Open `http://127.0.0.1:4327/app/`. For hosted builds, set `KOVERR_APP_ORIGIN` at build time as well as runtime so Astro can recognise the origin behind a proxy.
-4. Use a mailbox you control to verify code delivery, scan, complete a step, sign in again to confirm persistence, export and delete. Check that the account and saved rows are gone. Provider reference: [Supabase email OTP](https://supabase.com/docs/guides/auth/auth-email-passwordless) and [Have I Been Pwned API](https://haveibeenpwned.com/API/V3).
-
-### Enable Cleanup pilot access
-
-After the user has verified their email in the private live preview, use their Supabase Auth user UUID to grant time-limited access in the Supabase SQL editor. Replace the example value with the intended pilot's UUID.
-
-```sql
-insert into public.koverr_cleanup_access (user_id, expires_at)
-values ('<verified-user-uuid>', now() + interval '90 days')
-on conflict (user_id) do update set expires_at = excluded.expires_at;
-```
-
-Set `KOVERR_CONCIERGE_REVIEWER_IDS` to comma-separated Supabase Auth user UUIDs for the founder review route. Use a separate reviewer identity when testing the customer flow. The queue is at `/app/cleanup/review/`. Inspect unresolved domains there and add verified official guides to `MVP/data/closure-directory.json`.
-
-The first live version uses a separate Run breach check action after verification. It sends the address directly to Have I Been Pwned and stores one successful scan per free account. Sessions expire within an hour and can be renewed by signing in with a new code.
-
-## Verification
-
-```sh
-node --test MVP/test/*.test.ts
-npm run check
-npm run build
-```
-
-All 27 automated tests passed. Astro diagnostics and the server build passed. The Docker stack passed the local HTTPS test. The proxy served the invite-only form and rejected the landing signup endpoint. The roster export and import dry run passed with test data. Embedded Postgres tests passed for roster access, email code counter expiry, and the cohort report. The [live checks](deploy/live-pilot.md) need the HTTPS host and provider settings.
-
-The built route passed a headless Chromium walkthrough using test providers. The test covered a wrong code, verification, scan, completion, undo, export, and deletion. The database tests also covered scan retries, account isolation, pricing choices, Cleanup access, draft withdrawal, and cascading deletion. Have I Been Pwned returned a result for its documented test account. In a mobile browser, the password checker sent only the five-character prefix to the password service.
+- The public source review found a company listing, an empty test search, and a source page that the test could not open. A live personal audit is pending. [Source review](pilot-preparation.md)
+- The checked UK routes are 192.com, ukphonebook.com, Google Search, Experian UK, and the open electoral register. The route check used official instructions.
+- The app has zero search API calls. The email code flow uses Supabase and Resend. The password tool uses the free Pwned Passwords service.
+- The Node app opens the audit from `/app/`. The existing static Cloudflare build continues to show the breach sample. The new audit needs a private Node host. [Deployment instructions](deploy/live-pilot.md)
+- The previous session set up Resend in the Supabase project `koverr_privacy_agent_alpha` in West EU. Live code delivery is pending.
+- Apply migration `20261123120000_exposure_audits.sql` before you enable the pilot. The new table stores owner-only audit records. The scheduled job removes expired records each hour.
+- Keep the launch list outside this test. Add only an approved test address to the pilot roster. Keep keys in the host secret store.
 
 ## Next three milestones
 
-1. **Deploy and test the private pilot.** Set up the HTTPS host and add the server keys. Use one test mailbox to check Resend delivery, sign-in, breach lookup, export, and account deletion.
-2. **Import and verify the roster.** After the mailbox test passes, export the reconciled roster from the landing host. Confirm that the scheduled cleanup job succeeds. Run the import and verify the records.
-3. **Run the invited pilot.** Send the pilot invitations. Supabase sends the sign-in codes through Resend. Measure completed checks, first fixes in seven days, and paid intent. Compare the results with G1 before you expand signup.
+1. **Verify the private deployment.** Apply the new migration. Set the Supabase keys on an HTTPS host. Test code delivery, sign-in, export, deletion, and audit expiry with an approved mailbox.
+2. **Run the assisted pilot.** Get approval for the first participants. Watch them check the sources and send their own requests. Record real outcomes and founder time.
+3. **Review the pilot results.** Use the aggregate report. Check coverage, completed checks, confirmed matches, submissions, replies, rechecks, and time. Use those results to decide whether to offer paid Cleanup.
 
-Use the [build plan](../docs/07-validation-and-build-plan.md) for the paid Cleanup work after G1. Expand the directory of official guides. Get legal review of sending authority and templates before you add relay sending.
+[Aggregate pilot report](supabase/reports/exposure-pilot.sql) · [Pilot preparation](pilot-preparation.md) · [Deployment instructions](deploy/live-pilot.md)
+
+## Development diagram
+
+![Koverr MVP functions and the next three milestones](diagrams/mvp-development.svg)
+
+[Mermaid source](diagrams/mvp-development.mmd) · [Editable Excalidraw file](diagrams/mvp-development.excalidraw) · [PNG](diagrams/mvp-development.png)
+
+The description and diagram use short sentences and direct instructions from the ASD-STE100 writing rules. [ASD-STE100 Issue 9](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf)

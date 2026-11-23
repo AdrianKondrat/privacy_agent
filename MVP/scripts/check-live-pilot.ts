@@ -6,9 +6,9 @@ export async function checkLivePilot(origin: URL, request = fetch) {
   if (!health || health.status !== 200 || await health.text().catch(() => '') !== 'ok\n') {
     throw new Error('The pilot health endpoint did not return its expected response.');
   }
-  const page = await get('/app/').catch(() => null);
+  const page = await get('/app/audit/').catch(() => null);
   const html = await page?.text().catch(() => '');
-  if (!page || page.status !== 200 || !html?.includes('data-koverr-pilot="invite-only"')) {
+  if (!page || page.status !== 200 || !html?.includes('data-koverr-pilot="invite-only"') || !html.includes('Assisted audit')) {
     throw new Error('The live invite-only form is unavailable at the specified origin.');
   }
 }

@@ -33,7 +33,7 @@ export function liveConfig() {
     KOVERR_PILOT_MODE: mode,
   } = process.env;
   const serviceKey = process.env.KOVERR_SUPABASE_SECRET_KEY || legacyKey;
-  if (!origin || !url || !publicKey || !serviceKey || !hibpKey) return null;
+  if (!origin || !url || !publicKey || !serviceKey) return null;
   const app = new URL(origin);
   const supabase = new URL(url);
   for (const endpoint of [app, supabase]) {
@@ -46,7 +46,7 @@ export function liveConfig() {
   return { origin: app.origin, url: supabase.origin, publicKey, serviceKey, hibpKey, inviteOnly: mode === 'invite-only' };
 }
 
-export type Config = Omit<NonNullable<ReturnType<typeof liveConfig>>, 'inviteOnly'> & { inviteOnly?: boolean };
+export type Config = Omit<NonNullable<ReturnType<typeof liveConfig>>, 'inviteOnly' | 'hibpKey'> & { inviteOnly?: boolean; hibpKey?: string };
 
 class ServiceError extends Error {
   readonly status: number;
@@ -172,6 +172,7 @@ export function liveCheck(config: Config, request = fetch) {
   }
 
   async function scan(token: string): Promise<void> {
+    if (!config.hibpKey) return;
     const identity = await identify(token);
     if (!identity || !await canParticipate(identity.email)) return;
     const claim = randomUUID();

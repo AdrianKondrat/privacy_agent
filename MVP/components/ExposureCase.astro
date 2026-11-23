@@ -1,0 +1,63 @@
+---
+import { caseUpdates, nextSteps, permittedUpdates, type Audit } from '../lib/exposure.ts';
+import { removalTargets, type TargetId } from '../lib/exposure-sources.ts';
+
+interface Props {
+  source: TargetId;
+  record: NonNullable<Audit['cases'][TargetId]>;
+  revision: number;
+}
+const { source, record, revision } = Astro.props;
+const available = permittedUpdates(source, record);
+const last = record.events.at(-1);
+const route = removalTargets[source];
+---
+<section class="audit-case" aria-label={route.name + ' case'}>
+  <h3>Case status <span>{last ? caseUpdates[last.type] : 'Ready'}</span></h3>
+  <p class="check-meta">{route.kind} · {route.method}</p>
+  {record.events.length > 0 && <details class="check-other" open>
+    <summary>Case history</summary>
+    <ol class="audit-history">
+      {[...record.events].reverse().map((event) => <li>
+        <strong>{caseUpdates[event.type]}</strong> · <time datetime={event.at}>{event.at.slice(0, 10)}</time>
+        {event.submissionDate && <span> · Sent {event.submissionDate}</span>}
+        {!event.type.startsWith('recheck-') && ['removal-reported', 'search-removed', 'marketing-suppressed', 'register-opted-out', 'refused'].includes(event.type)
+          && <span> · Organization reply</span>}
+        {event.type.startsWith('recheck-') && <span> · Public recheck</span>}
+        {event.next && <span> · {nextSteps[event.next]}{event.due && ` by ${event.due}`}</span>}
+      </li>)}
+    </ol>
+  </details>}
+  {available.length > 0 && record.events.length < 20 && <details class="check-other">
+    <summary>{last ? 'Record a reply, next action or recheck' : 'Record actual submission'}</summary>
+    <form class="audit-form" method="post" action="/app/audit/">
+      <input type="hidden" name="revision" value={revision} />
+      <input type="hidden" name="source" value={source} />
+      {last ? <>
+        <label for={`event-${source}`}>Update</label>
+        <select class="inventory-choice" id={`event-${source}`} name="event" required>
+          <option value="">Select an update</option>
+          {available.map((type) => <option value={type}>{caseUpdates[type]}</option>)}
+        </select>
+      </> : <>
+        <input type="hidden" name="event" value="submitted" />
+        <label for={`sent-date-${source}`}>Submission date</label>
+        <input id={`sent-date-${source}`} name="submission-date" type="date" max={new Date().toISOString().slice(0, 10)} required />
+        <label class="check-agreement"><input type="checkbox" name="sent" value="yes" required /> I submitted the request to {route.name}.</label>
+      </>}
+      <label for={`next-${source}`}>Next action (optional)</label>
+      <select class="inventory-choice" id={`next-${source}`} name="next">
+        <option value="">No next action</option>
+        {Object.entries(nextSteps).map(([value, label]) => <option value={value}>{label}</option>)}
+      </select>
+      <label for={`due-${source}`}>Follow-up date (optional)</label>
+      <input id={`due-${source}`} name="due" type="date" />
+      <div><button class="check-button" name="intent" value="case-update">Save update</button></div>
+    </form>
+  </details>}
+  {!last && <form method="post" action="/app/audit/">
+    <input type="hidden" name="revision" value={revision} />
+    <input type="hidden" name="source" value={source} />
+    <button class="check-link" name="intent" value="discard-case">Discard unsubmitted case</button>
+  </form>}
+</section>

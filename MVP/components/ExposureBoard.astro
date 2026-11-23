@@ -1,0 +1,149 @@
+---
+import { auditSources, optionalRoutes, removalTargets, type TargetId } from '../lib/exposure-sources.ts';
+import {
+  activeSources, canStartPlan, caseUpdates, checkLabels, dataTypes, decisions, identifierTypes, nextSteps,
+} from '../lib/exposure.ts';
+import type { AuditRecord } from '../lib/exposure-store.ts';
+import ExposureCase from './ExposureCase.astro';
+
+interface Props { record: AuditRecord }
+const { record } = Astro.props;
+const { data: audit, revision } = record;
+const checks = Object.values(audit.checks);
+const sources = activeSources(audit);
+const cases = Object.entries(audit.cases) as [TargetId, NonNullable<typeof audit.cases[TargetId]>][];
+const checked = checks.filter(({ status }) => status === 'possible' || status === 'none');
+const anyPossible = checked.some(({ status }) => status === 'possible');
+const nextActions = cases.filter(([, item]) => item.events.at(-1)?.next);
+---
+<section id="sources" class="audit-section" aria-labelledby="sources-title">
+  <header class="check-section-head">
+    <h2 id="sources-title">{audit.deeper ? 'Removal plan' : 'Free audit'}</h2>
+    <a href="#progress">View case progress</a>
+  </header>
+  <p>{checked.length} of {sources.length} sources checked. {checked.length > 0 && !anyPossible && 'No matches in checked sources.'}</p>
+  <p class="check-meta">Check scope: {audit.identifiers.length ? audit.identifiers.map((item) => identifierTypes[item]).join(', ') : 'No information types selected'}.
+    The audit covers only the sources below. Skip paid or blocked searches and record the gap.</p>
+  <div class="audit-grid">
+    {sources.map((source) => {
+      const info = auditSources[source];
+      const check = audit.checks[source];
+      const item = audit.cases[source];
+      return <article id={`source-${source}`} class="check-panel audit-source">
+        <h3>{info.name}</h3>
+        <p><strong>{check ? checkLabels[check.status] : 'Not checked'}</strong>
+          {check && <span class="check-meta"> · <time datetime={check.at}>{check.at.slice(0, 10)}</time></span>}
+        </p>
+        <p>{info.scope}</p>
+        <p><a href={info.search} target="_blank" rel="noopener noreferrer">Open {info.name} (new tab)</a></p>
+
+        {check?.status === 'possible' && <>
+          <p>{dataTypes[check.dataType]} · <a href={check.url} target="_blank" rel="noopener noreferrer">View source on {new URL(check.url).hostname} (new tab)</a></p>
+          {check.exactIdentifier && <p><strong>Exact identifier found</strong> · Confirm that the listing belongs to you.</p>}
+          {check.observation === 'index' && <p class="check-meta">Google showed this detail in the result. The result alone cannot confirm what the source page contains.</p>}
+          {check.decision && <p>Match review · <strong>{decisions[check.decision]}</strong></p>}
+          {!item && <form method="post" action="/app/audit/">
+            <input type="hidden" name="intent" value="decide" />
+            <input type="hidden" name="revision" value={revision} />
+            <input type="hidden" name="source" value={source} />
+            <fieldset class="audit-fields">
+              <legend>Is this your information?</legend>
+              <p class="check-meta">Check another detail before you choose Mine. Other people can have the same name.</p>
+              <div class="check-choice-row">{Object.entries(decisions).map(([key, label]) =>
+                <button class="check-button" name="decision" value={key} aria-pressed={check.decision === key}>{label}</button>)}</div>
+            </fieldset>
+          </form>}
+          {check.decision === 'mine' && <div class="audit-case">
+            <h3>{info.kind}</h3>
+            <p>{info.action}</p>
+            <a class="check-button" href={info.route} target="_blank" rel="noopener noreferrer">Open official instructions (new tab)</a>
+            {!item && <form method="post" action="/app/audit/">
+              <input type="hidden" name="revision" value={revision} />
+              <input type="hidden" name="source" value={source} />
+              <button class="check-button" name="intent" value="open-case">Track this request</button>
+            </form>}
+          </div>}
+        </>}
+
+        {item ? <ExposureCase source={source} record={item} revision={revision} /> : <details class="check-other">
+          <summary>{check ? 'Change check result' : 'Record check result'}</summary>
+          <form method="post" action="/app/audit/" class="audit-form">
+            <input type="hidden" name="revision" value={revision} />
+            <input type="hidden" name="source" value={source} />
+            <label for={`status-${source}`}>Check result</label>
+            <select class="inventory-choice" id={`status-${source}`} name="status" required>
+              <option value="">Select a result</option>
+              {Object.entries(checkLabels).map(([key, label]) => <option value={key}>{label}</option>)}
+            </select>
+            <label for={`url-${source}`}>Result page URL (possible match only)</label>
+            <input id={`url-${source}`} name="url" type="url" maxlength="512" aria-describedby={`url-note-${source}`} />
+            <p class="check-meta" id={`url-note-${source}`}>Use the page address. Leave out search queries, private links and snippets.</p>
+            <label for={`type-${source}`}>Information shown (possible match only)</label>
+            <select class="inventory-choice" id={`type-${source}`} name="data-type">
+              <option value="">Select a type</option>
+              {Object.entries(dataTypes).map(([key, label]) => <option value={key}>{label}</option>)}
+            </select>
+            <label class="check-agreement"><input type="checkbox" name="exact" value="yes" />
+              I saw the exact email address or phone number on the source page.
+            </label>
+            {source === 'google' && <label class="check-agreement"><input type="checkbox" name="observation" value="index" />
+              I saw the information in the search result only.
+            </label>}
+            <div><button class="check-button" name="intent" value="record-check">Save check result</button></div>
+          </form>
+        </details>}
+      </article>;
+    })}
+  </div>
+  {!audit.deeper && canStartPlan(audit) && <form method="post" action="/app/audit/" class="audit-setup">
+    <input type="hidden" name="revision" value={revision} />
+    <button class="check-button check-primary" name="intent" value="expand">Start my removal plan</button>
+  </form>}
+</section>
+
+{audit.deeper && <section class="audit-section" aria-labelledby="opt-outs-title">
+  <h2 class="check-subheading" id="opt-outs-title">Optional opt-outs</h2>
+  <div class="audit-grid">
+    {(Object.keys(optionalRoutes) as (keyof typeof optionalRoutes)[]).map((source) => {
+      const info = optionalRoutes[source];
+      const item = audit.cases[source];
+      return <article class="check-panel audit-source" id={`source-${source}`}>
+        <h3>{info.name}</h3>
+        <p><strong>Holding not confirmed</strong> · {info.kind}</p>
+        <p>{info.action}</p>
+        <p><a href={info.route} target="_blank" rel="noopener noreferrer">Open official instructions (new tab)</a></p>
+        {item ? <ExposureCase source={source} record={item} revision={revision} /> : <form method="post" action="/app/audit/">
+          <input type="hidden" name="revision" value={revision} />
+          <input type="hidden" name="source" value={source} />
+          <label class="check-agreement"><input type="checkbox" name="optional" value="yes" required /> I want to track this optional opt-out.</label>
+          <button class="check-button" name="intent" value="open-case">Track opt-out</button>
+        </form>}
+      </article>;
+    })}
+  </div>
+</section>}
+
+<section id="progress" class="audit-section" aria-labelledby="progress-title">
+  <h2 id="progress-title" class="check-subheading">Case progress</h2>
+  {cases.length ? <ul class="check-records">{cases.map(([source, item]) => {
+    const last = item.events.at(-1);
+    return <li class="check-panel">
+      <a href={`#source-${source}`}>{removalTargets[source].name}</a>
+      <p>{last ? caseUpdates[last.type] : 'Ready'} · {(last?.at ?? item.openedAt).slice(0, 10)}</p>
+      {last?.next && <p>{nextSteps[last.next]}{last.due && ` by ${last.due}`}</p>}
+    </li>;
+  })}</ul> : <p>Your tracked cases will appear here.</p>}
+  {nextActions.length > 0 && <p class="check-meta">{nextActions.length} case{nextActions.length === 1 ? ' has' : 's have'} a next action.</p>}
+  <details class="check-other">
+    <summary>Record time for the pilot</summary>
+    <form class="audit-form" method="post" action="/app/audit/">
+      <input type="hidden" name="revision" value={revision} />
+      <label for="user-minutes">Your total minutes</label>
+      <input class="check-minutes" id="user-minutes" name="user-minutes" type="number" min="0" max="180" required value={audit.assistedSession?.userMinutes} />
+      <label for="founder-minutes">Founder’s total minutes</label>
+      <input class="check-minutes" id="founder-minutes" name="minutes" type="number" min="0" max="180" required value={audit.assistedSession?.minutes} />
+      <div><button class="check-button" name="intent" value="assisted-session">Save session time</button></div>
+    </form>
+  </details>
+  <p class="check-meta">This audit expires on {record.expires_at.slice(0, 10)}. Export your data to keep a copy.</p>
+</section>

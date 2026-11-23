@@ -156,3 +156,18 @@ details[open] > .check-finding-summary::before { content: '−' / ''; }
 .check-panel input.check-minutes { max-width: 9rem; }
 
 [data-concierge-preview] [hidden] { display: none; }
+
+.audit-main { max-width: 1060px; }
+.audit-setup, .audit-section { margin-block: 2rem; }
+.audit-setup { max-width: 42rem; }
+.audit-grid { display: grid; gap: .8rem; margin-block: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); align-items: start; }
+.audit-fields { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
+.audit-fields legend { font-weight: 700; margin-bottom: .45rem; }
+.audit-fields .check-agreement { margin-bottom: .45rem; }
+.audit-source { scroll-margin-top: 1rem; overflow-wrap: anywhere; }
+.audit-case { display: grid; gap: .6rem; padding-block: .7rem; border-top: 1px solid var(--check-border); }
+.audit-case > .check-button { justify-self: start; }
+.audit-case h3 span { color: var(--text-muted); font-weight: 500; margin-inline-start: .35rem; }
+.audit-form { display: grid; gap: .4rem; margin-block: .55rem; max-width: 28rem; }
+.audit-form select { width: 100%; }
+.audit-history { display: grid; gap: .4rem; padding-inline-start: 1.4rem; }

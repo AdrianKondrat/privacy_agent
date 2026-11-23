@@ -12,10 +12,10 @@ test('checks health and the invite-only form without submitting data', async () 
     assert.equal(options?.method, undefined);
     assert.equal(options?.redirect, 'error');
     paths.push(url.pathname);
-    return new Response(url.pathname === '/app/health/' ? 'ok\n' : '<form data-koverr-pilot="invite-only"></form>');
+    return new Response(url.pathname === '/app/health/' ? 'ok\n' : '<p>Assisted audit</p><form data-koverr-pilot="invite-only"></form>');
   };
   await checkLivePilot(origin, request);
-  assert.deepEqual(paths, ['/app/health/', '/app/']);
+  assert.deepEqual(paths, ['/app/health/', '/app/audit/']);
 });
 
 test('rejects a failing health endpoint and a sample or open signup form', async () => {
