@@ -41,7 +41,7 @@ The deeper audit also covers Experian marketing suppression and the open elector
 
 ## Development diagram
 
-[Full MVP workflow and blocker guide](mvp-workflow.md)
+[Full MVP workflow and blocker guide](mvp-workflow.md) · [Pilot readiness review](pilot-readiness.md) · [Landing page draft](landing-pilot-draft.md)
 
 ![Koverr MVP deployment and the next three milestones](diagrams/mvp-development.svg)
 

@@ -23,6 +23,8 @@ A user can also use the free password checker. The pilot makes zero paid search 
 
 ## To do now
 
+One participant address is on the private shortlist. The landing copy is ready. See the [pilot readiness review](pilot-readiness.md) for the remaining approvals and the dashboard results.
+
 ### Approve the test mailbox
 
 1. Choose one email address that you control and can open during the test. Use an address reserved for testing if possible.
@@ -48,6 +50,8 @@ A user can also use the free password checker. The pilot makes zero paid search 
 
 ### Draft the landing page update
 
+The [landing page draft](landing-pilot-draft.md) is ready for review.
+
 1. Describe a free assisted UK exposure audit. State the source limits.
 2. Keep the early-access signup for general visitors. Give the direct audit link to approved participants.
 3. Prepare the revised call to action for the next group. Publish the wider change after you approve the next group.
@@ -63,7 +67,7 @@ The items in the last column use the same names as the diagram. Start with the f
 | Verify live sign-in and data controls | The live test needs one approved mailbox. | [Approve the test mailbox](#approve-the-test-mailbox) |
 | Run the assisted pilot | The sessions need verified sign-in, approved recipients, and pilot operating checks. | [Verify live sign-in and data controls](#verify-live-sign-in-and-data-controls) · [Approve participants and invitations](#approve-participants-and-invitations) · [Check pilot limits and privacy](#check-pilot-limits-and-privacy) |
 | Review the pilot evidence | The report has no participant results. | [Run the assisted pilot](#run-the-assisted-pilot) |
-| Open the next group | The first evidence review must support expansion. The landing message needs the right invitation path. | [Review the pilot evidence](#review-the-pilot-evidence) · [Draft the landing page update](#draft-the-landing-page-update) |
+| Open the next group | The first evidence review must support expansion. The draft needs approval before publication. | [Review the pilot evidence](#review-the-pilot-evidence) · [Approve the landing page draft](landing-pilot-draft.md) |
 | Test paid assisted Cleanup | The pilot must show useful outcomes and demand for help. | [Review the pilot evidence](#review-the-pilot-evidence) |
 | Add automation and self-service | Reliable results, repeated work, and sustainable founder time are still unproven. | [Test paid assisted Cleanup](#test-paid-assisted-cleanup) |
 | Test recurring checks for Watch | The pilot has no evidence that rechecks provide recurring value. | [Review the pilot evidence](#review-the-pilot-evidence) |

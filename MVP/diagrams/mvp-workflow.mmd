@@ -5,10 +5,10 @@ graph TD
   PRODUCT["DONE<br/>UK audit and match review<br/>Removal cases and rechecks"]
   HOME["DONE<br/>Landing page and waitlist"]
 
-  MAIL["TO DO<br/>Approve the test mailbox"]
-  PEOPLE["TO DO<br/>Approve participants and invitations"]
-  CHECKS["TO DO<br/>Check pilot limits and privacy"]
-  COPY["TO DO<br/>Draft the landing page update"]
+  MAIL["WAITING FOR YOU<br/>Approve the test mailbox"]
+  PEOPLE["PARTLY READY<br/>Approve participants and invitations<br/>One address recorded"]
+  CHECKS["PARTLY READY<br/>Check pilot limits and privacy<br/>Resend and privacy details pending"]
+  COPY["DONE<br/>Draft the landing page update<br/>Ready for review"]
 
   ACCEPT["BLOCKED<br/>Verify live sign-in and data controls"]
   PILOT["BLOCKED<br/>Run the assisted pilot"]
@@ -35,6 +35,6 @@ graph TD
   classDef todo fill:#E9F1FF,stroke:#365D93,color:#173757,stroke-width:1.5px;
   classDef blocked fill:#FFF0DE,stroke:#92571C,color:#4E2A09,stroke-width:1.5px;
   class START heading;
-  class PLATFORM,PRODUCT,HOME done;
-  class MAIL,PEOPLE,CHECKS,COPY todo;
-  class ACCEPT,PILOT,REVIEW,EXPAND,PAID,WATCH,LATER blocked;
+  class PLATFORM,PRODUCT,HOME,COPY done;
+  class PEOPLE,CHECKS todo;
+  class MAIL,ACCEPT,PILOT,REVIEW,EXPAND,PAID,WATCH,LATER blocked;

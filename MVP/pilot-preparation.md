@@ -34,7 +34,7 @@ Hi [first name],
 
 I am inviting you to try Koverr's free UK exposure audit. I can help you check a short list of public websites and find the official steps to remove a listing.
 
-Open [pilot address]. Enter your invited email address, then enter the six-digit code. You choose the sites to check and submit any requests yourself. Koverr can keep a record of the requests and what happens next.
+Open the Koverr audit. Enter the email address that received this invitation. Then enter the six-digit code. [Open the Koverr audit](https://koverr-mvp.uceiond.workers.dev/app/audit/) You choose the sites to check and submit any requests yourself. Koverr can keep a record of the requests and what happens next.
 
 Reply if you want to arrange an assisted session. Keep your password and sign-in codes private.
 
