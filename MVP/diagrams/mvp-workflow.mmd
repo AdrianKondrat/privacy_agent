@@ -1,0 +1,40 @@
+%%{init: {"theme": "base", "flowchart": {"htmlLabels": false, "nodeSpacing": 24, "rankSpacing": 24, "curve": "linear"}, "themeVariables": {"fontFamily": "Arial", "fontSize": "16px", "lineColor": "#596579"}}}%%
+graph TD
+  START["Koverr MVP workflow"]
+  PLATFORM["DONE<br/>Invite-only hosting<br/>Data controls and report"]
+  PRODUCT["DONE<br/>UK audit and match review<br/>Removal cases and rechecks"]
+  HOME["DONE<br/>Landing page and waitlist"]
+
+  MAIL["TO DO<br/>Approve the test mailbox"]
+  PEOPLE["TO DO<br/>Approve participants and invitations"]
+  CHECKS["TO DO<br/>Check pilot limits and privacy"]
+  COPY["TO DO<br/>Draft the landing page update"]
+
+  ACCEPT["BLOCKED<br/>Verify live sign-in and data controls"]
+  PILOT["BLOCKED<br/>Run the assisted pilot"]
+  REVIEW["BLOCKED<br/>Review the pilot evidence"]
+  EXPAND["BLOCKED<br/>Open the next group"]
+  PAID["BLOCKED<br/>Test paid assisted Cleanup"]
+  WATCH["BLOCKED<br/>Test recurring checks for Watch"]
+  LATER["BLOCKED<br/>Add automation and self-service"]
+
+  START --> PLATFORM
+  START --> PRODUCT
+  START --> HOME
+  PLATFORM --> MAIL --> ACCEPT --> PILOT
+  PLATFORM --> CHECKS --> PILOT
+  PRODUCT --> PEOPLE --> PILOT
+  HOME --> COPY --> EXPAND
+  PILOT --> REVIEW
+  REVIEW --> EXPAND
+  REVIEW --> PAID --> LATER
+  REVIEW --> WATCH
+
+  classDef heading fill:#243449,stroke:#243449,color:#FFFFFF,stroke-width:1.5px;
+  classDef done fill:#E9F4EC,stroke:#316349,color:#16382A,stroke-width:1.5px;
+  classDef todo fill:#E9F1FF,stroke:#365D93,color:#173757,stroke-width:1.5px;
+  classDef blocked fill:#FFF0DE,stroke:#92571C,color:#4E2A09,stroke-width:1.5px;
+  class START heading;
+  class PLATFORM,PRODUCT,HOME done;
+  class MAIL,PEOPLE,CHECKS,COPY todo;
+  class ACCEPT,PILOT,REVIEW,EXPAND,PAID,WATCH,LATER blocked;
