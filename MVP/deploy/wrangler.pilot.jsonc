@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "koverr-mvp",
+  "compatibility_date": "2026-11-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "keep_vars": true,
+  "vars": {
+    "KOVERR_APP_ORIGIN": "https://koverr-mvp.uceiond.workers.dev",
+    "KOVERR_SUPABASE_URL": "https://xehicmrxtxbabgxbabll.supabase.co",
+    "KOVERR_PILOT_MODE": "invite-only"
+  }
+}

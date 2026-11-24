@@ -43,7 +43,7 @@ export function liveConfig() {
     }
   }
   if (mode && mode !== 'invite-only' && mode !== 'open') throw new Error('Invalid Koverr pilot mode.');
-  return { origin: app.origin, url: supabase.origin, publicKey, serviceKey, hibpKey, inviteOnly: mode === 'invite-only' };
+  return { origin: app.origin, url: supabase.origin, publicKey, serviceKey, hibpKey, inviteOnly: mode !== 'open' };
 }
 
 export type Config = Omit<NonNullable<ReturnType<typeof liveConfig>>, 'inviteOnly' | 'hibpKey'> & { inviteOnly?: boolean; hibpKey?: string };

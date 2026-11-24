@@ -72,3 +72,26 @@ Use a verified support address or form. Use the customer’s approved details on
 > Please reply through [approved reply channel]. If you need the customer to confirm their identity, tell us which information you need and how the customer can send it securely.
 
 If the official guide gives the customer a self-service route, show that route first. During the paid beta, the founder reviews each request before sending it and records the result and time spent.
+
+## Run one assisted session
+
+1. Confirm that the participant agreed to join. Send the sign-in instructions to the approved address.
+2. Ask the participant to sign in and check their own information. Observe the steps if they agree.
+3. Ask the participant to record each source result. Record blocked and paid sources as coverage gaps.
+4. Ask the participant to confirm a match only when they can identify the listing as theirs.
+5. If the participant wants removal, open the official instructions. Let the participant send and record the request.
+6. Enter the participant and founder time totals. Arrange a follow-up date for the case if needed.
+7. At follow-up, record the reply and public recheck. Record an inconclusive recheck when the source could not be checked.
+
+Keep emails, screenshots, codes, and search terms out of the pilot notes. Collect only the in-app result and the time totals. The participant can export and delete their app data.
+
+## Review the results
+
+1. Set the invitation window in [the aggregate report](supabase/reports/exposure-pilot.sql). Use the UTC times that contain only the approved participant group.
+2. Save the aggregate result before the first audit expires. Keep separate snapshots for the end of the sessions and the follow-up date.
+3. Record how many participants were invited, verified their email, and started an audit.
+4. Review how many quick audits recorded both sources. Compare that number with the number that completed both checks.
+5. Count confirmed findings, submissions, replies, rechecks, and founder time. A submitted request does not prove that a provider removed a listing.
+6. Review the evidence for the three gates in the [development plan](../docs/07-validation-and-build-plan.md). Record the decision and its reason.
+
+If the report has zero participants, record that the pilot has no evidence. Keep paid Cleanup on hold until the review can use real outcomes.

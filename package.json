@@ -12,9 +12,11 @@
     "build": "astro build",
     "start": "node ./dist/server/entry.mjs",
     "waitlist": "node ./scripts/waitlist.mjs",
-    "leak-map-data": "node ./scripts/leak-map-data.mjs"
+    "leak-map-data": "node ./scripts/leak-map-data.mjs",
+    "build:pilot": "astro build --config MVP/deploy/astro.worker.config.mjs"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "14.4.8",
     "@astrojs/node": "11.1.11",
     "@astrojs/react": "7.1.5",
     "@fontsource/archivo": "5.3.0",
