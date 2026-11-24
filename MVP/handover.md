@@ -20,7 +20,7 @@ The deeper audit also covers Experian marketing suppression and the open elector
 - The [invite-only audit](https://koverr-mvp.uceiond.workers.dev/app/audit/) runs on the existing `koverr-mvp` Worker.
 - The deployed Worker version is `b9a71794-7776-4f61-b5b8-4ecb7aa93733`. The release uses the `MVP` branch build.
 - Automatic builds from the earlier repository are off. Release from the `MVP` branch with Wrangler. [Deployment instructions](deploy/live-pilot.md)
-- Supabase has the audit table and the owner access rule. The hourly expiry job is active. Check its first run during live acceptance.
+- Supabase has the audit table and the owner access rule. The hourly expiry job first ran successfully at 10:15 GMT. It found zero expired rows.
 - Cloudflare stores the publishable key and dedicated server secret. The audit has zero paid search calls.
 
 ## Verification and pilot results
@@ -33,7 +33,7 @@ The deeper audit also covers Experian marketing suppression and the open elector
 
 ## Next three milestones
 
-1. **Verify one mailbox.** Get approval for a mailbox. Check live email delivery, sign-in, export, and deletion. Check the expiry job.
+1. **Verify one mailbox.** Get approval for a mailbox. Check live email delivery, sign-in, export, and deletion.
 2. **Run the assisted pilot.** Get approval for the participants and invitations. Record their check results, removal outcomes, and founder time.
 3. **Review the pilot results.** Run the report for the approved group. Review coverage, submissions, replies, rechecks, and time. Decide if paid Cleanup is ready.
 
