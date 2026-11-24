@@ -1,8 +1,25 @@
 # Deploy the private assisted pilot
 
-Build the Node app from `privacy_agent/MVP`. The Cloudflare branch build publishes the static breach sample. Use a separate HTTPS host for the live pilot.
+Use the dedicated [koverr-mvp Worker](https://koverr-mvp.uceiond.workers.dev/app/audit/) for the invite-only pilot. Build it from `privacy_agent/MVP`. The repository's root Cloudflare configuration serves the static breach sample.
 
-## Set up the database and server
+## Release the pilot Worker
+
+1. Check out the `MVP` branch. Install the locked dependencies with `npm ci`.
+2. Check the production Supabase URL, app origin, and invite-only setting in [the Worker configuration](wrangler.pilot.jsonc).
+3. Keep both Supabase keys in the existing Worker's production settings. Store the server key as an encrypted secret.
+4. Run the build and the two deployment commands below. Use the generated configuration in all Wrangler commands.
+5. Run the HTTPS smoke test. Check that the audit is private and the fictional sample is available.
+
+```sh
+npm run build:pilot
+npx wrangler deploy --config dist/pilot-worker/server/wrangler.json --dry-run
+npx wrangler deploy --config dist/pilot-worker/server/wrangler.json
+node MVP/scripts/check-live-pilot.ts https://koverr-mvp.uceiond.workers.dev
+```
+
+The old Git build connection points to `koverr_mvp/main`. Its automatic builds are off. Use the manual release from `privacy_agent/MVP` until a Git build uses that branch.
+
+## Set up the database and the Node fallback
 
 1. Use the existing Supabase project in West EU. Check its migration log. Apply [the exposure audit migration](../supabase/migrations/20261123120000_exposure_audits.sql) if it is pending.
 2. For a new project, apply all migrations in timestamp order. Enable Supabase Cron. Schedule the existing OTP cleanup function. [Supabase Cron instructions](https://supabase.com/docs/guides/cron/quickstart)
@@ -17,7 +34,7 @@ docker compose --env-file /private/koverr-pilot.env -f MVP/deploy/compose.yaml c
 docker compose --env-file /private/koverr-pilot.env -f MVP/deploy/compose.yaml up -d --build --wait
 ```
 
-Caddy serves the audit paths and app assets. It redirects the pilot root to `/app/`. The landing signup endpoint is outside the pilot paths.
+Caddy serves the audit paths and app assets. It redirects the pilot root to `/app/`. The landing signup endpoint is outside the pilot paths. The existing Worker serves the live pilot.
 
 Check both scheduled jobs in the Supabase SQL editor. Confirm that each job is active. Check that the most recent run succeeded.
 
@@ -32,7 +49,7 @@ order by j.jobname, r.start_time desc nulls last;
 ## Verify one controlled account
 
 1. Get permission to use a test mailbox. Add its lowercase address as an invited test entry in Supabase.
-2. Run the public availability check. It sends no email code and uses no credentials.
+2. Run the public availability check. It uses only GET requests. It checks the invite-only form, the redirects, the sample, and the landing signup route.
 
 ```sh
 node MVP/scripts/check-live-pilot.ts https://pilot.example.com

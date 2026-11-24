@@ -145,3 +145,15 @@ test('managed Supabase server secrets use the API key header and user sessions r
   assert.equal(await store.sendCode(identity.email), 'limited');
   assert.equal((await store.identify('customer-session'))?.id, identity.id);
 });
+
+test('Supabase requests reject redirects without forwarding keys to another origin', async () => {
+  let calls = 0;
+  const store = liveCheck({ ...config, inviteOnly: true }, async (input, options) => {
+    assert.equal(String(input), config.url + '/rest/v1/rpc/koverr_pilot_invited');
+    assert.equal(options?.redirect, 'manual');
+    calls++;
+    return new Response(null, { status: 307, headers: { location: 'https://elsewhere.example.test' } });
+  });
+  await assert.rejects(store.canParticipate('verified@example.test'), { status: 307 });
+  assert.equal(calls, 1);
+});

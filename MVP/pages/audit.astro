@@ -5,7 +5,7 @@ import ExposureBoard from '../components/ExposureBoard.astro';
 import { exportAccount } from '../lib/account-data.ts';
 import { exposureStore, type AuditRecord } from '../lib/exposure-store.ts';
 import { identifierTypes, updateExposure } from '../lib/exposure.ts';
-import { liveCheck, liveConfig, normalizeEmail, type Identity } from '../lib/live.ts';
+import { liveCheck, liveConfig, normalizeEmail, ServiceError, type Identity } from '../lib/live.ts';
 import '../styles.css';
 
 const app = '/app/audit/';
@@ -119,7 +119,11 @@ try {
       fail('An invitation is required to use the pilot.', 403);
     }
   }
-} catch {
+} catch (cause) {
+  console.error('Koverr audit request failed', {
+    upstreamStatus: cause instanceof ServiceError ? cause.status : undefined,
+    errorType: cause instanceof Error ? cause.name : 'Unknown',
+  });
   fail('Koverr could not finish that action. Try again shortly.', 503);
 }
 ---

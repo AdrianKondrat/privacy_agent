@@ -1,11 +1,11 @@
-%%{init: {"theme": "base", "flowchart": {"htmlLabels": false, "nodeSpacing": 25, "rankSpacing": 27}, "themeVariables": {"fontFamily": "Arial", "fontSize": "17px", "lineColor": "#53627A"}}}%%
+%%{init: {"theme": "base", "flowchart": {"htmlLabels": false, "nodeSpacing": 30, "rankSpacing": 27}, "themeVariables": {"fontFamily": "Arial", "fontSize": "17px", "lineColor": "#53627A"}}}%%
 graph TD
-  BUILT["Built in the MVP"]
-  A["Account controls<br/>Verify email<br/>Export or delete account data"]
-  B["UK assisted audit<br/>Record and confirm matches<br/>Open official removal forms"]
-  C["Case history<br/>Record submissions and replies<br/>Add follow-ups and rechecks"]
+  BUILT["Built and deployed"]
+  A["Invite-only audit<br/>Cloudflare Worker is live"]
+  B["Supabase audit table<br/>Owner access and hourly expiry"]
+  C["Pilot review<br/>Count outcomes and time"]
   NEXT["Next three milestones"]
-  D["1. Verify the private deployment<br/>Test an approved mailbox and data controls"]
+  D["1. Verify one mailbox<br/>Test sign-in, export, and deletion"]
   E["2. Run the assisted pilot<br/>Record real outcomes and founder time"]
   F["3. Review the pilot results<br/>Decide if paid Cleanup is ready"]
 

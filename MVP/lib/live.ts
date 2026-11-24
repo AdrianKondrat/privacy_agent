@@ -48,7 +48,7 @@ export function liveConfig() {
 
 export type Config = Omit<NonNullable<ReturnType<typeof liveConfig>>, 'inviteOnly' | 'hibpKey'> & { inviteOnly?: boolean; hibpKey?: string };
 
-class ServiceError extends Error {
+export class ServiceError extends Error {
   readonly status: number;
 
   constructor(status: number) {
@@ -66,7 +66,7 @@ export function supabaseRequest(config: Config, request = fetch) {
     if (body !== undefined) headers.set('content-type', 'application/json');
     const response = await request(`${config.url}${path}`, {
       method, headers, body: body === undefined ? undefined : JSON.stringify(body),
-      redirect: 'error', signal: AbortSignal.timeout(8_000),
+      redirect: 'manual', signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok) throw new ServiceError(response.status);
     const payload = await response.text();

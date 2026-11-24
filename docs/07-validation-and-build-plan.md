@@ -1,6 +1,6 @@
 # 07 — MVP development and validation plan
 
-Updated 23 November 2026. This is the current implementation plan. It supersedes the paid breach-check launch sequence in the [previous plan](07-validation-and-build-plan-2026-11-18.md). Where older strategy, PRD, architecture, pricing, or deployment documents conflict, use this plan and the [handover](../MVP/handover.md) for the next build.
+Updated 24 November 2026. This is the current implementation plan. It supersedes the paid breach-check launch sequence in the [previous plan](07-validation-and-build-plan-2026-11-18.md). Where older strategy, PRD, architecture, pricing, or deployment documents conflict, use this plan and the [handover](../MVP/handover.md) for the next build.
 
 ## Agreed goal and budget
 
@@ -23,7 +23,7 @@ The free audit covers a stated, limited set of public sources. It does not searc
 9. Track submission, replies, follow-ups, and rechecks. Separate source removal, search-result removal, and marketing suppression.
 10. Show dated outcomes and unresolved cases. Offer periodic rechecks only after the pilot proves value and the search budget supports them.
 
-App development uses the `MVP/` folder on `privacy_agent/MVP`. The `main` branch serves the landing page. The standalone repository holds the earlier deployment. The first controlled audit uses an individually approved pilot address. It does not need a shared login or a launch-list import.
+App development uses the `MVP/` folder on `privacy_agent/MVP`. The `main` branch serves the landing page. The pilot Worker uses a build from `privacy_agent/MVP`. The older standalone repository remains linked with automatic builds off. The first controlled audit uses an individually approved pilot address. It does not need a shared login or a launch-list import.
 
 ## Status of the first three milestones
 
@@ -35,7 +35,7 @@ App development uses the `MVP/` folder on `privacy_agent/MVP`. The `main` branch
 
 ## Next three milestones
 
-1. Deploy the private Node app and verify one controlled account. Check the new migration, email delivery, access control, and data deletion.
+1. Verify one controlled account on the private Worker. Check email delivery, access control, and data deletion.
 2. Run the assisted audit with a small approved group. Record source coverage, request steps, outcomes, and time.
 3. Review the aggregate evidence before you decide whether to offer paid Cleanup. Check the audit, removal, and outcome gates below.
 
